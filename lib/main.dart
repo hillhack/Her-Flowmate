@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'services/storage_service.dart';
 import 'services/prediction_service.dart';
 import 'screens/main_navigation_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,13 +29,22 @@ class HerFlowmateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Her-Flowmate',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
-        useMaterial3: true,
-      ),
-      home: const MainNavigationScreen(),
+    return Consumer<StorageService>(
+      builder: (context, storage, child) {
+        return MaterialApp(
+          title: 'Her-Flowmate',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.pink,
+              brightness: Brightness.light,
+            ),
+            useMaterial3: true,
+            textTheme: GoogleFonts.outfitTextTheme(),
+            scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+          ),
+          home: storage.hasCompletedLogin ? const MainNavigationScreen() : const LoginScreen(),
+        );
+      },
     );
   }
 }

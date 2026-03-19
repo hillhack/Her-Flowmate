@@ -7,6 +7,10 @@ import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 
 import 'log_period_screen.dart';
+import 'phase_details_screen.dart';
+import 'prediction_details_screen.dart';
+import 'timeline_screen.dart';
+import 'calendar_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -66,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                       label: 'Cycle Day',
                       value: 'Day $cycleDay',
                       icon: Icons.calendar_today_rounded,
-                      onTap: () => _navigateToDetail(context, 'Cycle Timeline'),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TimelineScreen())),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -75,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                       label: 'Next Period',
                       value: daysToNext >= 0 ? 'In $daysToNext days' : '${daysToNext.abs()}d late',
                       icon: Icons.water_drop_rounded,
-                      onTap: () => _navigateToDetail(context, 'Prediction Details'),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PredictionDetailsScreen())),
                     ),
                   ),
                 ],
@@ -90,6 +94,7 @@ class HomeScreen extends StatelessWidget {
                   color: AppTheme.phaseColors['Fertile']!,
                   icon: Icons.favorite_rounded,
                   isSecondary: true,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CalendarScreen())),
                 ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
               ],
             ],
@@ -101,14 +106,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToDetail(BuildContext context, String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => _DetailScreenStub(title: title),
-      ),
-    );
-  }
 
   Widget _buildNewUserContent(BuildContext context, StorageService storage) {
     String title = 'Welcome, ${storage.userName}! 🌸';
@@ -211,17 +208,19 @@ class _PhaseCard extends StatelessWidget {
   final Color color;
   final IconData icon;
   final bool isSecondary;
+  final VoidCallback? onTap;
 
   const _PhaseCard({
     required this.phaseName, required this.subtitle, required this.color,
     this.icon = Icons.auto_awesome_rounded,
     this.isSecondary = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => _DetailScreenStub(title: phaseName))),
+      onTap: onTap ?? () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => PhaseDetailsScreen(phaseName: phaseName))),
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: AppTheme.neuDecoration(radius: 32, color: AppTheme.frameColor),
@@ -305,41 +304,4 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
-class _DetailScreenStub extends StatelessWidget {
-  final String title;
-  const _DetailScreenStub({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: AppTheme.textDark),
-        title: Text(title, style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.construction_rounded, size: 64, color: AppTheme.accentPink),
-                const SizedBox(height: 24),
-                Text('$title Details\nComing Soon!', 
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.textDark)),
-                const SizedBox(height: 16),
-                Text('We are fine-tuning this section to bring you deeper insights into your health.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark.withOpacity(0.6))),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// Removed _DetailScreenStub as it is no longer used.

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/cycle_phase_wheel.dart';
-import '../widgets/neu_card.dart';
+import '../widgets/glass_container.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class InsightsScreen extends StatelessWidget {
@@ -53,9 +53,9 @@ class InsightsScreen extends StatelessWidget {
               const SizedBox(height: 32),
 
               // ── Unified Insights Surface ──────────────────────────────────
-              Container(
+              GlassContainer(
                 padding: const EdgeInsets.all(28),
-                decoration: AppTheme.neuDecoration(radius: 32),
+                radius: 32,
                 child: Row(
                   children: [
                     Expanded(
@@ -75,7 +75,7 @@ class InsightsScreen extends StatelessWidget {
                     Container(
                       width: 1.5,
                       height: 50,
-                      color: AppTheme.shadowDark.withOpacity(0.2),
+                      color: Colors.white.withOpacity(0.2),
                     ),
                     const SizedBox(width: 24),
                     Expanded(
@@ -112,9 +112,9 @@ class InsightsScreen extends StatelessWidget {
   }
 
   Widget _buildSymptomFrequencyChart() {
-    return NeuCard(
+    return GlassContainer(
       radius: 28,
-      onTap: () {},
+      padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -195,9 +195,9 @@ class InsightsScreen extends StatelessWidget {
   }
 
   Widget _buildHeatmap() {
-    return Container(
+    return GlassContainer(
       padding: const EdgeInsets.all(24),
-      decoration: AppTheme.neuInnerDecoration(radius: 28),
+      radius: 28,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -262,26 +262,29 @@ class _DailyInsightCard extends StatelessWidget {
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
     final tip = _tips[dayOfYear % _tips.length];
 
-    return NeuCard(
+    return GlassContainer(
       radius: 28,
-      onTap: () {},
-      child: Row(
-        children: [
-          const Text('💡', style: TextStyle(fontSize: 28)),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Daily Insight', 
-                  style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.accentPink)),
-                const SizedBox(height: 4),
-                Text(tip, 
-                  style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, height: 1.4, fontWeight: FontWeight.w500)),
-              ],
+      padding: const EdgeInsets.all(20),
+      child: InkWell(
+        onTap: () {},
+        child: Row(
+          children: [
+            const Text('💡', style: TextStyle(fontSize: 28)),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Daily Insight', 
+                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.accentPink)),
+                  const SizedBox(height: 4),
+                  Text(tip, 
+                    style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, height: 1.4, fontWeight: FontWeight.w500)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

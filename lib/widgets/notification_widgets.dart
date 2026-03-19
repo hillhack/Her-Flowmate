@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
+import 'glass_container.dart';
 
 class NotificationBell extends StatelessWidget {
   final bool hasUnread;
@@ -10,9 +11,9 @@ class NotificationBell extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _showNotifications(context),
-      icon: Container(
+      icon: GlassContainer(
         padding: const EdgeInsets.all(8),
-        decoration: AppTheme.neuDecoration(radius: 12),
+        radius: 12,
         child: Stack(
           clipBehavior: Clip.none,
           children: [
@@ -51,91 +52,109 @@ class NotificationPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
-        color: AppTheme.bgColor,
+        color: AppTheme.frameColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppTheme.textSecondary.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(2),
+      padding: const EdgeInsets.only(top: 16),
+      child: GlassContainer(
+        radius: 32,
+        opacity: 0.05,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppTheme.textSecondary.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Notifications',
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
+            const SizedBox(height: 24),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                'Notifications',
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          _notifItem(
-            'Cycle Update',
-            'Your fertile window begins today! 🌸',
-            'Just now',
-            Icons.favorite_rounded,
-          ),
-          _notifItem(
-            'Logging Reminder',
-            "Don't forget to track your symptoms today.",
-            '2 hours ago',
-            Icons.edit_note_rounded,
-          ),
-          _notifItem(
-            'Phase Change',
-            'Follicular phase started. Energy levels rising!',
-            'Yesterday',
-            Icons.bolt_rounded,
-          ),
-          const SizedBox(height: 24),
-        ],
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  _notifItem(
+                    'Cycle Update',
+                    'Your fertile window begins today! 🌸',
+                    'Just now',
+                    Icons.favorite_rounded,
+                  ),
+                  _notifItem(
+                    'Logging Reminder',
+                    "Don't forget to track your symptoms today.",
+                    '2 hours ago',
+                    Icons.edit_note_rounded,
+                  ),
+                  _notifItem(
+                    'Phase Change',
+                    'Follicular phase started. Energy levels rising!',
+                    'Yesterday',
+                    Icons.bolt_rounded,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
 
   Widget _notifItem(String title, String body, String time, IconData icon) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: AppTheme.neuDecoration(radius: 20, color: AppTheme.frameColor),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppTheme.accentPink.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: AppTheme.accentPink, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: GlassContainer(
+        radius: 20,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppTheme.accentPink.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: AppTheme.accentPink, size: 24),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w700, color: AppTheme.textDark)),
-                    Text(time, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w700, color: AppTheme.textDark)),
+                        Text(time, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary)),
+                      ],
+                    ),
+                    Text(body, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary)),
                   ],
                 ),
-                Text(body, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary)),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

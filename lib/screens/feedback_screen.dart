@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../utils/app_theme.dart';
+import '../widgets/glass_container.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -64,9 +65,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: AppTheme.neuDecoration(
-                  radius: 12, color: AppTheme.frameColor),
+            child: GlassContainer(
+              radius: 12,
+              padding: EdgeInsets.zero,
               child: const Icon(Icons.arrow_back_rounded,
                   color: AppTheme.textDark),
             ),
@@ -89,12 +90,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               children: [
                 // Icon Header
                 Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(32),
-                    decoration: AppTheme.neuDecoration(
-                        radius: 40, color: AppTheme.frameColor),
-                    child: const Icon(Icons.rate_review_rounded,
-                        color: AppTheme.accentPink, size: 56),
+                  child: GlassContainer(
+                    radius: 40,
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: const Icon(Icons.rate_review_rounded,
+                          color: AppTheme.accentPink, size: 56),
+                    ),
                   ).animate().scale(curve: Curves.easeOutBack, duration: 600.ms),
                 ),
                 const SizedBox(height: 40),
@@ -122,19 +124,22 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 const SizedBox(height: 40),
 
                 // Input Field
-                Container(
-                  decoration: AppTheme.neuInnerDecoration(radius: 24),
-                  padding: const EdgeInsets.all(20),
-                  child: TextField(
-                    controller: _feedbackController,
-                    maxLines: 8,
-                    style:
-                        GoogleFonts.inter(fontSize: 16, color: AppTheme.textDark),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Type your message here...',
-                      hintStyle: GoogleFonts.inter(
-                          color: AppTheme.textDark.withOpacity(0.35)),
+                GlassContainer(
+                  radius: 24,
+                  opacity: 0.1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: TextField(
+                      controller: _feedbackController,
+                      maxLines: 8,
+                      style:
+                          GoogleFonts.inter(fontSize: 16, color: AppTheme.textDark),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Type your message here...',
+                        hintStyle: GoogleFonts.inter(
+                            color: AppTheme.textDark.withOpacity(0.35)),
+                      ),
                     ),
                   ),
                 ).animate().fadeIn(delay: 450.ms).slideY(begin: 0.1),
@@ -142,9 +147,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 const SizedBox(height: 40),
 
                 // Submit Button
-                Container(
-                  decoration: AppTheme.neuDecoration(
-                      radius: 20, color: AppTheme.frameColor),
+                GlassContainer(
+                  radius: 20,
                   child: ElevatedButton.icon(
                     onPressed: _sendFeedback,
                     icon: const Icon(Icons.send_rounded, color: AppTheme.accentPink),

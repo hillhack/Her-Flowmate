@@ -21,6 +21,9 @@ abstract final class AppTheme {
   static const Color accentPurple  = Color(0xFFBA68C8);
   static const Color accentCyan    = Color(0xFF4DD0E1);
   static const Color neonGreen     = Color(0xFF81C784);
+  
+  static const double glassOpacity = 0.4;
+  static const double glassBlur    = 16.0;
 
   static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -29,66 +32,45 @@ abstract final class AppTheme {
   );
 
   static const Map<String, Color> phaseColors = {
-    'Menstrual': Color(0xFFE88BA3),
-    'Follicular': Color(0xFFF06292),
-    'Ovulation': Color(0xFFBA68C8),
-    'Fertile': Color(0xFFFFCCBC),
-    'Luteal': Color(0xFFA97C8B),
+    'Menstrual':  Color(0xFFD81B60), // Deep Pink
+    'Follicular': Color(0xFFFFCCBC), // Soft Peach
+    'Ovulation':  Color(0xFFBA68C8), // Purple
+    'Luteal':     Color(0xFFD1C4E9), // Lavender/Light Purple
+  };
+
+  static const Map<String, Color> hormoneColors = {
+    'Estrogen':     Color(0xFFFFCCBC), // Peach Pink
+    'Progesterone': Color(0xFFD1C4E9), // Lavender
+    'LH':           Color(0xFFF06292), // Bright Pink
+    'FSH':          Color(0xFFFFAB91), // Soft Coral
   };
 
   static Color phaseColor(String phase) => phaseColors[phase] ?? accentPink;
 
-  // ── Neumorphic Decorations ────────────────────────────────────────────────
-  static BoxDecoration neuDecoration({
-    double radius = 32.0,
-    Color color = bgColor,
-    bool isPressed = false,
-    bool showGlow = false,
-  }) {
-    if (isPressed) return neuInnerDecoration(radius: radius, color: color);
 
-    return BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(radius),
-      boxShadow: [
-        if (showGlow)
-          BoxShadow(
-            color: accentPink.withOpacity(0.4),
-            blurRadius: 15,
-            spreadRadius: 2,
-          ),
-        const BoxShadow(
-          color: shadowLight,
-          offset: Offset(-6, -6),
-          blurRadius: 12,
-        ),
-        BoxShadow(
-          color: shadowDark.withOpacity(0.4),
-          offset: const Offset(6, 6),
-          blurRadius: 12,
-        ),
-      ],
-    );
-  }
-
-  static BoxDecoration neuInnerDecoration({
+  // ── Glassmorphism Decorations ─────────────────────────────────────────────
+  static BoxDecoration glassDecoration({
     double radius = 32.0,
-    Color color = bgColor,
+    Color? color,
+    Color? borderColor,
+    double opacity = glassOpacity,
+    bool showBorder = true,
   }) {
-    // Standard Flutter version without inset package
     return BoxDecoration(
-      color: color,
+      color: (color ?? Colors.white).withOpacity(opacity),
       borderRadius: BorderRadius.circular(radius),
+      border: showBorder
+          ? Border.all(
+              color: (borderColor ?? Colors.white).withOpacity(0.3),
+              width: 1.2,
+            )
+          : null,
       boxShadow: [
         BoxShadow(
-          color: shadowDark.withOpacity(0.5),
-          offset: const Offset(4, 4),
-          blurRadius: 10,
-        ),
-        BoxShadow(
-          color: shadowLight.withOpacity(0.9),
-          offset: const Offset(-4, -4),
-          blurRadius: 10,
+          color: Colors.black.withOpacity(0.04),
+          blurRadius: 20,
+          spreadRadius: 2,
+          offset: const Offset(0, 8),
         ),
       ],
     );

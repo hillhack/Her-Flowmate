@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import 'login_screen.dart';
+import '../widgets/glass_container.dart';
 
 /// Allows the user to change their tracking mode at any time.
 class ModeSettingsScreen extends StatefulWidget {
@@ -34,9 +35,9 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: AppTheme.neuDecoration(
-                  radius: 12, color: AppTheme.frameColor),
+            child: GlassContainer(
+              radius: 12,
+              padding: EdgeInsets.zero,
               child: const Icon(Icons.arrow_back_rounded,
                   color: AppTheme.textDark),
             ),
@@ -101,9 +102,8 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
 
                 const Spacer(),
 
-                Container(
-                  decoration: AppTheme.neuDecoration(
-                      radius: 20, color: AppTheme.frameColor),
+                GlassContainer(
+                  radius: 20,
                   child: ElevatedButton.icon(
                     onPressed: () async {
                       await context.read<StorageService>().updateUserGoal(_selectedGoal);
@@ -175,8 +175,8 @@ class _ModeCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 18),
         padding: const EdgeInsets.all(20),
         decoration: isSelected
-            ? AppTheme.neuInnerDecoration(radius: 24)
-            : AppTheme.neuDecoration(radius: 24, color: AppTheme.frameColor),
+            ? AppTheme.glassDecoration(radius: 24, opacity: 0.2, borderColor: iconColor)
+            : AppTheme.glassDecoration(radius: 24, opacity: 0.05),
         child: Row(
           children: [
             Container(

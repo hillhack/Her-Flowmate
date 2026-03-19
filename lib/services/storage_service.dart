@@ -100,6 +100,11 @@ class StorageService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateUserName(String name) async {
+    await _prefs.setString('userName', name);
+    notifyListeners();
+  }
+
   Future<void> saveDueDate(DateTime date) async {
     await _prefs.setInt('dueDate', date.millisecondsSinceEpoch);
     notifyListeners();
@@ -167,7 +172,11 @@ class StorageService extends ChangeNotifier {
 
   Future<String> exportLogsToJson() async {
     final logs = getLogs();
-    return logs.map((l) => l.startDate.toIso8601String()).join(',');
+    return logs.map((l) {
+      final start = l.startDate.toIso8601String();
+      final end = l.endDate?.toIso8601String() ?? 'null';
+      return '$start|$end';
+    }).join(',');
   }
 
   Future<void> exportLogsToPdf() async {

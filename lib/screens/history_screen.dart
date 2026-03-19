@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
+import '../widgets/glass_container.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -35,45 +36,46 @@ class HistoryScreen extends StatelessWidget {
           if (logs.length > 1)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Container(
-                height: 200,
-                padding: const EdgeInsets.all(22),
-                decoration: AppTheme.neuDecoration(
-                    radius: 28, color: AppTheme.frameColor),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Cycle Duration Trend',
-                        style: GoogleFonts.inter(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.textDark.withOpacity(0.6))),
-                    const SizedBox(height: 12),
-                    Expanded(
-                      child: LineChart(LineChartData(
-                        gridData: const FlGridData(show: false),
-                        titlesData: const FlTitlesData(show: false),
-                        borderData: FlBorderData(show: false),
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: logs.asMap().entries
-                                .map((e) => FlSpot(e.key.toDouble(),
-                                    e.value.duration.toDouble()))
-                                .toList(),
-                            isCurved: true,
-                            color: AppTheme.accentPink,
-                            barWidth: 4,
-                            isStrokeCapRound: true,
-                            dotData: const FlDotData(show: true),
-                            belowBarData: BarAreaData(
-                              show: true,
-                              color: AppTheme.accentPink.withOpacity(0.15),
+              child: GlassContainer(
+                radius: 28,
+                child: Padding(
+                  padding: const EdgeInsets.all(22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Cycle Duration Trend',
+                          style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textDark.withOpacity(0.6))),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 200,
+                        child: LineChart(LineChartData(
+                          gridData: const FlGridData(show: false),
+                          titlesData: const FlTitlesData(show: false),
+                          borderData: FlBorderData(show: false),
+                          lineBarsData: [
+                            LineChartBarData(
+                              spots: logs.asMap().entries
+                                  .map((e) => FlSpot(e.key.toDouble(),
+                                      e.value.duration.toDouble()))
+                                  .toList(),
+                              isCurved: true,
+                              color: AppTheme.accentPink,
+                              barWidth: 4,
+                              isStrokeCapRound: true,
+                              dotData: const FlDotData(show: true),
+                              belowBarData: BarAreaData(
+                                show: true,
+                                color: AppTheme.accentPink.withOpacity(0.15),
+                              ),
                             ),
-                          ),
-                        ],
-                      )),
-                    ),
-                  ],
+                          ],
+                        )),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
@@ -85,9 +87,9 @@ class HistoryScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
+                    GlassContainer(
                       padding: const EdgeInsets.all(24),
-                      decoration: AppTheme.neuDecoration(radius: 40),
+                      radius: 40,
                       child: const Icon(Icons.history_toggle_off_rounded,
                           color: AppTheme.accentPink, size: 56),
                     ),
@@ -109,74 +111,77 @@ class HistoryScreen extends StatelessWidget {
                 itemCount: logs.length,
                 itemBuilder: (ctx, i) {
                   final log = logs[logs.length - 1 - i]; // Latest first
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.all(20),
-                    decoration: AppTheme.neuDecoration(
-                        radius: 24, color: AppTheme.frameColor),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 50, height: 50,
-                          decoration: BoxDecoration(
-                            color: AppTheme.accentPink.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Center(
-                            child: Icon(Icons.water_drop_rounded,
-                                color: AppTheme.accentPink, size: 24),
-                          ),
-                        ),
-                        const SizedBox(width: 18),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                DateFormat('MMM d, yyyy').format(log.startDate),
-                                style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppTheme.textDark),
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: GlassContainer(
+                      radius: 24,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 50, height: 50,
+                              decoration: BoxDecoration(
+                                color: AppTheme.accentPink.withOpacity(0.1),
+                                shape: BoxShape.circle,
                               ),
-                              Row(
+                              child: const Center(
+                                child: Icon(Icons.water_drop_rounded,
+                                    color: AppTheme.accentPink, size: 24),
+                              ),
+                            ),
+                            const SizedBox(width: 18),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${log.duration} days long',
-                                    style: GoogleFonts.inter(
-                                        fontSize: 13,
-                                        color: AppTheme.textDark.withOpacity(0.6)),
+                                    DateFormat('MMM d, yyyy').format(log.startDate),
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppTheme.textDark),
                                   ),
-                                  if (log.mood != null) ...[
-                                    const SizedBox(width: 8),
-                                    Text('•', style: TextStyle(color: AppTheme.textDark.withOpacity(0.3))),
-                                    const SizedBox(width: 8),
-                                    Text(log.mood!, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.accentPink)),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '${log.duration} days long',
+                                        style: GoogleFonts.inter(
+                                            fontSize: 13,
+                                            color: AppTheme.textDark.withOpacity(0.6)),
+                                      ),
+                                      if (log.mood != null) ...[
+                                        const SizedBox(width: 8),
+                                        Text('•', style: TextStyle(color: AppTheme.textDark.withOpacity(0.3))),
+                                        const SizedBox(width: 8),
+                                        Text(log.mood!, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.accentPink)),
+                                      ],
+                                    ],
+                                  ),
+                                  if (log.symptoms != null && log.symptoms!.isNotEmpty) ...[
+                                    const SizedBox(height: 8),
+                                    Wrap(
+                                      spacing: 4,
+                                      runSpacing: 4,
+                                      children: log.symptoms!.map((s) => Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.accentPink.withOpacity(0.05),
+                                          borderRadius: BorderRadius.circular(8),
+                                          border: Border.all(color: AppTheme.accentPink.withOpacity(0.1)),
+                                        ),
+                                        child: Text(s, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.accentPink, fontWeight: FontWeight.w500)),
+                                      )).toList(),
+                                    ),
                                   ],
                                 ],
                               ),
-                              if (log.symptoms != null && log.symptoms!.isNotEmpty) ...[
-                                const SizedBox(height: 8),
-                                Wrap(
-                                  spacing: 4,
-                                  runSpacing: 4,
-                                  children: log.symptoms!.map((s) => Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.accentPink.withOpacity(0.05),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: AppTheme.accentPink.withOpacity(0.1)),
-                                    ),
-                                    child: Text(s, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.accentPink, fontWeight: FontWeight.w500)),
-                                  )).toList(),
-                                ),
-                              ],
-                            ],
-                          ),
+                            ),
+                            const Icon(Icons.chevron_right_rounded,
+                                color: AppTheme.textDark, size: 22),
+                          ],
                         ),
-                        const Icon(Icons.chevron_right_rounded,
-                            color: AppTheme.textDark, size: 22),
-                      ],
+                      ),
                     ),
                   ).animate().fadeIn(delay: Duration(milliseconds: 100 * i));
                 },

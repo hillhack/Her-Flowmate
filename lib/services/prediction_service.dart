@@ -101,12 +101,22 @@ class PredictionService {
     final daysSinceStart = normToday.difference(normStart).inDays;
     
     if (daysSinceStart < 0) return CyclePhase.unknown;
-    if (daysSinceStart < latestPeriod.duration) return CyclePhase.menstrual;
+
+    // Use endDate if available, otherwise fallback to stored duration
+    bool isStillBleeding;
+    if (latestPeriod.endDate != null) {
+      isStillBleeding = !normToday.isAfter(DateTime(latestPeriod.endDate!.year, latestPeriod.endDate!.month, latestPeriod.endDate!.day));
+    } else {
+      isStillBleeding = daysSinceStart < latestPeriod.duration;
+    }
+
+    if (isStillBleeding) return CyclePhase.menstrual;
     
     final cycleLen = averageCycleLength;
     final lutealPhaseLength = 14; 
     final ovulationDay = cycleLen - lutealPhaseLength;
     
+    // Safety check for cycle boundary
     if (daysSinceStart >= cycleLen) return CyclePhase.luteal;
     
     if (daysSinceStart < ovulationDay - 5) {
@@ -118,15 +128,29 @@ class PredictionService {
     }
   }
 
-  int get currentCycleDay {
+  int get currentCycleDay => getCycleDay(DateTime.now());
+
+  int getCycleDay(DateTime date) {
     final logs = storageService.getLogs();
     if (logs.isEmpty) return 0;
-    final latestPeriod = logs.first;
-    final today = DateTime.now();
-    final normToday = DateTime(today.year, today.month, today.day);
-    final normStart = DateTime(latestPeriod.startDate.year, latestPeriod.startDate.month, latestPeriod.startDate.day);
-    return normToday.difference(normStart).inDays + 1;
+    
+    // Find the period start associated with this date
+    DateTime? periodStart;
+    for (final log in logs) {
+      if (date.isAfter(log.startDate) || isSameDay(date, log.startDate)) {
+        periodStart = log.startDate;
+        break;
+      }
+    }
+    
+    if (periodStart == null) return 0;
+    
+    final normDate = DateTime(date.year, date.month, date.day);
+    final normStart = DateTime(periodStart.year, periodStart.month, periodStart.day);
+    return normDate.difference(normStart).inDays + 1;
   }
+
+  bool isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
 
   bool isFertileDay(DateTime date) {
     final logs = storageService.getLogs();
@@ -136,16 +160,73 @@ class PredictionService {
     final cycleLen = averageCycleLength;
     final ovulationDay = cycleLen - 14;
     
-    // Start 5 days before ovulation
     final fertileStart = latestPeriod.startDate.add(Duration(days: ovulationDay - 5));
-    // End on ovulation day
-    final fertileEnd = latestPeriod.startDate.add(Duration(days: ovulationDay));
+    final fertileEnd = latestPeriod.startDate.add(Duration(days: ovulationDay + 1));
     
     final normDate = DateTime(date.year, date.month, date.day);
     final normStart = DateTime(fertileStart.year, fertileStart.month, fertileStart.day);
     final normEnd = DateTime(fertileEnd.year, fertileEnd.month, fertileEnd.day, 23, 59, 59);
     
     return !normDate.isBefore(normStart) && !normDate.isAfter(normEnd);
+  }
+
+  bool isPeriodDay(DateTime date) {
+    final logs = storageService.getLogs();
+    final normDate = DateTime(date.year, date.month, date.day);
+
+    for (final log in logs) {
+      final start = DateTime(log.startDate.year, log.startDate.month, log.startDate.day);
+      DateTime end;
+      if (log.endDate != null) {
+        end = DateTime(log.endDate!.year, log.endDate!.month, log.endDate!.day);
+      } else {
+        end = start.add(Duration(days: log.duration - 1));
+      }
+
+      if (!normDate.isBefore(start) && !normDate.isAfter(end)) {
+        return true;
+      }
+    }
+    
+    // Also check future predicted period
+    final next = nextPeriodDate;
+    if (next != null) {
+      final nextStart = DateTime(next.year, next.month, next.day);
+      final nextEnd = nextStart.add(const Duration(days: 4)); // Assume 5 days for prediction
+      if (!normDate.isBefore(nextStart) && !normDate.isAfter(nextEnd)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool isOvulationDay(DateTime date) {
+    final logs = storageService.getLogs();
+    if (logs.isEmpty) return false;
+
+    final latestPeriod = logs.first;
+    final cycleLen = averageCycleLength;
+    final ovulationDay = cycleLen - 14;
+    
+    final ovDate = latestPeriod.startDate.add(Duration(days: ovulationDay));
+    final normDate = DateTime(date.year, date.month, date.day);
+    final normOv = DateTime(ovDate.year, ovDate.month, ovDate.day);
+    
+    return normDate.isAtSameMomentAs(normOv);
+  }
+
+  CyclePhase getPhaseForDay(DateTime date) {
+    final cycleDay = getCycleDay(date);
+    if (cycleDay == 0) return CyclePhase.unknown;
+    
+    final cycleLen = averageCycleLength;
+    final ovulationDay = cycleLen - 14;
+
+    if (isPeriodDay(date)) return CyclePhase.menstrual;
+    if (cycleDay == ovulationDay) return CyclePhase.ovulation;
+    if (cycleDay < ovulationDay) return CyclePhase.follicular;
+    return CyclePhase.luteal;
   }
 
   int get daysUntilNextPeriod {
@@ -155,6 +236,109 @@ class PredictionService {
     final normToday = DateTime(today.year, today.month, today.day);
     final normNext = DateTime(nextPeriod.year, nextPeriod.month, nextPeriod.day);
     return normNext.difference(normToday).inDays;
+  }
+
+  // ── Hormone Logic ─────────────────────────────────────────────────────────
+
+  /// Calculates simplified hormone levels (0.0 to 1.0) based on cycle day.
+  Map<String, double> getHormoneLevels(int cycleDay) {
+    final cycleLen = averageCycleLength;
+    final ovulationDay = cycleLen - 14;
+    
+    // Normalize cycle day to 1..cycleLen
+    int day = cycleDay.clamp(1, cycleLen);
+
+    // Estrogen Curve: Peaks just before ovulation, secondary lower peak in luteal
+    double estrogen = 0.1;
+    if (day <= ovulationDay) {
+      estrogen = 0.1 + (0.8 * (day / ovulationDay)); // Linear rise to peak
+    } else {
+      // Drop after ovulation then second peak
+      double lutealDay = (day - ovulationDay).toDouble();
+      double lutealLen = (cycleLen - ovulationDay).toDouble();
+      estrogen = 0.3 + 0.4 * (1.0 - (lutealDay - (lutealLen/2)).abs() / (lutealLen/2));
+    }
+
+    // Progesterone Curve: Low until ovulation, then rises in luteal
+    double progesterone = 0.05;
+    if (day > ovulationDay) {
+      double lutealDay = (day - ovulationDay).toDouble();
+      double lutealLen = (cycleLen - ovulationDay).toDouble();
+      progesterone = 0.1 + 0.8 * (1.0 - (lutealDay - (lutealLen/2)).abs() / (lutealLen/2));
+    }
+
+    // LH Curve: Low, then a sharp spike on ovulation day
+    double lh = 0.1;
+    if ((day - ovulationDay).abs() <= 1) {
+      lh = 0.9;
+    } else if ((day - ovulationDay).abs() <= 3) {
+      lh = 0.4;
+    }
+
+    // FSH Curve: Small peak early, then small spike with LH
+    double fsh = 0.2;
+    if (day <= 3) fsh = 0.5;
+    if (day == ovulationDay) fsh = 0.6;
+
+    return {
+      'Estrogen': estrogen.clamp(0.0, 1.0),
+      'Progesterone': progesterone.clamp(0.0, 1.0),
+      'LH': lh.clamp(0.0, 1.0),
+      'FSH': fsh.clamp(0.0, 1.0),
+    };
+  }
+
+  Map<String, String> getHormoneDescriptions(int cycleDay) {
+    final levels = getHormoneLevels(cycleDay);
+    final estrogen = levels['Estrogen']!;
+    final progesterone = levels['Progesterone']!;
+    
+    String eStatus = estrogen > 0.7 ? 'High' : (estrogen > 0.4 ? 'Rising' : 'Low');
+    String pStatus = progesterone > 0.7 ? 'Peak' : (progesterone > 0.3 ? 'Rising' : 'Low');
+    
+    return {
+      'Estrogen': eStatus,
+      'Progesterone': pStatus,
+    };
+  }
+
+  Map<String, String> getPhaseBiology(int cycleDay) {
+    final phase = getPhaseForDay(DateTime.now().add(Duration(days: cycleDay - currentCycleDay)));
+    
+    switch (phase) {
+      case CyclePhase.menstrual:
+        return {
+          'insight': 'Your period is occurring. The uterus is shedding its lining because pregnancy did not occur in the previous cycle.',
+          'hormoneActivity': 'Low estrogen and progesterone.',
+        };
+      case CyclePhase.follicular:
+        return {
+          'insight': 'Your body is preparing for ovulation. The ovaries are developing follicles, and estrogen levels are gradually increasing.',
+          'hormoneActivity': 'Rising estrogen, low progesterone.',
+        };
+      case CyclePhase.ovulation:
+        return {
+          'insight': 'An egg is released from the ovary. This is the most fertile point in the cycle.',
+          'hormoneActivity': 'LH surge and peak estrogen levels.',
+        };
+      case CyclePhase.luteal:
+        return {
+          'insight': 'Progesterone increases to support a potential pregnancy. If fertilization does not occur, hormone levels will drop.',
+          'hormoneActivity': 'High progesterone, declining estrogen.',
+        };
+      case CyclePhase.unknown:
+        return {
+          'insight': 'Data unavailable for this day.',
+          'hormoneActivity': 'Unknown',
+        };
+    }
+  }
+
+  String getConceptionStatus(int chance) {
+    if (chance >= 25) return 'Very high chance of conception';
+    if (chance >= 15) return 'High chance of conception';
+    if (chance >= 5) return 'Moderate chance of conception';
+    return 'Low chance of conception';
   }
 
   int getConceptionChance(DateTime date) {
@@ -169,7 +353,7 @@ class PredictionService {
     final normStart = DateTime(latestPeriod.startDate.year, latestPeriod.startDate.month, latestPeriod.startDate.day);
     
     final daysSinceStart = normSearch.difference(normStart).inDays;
-    final diff = daysSinceStart - ovulationDay;
+    final diff = daysSinceStart - ovulationDay + 1; // Adjust to match cycle day logic
     
     switch (diff) {
       case 0: return 33;

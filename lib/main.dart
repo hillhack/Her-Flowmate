@@ -9,8 +9,15 @@ import 'screens/onboarding_screen.dart';
 import 'screens/welcome_screen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    debugPrint('FLUTTER ERROR: ${details.exception}');
+  };
+
   try {
-    WidgetsFlutterBinding.ensureInitialized();
+    debugPrint('STARTING APP...');
     final storageService = StorageService();
     await storageService.init();
 
@@ -38,19 +45,30 @@ class HerFlowmateApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StorageService>(
-      builder: (context, storage, child) {
-        return MaterialApp(
-          title: 'HerFlowmate',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          home: storage.hasCompletedLogin
-              ? (storage.hasCompletedOnboarding
-                  ? const MainNavigationScreen()
-                  : const OnboardingScreen())
-              : const WelcomeScreen(),
-        );
-      },
+    return MaterialApp(
+      title: 'HerFlowmate',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      home: const AuthWrapper(),
     );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final storage = context.watch<StorageService>();
+    
+    if (!storage.hasCompletedLogin) {
+      return const WelcomeScreen();
+    }
+    
+    if (!storage.hasCompletedOnboarding) {
+      return const OnboardingScreen();
+    }
+    
+    return const MainNavigationScreen();
   }
 }

@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
 import '../services/storage_service.dart';
+import '../widgets/glass_container.dart';
+import 'onboarding_screen.dart';
+import 'main_navigation_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,8 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: AppTheme.neuDecoration(radius: 12),
+            child: GlassContainer(
+              radius: 12,
+              padding: EdgeInsets.zero,
               child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
@@ -111,12 +115,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin(BuildContext context, bool isGoogle) async {
     final storage = context.read<StorageService>();
-    // 1. Pop the Login screen first to clear the stack
-    if (mounted) Navigator.pop(context);
     
-    // 2. Update state. The Consumer in main.dart will then 
-    // switch the root 'home' widget to Onboarding or Dashboard.
+    // 1. Update state. 
     await storage.completeLogin(isGoogle);
+
+    // 2. Navigate explicitly to the next screen.
+    // This is more robust than relying on the root MaterialApp home changing.
+    if (context.mounted) {
+      final nextScreen = storage.hasCompletedOnboarding 
+          ? const MainNavigationScreen() 
+          : const OnboardingScreen();
+          
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => nextScreen),
+        (route) => false,
+      );
+    }
   }
 }
 
@@ -129,12 +144,11 @@ class _AuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return GlassContainer(
+      radius: 24,
       onTap: onTap,
-      child: Container(
-        width: double.infinity,
+      child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: AppTheme.neuDecoration(radius: 24),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -7,6 +7,7 @@ import 'main_navigation_screen.dart';
 import '../models/period_log.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
+import '../widgets/glass_container.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final bool isEmailUser;
@@ -133,10 +134,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                         GestureDetector(
                           onTap: _currentPage > 0 ? _back : () => Navigator.pop(context),
-                          child: Container(
+                          child: GlassContainer(
                             padding: const EdgeInsets.all(10),
-                            decoration: AppTheme.neuDecoration(
-                                radius: 14, color: AppTheme.frameColor),
+                            radius: 14,
                             child: const Icon(Icons.arrow_back_rounded,
                                 color: AppTheme.textDark, size: 20),
                           ),
@@ -178,11 +178,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 // ── Continue / Finish button ──────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-                  child: Container(
-                    decoration: AppTheme.neuDecoration(
-                        radius: 18, color: AppTheme.frameColor,
-                        showGlow: _currentPage == 0 && _selectedGoal.isNotEmpty),
-                    child: ElevatedButton.icon(
+                  child: GlassContainer(
+                    radius: 18,
+                    opacity: _currentPage == 0 && _selectedGoal.isNotEmpty ? 0.6 : 0.3,
+                    child: TextButton.icon(
                       icon: Icon(
                         _currentPage == _totalPages - 1
                             ? Icons.check_rounded
@@ -196,11 +195,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: AppTheme.accentPink),
                       ),
                       onPressed: _next,
-                      style: ElevatedButton.styleFrom(
+                      style: TextButton.styleFrom(
                         minimumSize: const Size(double.infinity, 56),
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        disabledForegroundColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18)),
                       ),
@@ -268,8 +264,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         duration: 300.ms,
         padding: const EdgeInsets.all(24),
         decoration: isSelected 
-          ? AppTheme.neuDecoration(radius: 28, color: AppTheme.frameColor, showGlow: true)
-          : AppTheme.neuDecoration(radius: 28, color: AppTheme.frameColor),
+          ? AppTheme.glassDecoration(radius: 28, opacity: 0.6, borderColor: AppTheme.accentPink)
+          : AppTheme.glassDecoration(radius: 28, opacity: 0.2),
         child: Row(
           children: [
             Container(
@@ -304,9 +300,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Container(
+          GlassContainer(
             padding: const EdgeInsets.all(20),
-            decoration: AppTheme.neuDecoration(radius: 28, color: AppTheme.frameColor),
+            radius: 28,
             child: const Icon(Icons.person_rounded, color: AppTheme.accentPink, size: 48),
           ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
           const SizedBox(height: 32),
@@ -339,8 +335,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          Container(
-            decoration: AppTheme.neuInnerDecoration(radius: 20),
+          GlassContainer(
+            radius: 20,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             child: TextField(
               controller: controller,
@@ -379,9 +375,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 32),
             Text("OR SELECT CONCEPTION DATE", style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w800, color: AppTheme.textSecondary, letterSpacing: 1)),
             const SizedBox(height: 16),
-            Container(
+            GlassContainer(
               padding: const EdgeInsets.all(12),
-              decoration: AppTheme.neuDecoration(radius: 24, color: AppTheme.frameColor),
+              radius: 24,
               child: CalendarDatePicker(
                 initialDate: DateTime.now(),
                 firstDate: DateTime.now().subtract(const Duration(days: 300)),
@@ -404,9 +400,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w800, color: AppTheme.textDark),
           ).animate().fadeIn(),
           const SizedBox(height: 24),
-          Container(
+          GlassContainer(
             padding: const EdgeInsets.all(12),
-            decoration: AppTheme.neuDecoration(radius: 24, color: AppTheme.frameColor),
+            radius: 24,
             child: CalendarDatePicker(
               initialDate: DateTime.now(),
               firstDate: DateTime.now().subtract(const Duration(days: 90)),
@@ -438,12 +434,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _timeToggle(String label, bool isSelected, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: GlassContainer(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: isSelected 
-          ? AppTheme.neuInnerDecoration(radius: 12)
-          : AppTheme.neuDecoration(radius: 12, color: AppTheme.frameColor),
-        child: Text(label, style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary)),
+        radius: 12,
+        opacity: isSelected ? 0.6 : 0.2,
+        borderColor: isSelected ? AppTheme.accentPink : Colors.white,
+        child: Center(child: Text(label, style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary))),
       ),
     );
   }
@@ -460,16 +456,17 @@ class _ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 6,
-      decoration: AppTheme.neuInnerDecoration(radius: 3),
+    return GlassContainer(
+      height: 8,
+      radius: 4,
+      opacity: 0.2,
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
         widthFactor: (current + 1) / total,
         child: Container(
           decoration: BoxDecoration(
             color: AppTheme.accentPink,
-            borderRadius: BorderRadius.circular(3),
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
       ),

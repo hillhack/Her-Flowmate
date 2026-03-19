@@ -1,144 +1,126 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import '../services/prediction_service.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
+import '../widgets/glass_container.dart';
 
 class PredictionDetailsScreen extends StatelessWidget {
   const PredictionDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final pred = context.watch<PredictionService>();
-    final nextDate = pred.nextPeriodDate;
-    final avgLen = pred.averageCycleLength;
-    final daysToNext = pred.daysUntilNextPeriod;
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: AppTheme.frameColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: AppTheme.neuDecoration(radius: 12, color: AppTheme.frameColor),
-              child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
-            ),
+        leading: IconButton(
+          icon: GlassContainer(
+            padding: const EdgeInsets.all(8),
+            radius: 12,
+            child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
           ),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Prediction Details',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w700),
+          'Cycle Phases',
+          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w800, fontSize: 20),
         ),
         centerTitle: true,
       ),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         child: SafeArea(
-          child: SingleChildScrollView(
+          child: ListView(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Highlight Card
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: AppTheme.neuDecoration(radius: 40, color: AppTheme.frameColor),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AppTheme.accentPink.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.auto_graph_rounded, color: AppTheme.accentPink, size: 48),
-                      ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
-                      const SizedBox(height: 24),
-                      Text(
-                        nextDate != null ? DateFormat('EEEE, MMM d').format(nextDate) : 'No Data',
-                        style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w800, color: AppTheme.textDark),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        daysToNext >= 0 ? 'Predicted start in $daysToNext days' : 'Tracking your next cycle',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(fontSize: 16, color: AppTheme.accentPink, fontWeight: FontWeight.w600),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 32),
-
-                // Calculation breakdown
-                _buildSectionTitle('How we calculate this?'),
-                const SizedBox(height: 16),
-                _buildInfoRow('Average Cycle', '$avgLen days', Icons.loop_rounded),
-                _buildInfoRow('Last Period', nextDate != null ? DateFormat('MMM d').format(nextDate.subtract(Duration(days: avgLen))) : 'None', Icons.history_rounded),
-                
-                const SizedBox(height: 32),
-
-                // Transparency note
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: AppTheme.neuInnerDecoration(radius: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.info_outline_rounded, color: AppTheme.accentPink, size: 20),
-                          const SizedBox(width: 10),
-                          Text('Privacy & Accuracy', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.textDark)),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'This prediction is based on your historical cycle data stored locally on your device. Cycle lengths can naturally vary due to stress, diet, or other lifestyle factors. We use a simple average of your last cycles to give you an estimate.',
-                        style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark.withOpacity(0.6), height: 1.5),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 400.ms),
-
-                const SizedBox(height: 40),
-              ],
-            ),
+            children: [
+              _buildPhaseSection(
+                'Menstrual Phase',
+                'Day 1 - 5',
+                'The uterus sheds its lining because pregnancy did not occur in the previous cycle. This marks the beginning of a new cycle.',
+                'Low Estrogen & Progesterone',
+                AppTheme.phaseColors['Menstrual']!,
+              ),
+              const SizedBox(height: 24),
+              _buildPhaseSection(
+                'Follicular Phase',
+                'Day 6 - 13',
+                'Your body prepares for ovulation. Ovaries develop follicles, and estrogen levels rise, thickening the uterine lining.',
+                'Rising Estrogen',
+                AppTheme.phaseColors['Follicular']!,
+              ),
+              const SizedBox(height: 24),
+              _buildPhaseSection(
+                'Ovulation Phase',
+                'Day 14',
+                'An egg is released from the ovary. It survives for 12-24 hours. This is the peak of fertility.',
+                'Peak Estrogen & LH Surge',
+                AppTheme.phaseColors['Ovulation']!,
+              ),
+              const SizedBox(height: 24),
+              _buildPhaseSection(
+                'Luteal Phase',
+                'Day 15 - 28',
+                'Progesterone increases to support a potential pregnancy. If fertilization doesn\'t occur, hormone levels drop, leading to the next period.',
+                'High Progesterone',
+                AppTheme.phaseColors['Luteal']!,
+              ),
+              const SizedBox(height: 48),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.textDark),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Container(
-        padding: const EdgeInsets.all(18),
-        decoration: AppTheme.neuDecoration(radius: 20, color: AppTheme.frameColor),
-        child: Row(
-          children: [
-            Icon(icon, color: AppTheme.textDark.withOpacity(0.4), size: 22),
-            const SizedBox(width: 16),
-            Text(label, style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textDark, fontWeight: FontWeight.w500)),
-            const Spacer(),
-            Text(value, style: GoogleFonts.poppins(fontSize: 16, color: AppTheme.accentPink, fontWeight: FontWeight.bold)),
-          ],
-        ),
+  Widget _buildPhaseSection(String name, String days, String description, String hormones, Color color) {
+    return GlassContainer(
+      padding: const EdgeInsets.all(24),
+      radius: 32,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(name, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 20),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(days, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.accentPink, fontWeight: FontWeight.w800)),
+          const SizedBox(height: 16),
+          Text(description, style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textSecondary, height: 1.5, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: color.withOpacity(0.2)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.waves_rounded, color: color, size: 20),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Hormone State', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                      Text(hormones, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, fontWeight: FontWeight.w800)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-    ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1);
+    ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.1);
   }
 }

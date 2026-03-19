@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
+import 'glass_container.dart';
 
 class HerFramedButton extends StatelessWidget {
   final Widget? icon;
@@ -20,15 +21,13 @@ class HerFramedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 11),
-        padding: const EdgeInsets.all(4), // Creates the outer "frame" thickness
-        decoration: AppTheme.neuDecoration(radius: 50),
-        child: Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 11),
+      child: GlassContainer(
+        radius: 50,
+        onTap: onTap,
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          decoration: AppTheme.neuInnerDecoration(radius: 46),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -51,17 +50,19 @@ class HerFramedButton extends StatelessWidget {
               if (onInfoTap != null)
                 GestureDetector(
                   onTap: onInfoTap,
-                  child: Container(
+                  child: GlassContainer(
                     width: 28,
                     height: 28,
-                    decoration: AppTheme.neuDecoration(radius: 50, color: AppTheme.frameColor),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'i',
-                      style: GoogleFonts.outfit(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textDark,
+                    radius: 50,
+                    opacity: 0.1,
+                    child: Center(
+                      child: Text(
+                        'i',
+                        style: GoogleFonts.outfit(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textDark,
+                        ),
                       ),
                     ),
                   ),

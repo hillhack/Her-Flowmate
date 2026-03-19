@@ -6,6 +6,7 @@ import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import 'login_screen.dart';
 import '../widgets/delight_widgets.dart';
+import '../widgets/glass_container.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -29,17 +30,17 @@ class WelcomeScreen extends StatelessWidget {
                     
                     // Top area: Glowing Logo
                     Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(32),
-                        decoration: AppTheme.neuDecoration(
-                          radius: 50,
-                          color: AppTheme.frameColor,
-                          showGlow: true,
-                        ),
-                        child: const Icon(
-                          Icons.favorite_rounded,
-                          color: AppTheme.accentPink,
-                          size: 64,
+                      child: GlassContainer(
+                        radius: 50,
+                        opacity: 0.15,
+                        borderColor: AppTheme.accentPink.withOpacity(0.5),
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: const Icon(
+                            Icons.favorite_rounded,
+                            color: AppTheme.accentPink,
+                            size: 64,
+                          ),
                         ),
                       ).animate(onPlay: (controller) => controller.repeat(reverse: true))
                        .shimmer(duration: 2.seconds, color: Colors.white24)
@@ -74,7 +75,8 @@ class WelcomeScreen extends StatelessWidget {
                     const Spacer(flex: 4),
                     
                     // Bottom area: Main Button
-                    GestureDetector(
+                    GlassContainer(
+                      radius: 24,
                       onTap: () {
                         showPhaseDelight(context, 'Follicular');
                         Future.delayed(700.ms, () {
@@ -89,7 +91,6 @@ class WelcomeScreen extends StatelessWidget {
                       child: Container(
                         width: double.infinity,
                         height: 72,
-                        decoration: AppTheme.neuDecoration(radius: 24),
                         alignment: Alignment.center,
                         child: Text(
                           'Get Started',

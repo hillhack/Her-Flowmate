@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../utils/app_theme.dart';
 import '../widgets/delight_widgets.dart';
+import '../widgets/glass_container.dart';
 
 class PhaseDetailsScreen extends StatelessWidget {
   final String phaseName;
@@ -23,8 +24,9 @@ class PhaseDetailsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: AppTheme.neuDecoration(radius: 12, color: AppTheme.frameColor),
+            child: GlassContainer(
+              radius: 12,
+              padding: EdgeInsets.zero,
               child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
@@ -44,34 +46,36 @@ class PhaseDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header Card
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: AppTheme.neuDecoration(radius: 40, color: AppTheme.frameColor),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: color.withOpacity(0.15),
-                          shape: BoxShape.circle,
+                GlassContainer(
+                  radius: 40,
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const SparkleEffect(
+                            trigger: true,
+                            child: Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 48),
+                          ),
+                        ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+                        const SizedBox(height: 24),
+                        Text(
+                          phaseName,
+                          style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w800, color: AppTheme.textDark),
                         ),
-                        child: const SparkleEffect(
-                          trigger: true,
-                          child: Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 48),
+                        const SizedBox(height: 8),
+                        Text(
+                          details.oneLiner,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(fontSize: 16, color: color, fontWeight: FontWeight.w600),
                         ),
-                      ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
-                      const SizedBox(height: 24),
-                      Text(
-                        phaseName,
-                        style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w800, color: AppTheme.textDark),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        details.oneLiner,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(fontSize: 16, color: color, fontWeight: FontWeight.w600),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 
@@ -111,20 +115,22 @@ class PhaseDetailsScreen extends StatelessWidget {
   Widget _buildTipItem(String tip, Color accentColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: AppTheme.neuDecoration(radius: 20, color: AppTheme.frameColor),
-        child: Row(
-          children: [
-            Icon(Icons.check_circle_outline_rounded, color: accentColor, size: 20),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                tip,
-                style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark.withOpacity(0.8), fontWeight: FontWeight.w500),
+      child: GlassContainer(
+        radius: 20,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(Icons.check_circle_outline_rounded, color: accentColor, size: 20),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  tip,
+                  style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark.withOpacity(0.8), fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.1);

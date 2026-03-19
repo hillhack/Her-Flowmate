@@ -13,11 +13,12 @@ class PhaseDelightOverlay extends StatelessWidget {
     int count = 4;
     
     switch (phase) {
-      case 'Follicular': emoji = '🦋'; count = 4; break; 
-      case 'Ovulation':  emoji = '✨'; count = 5; break; 
-      case 'Luteal':     emoji = '💫'; count = 3; break; 
-      case 'Menstrual':  emoji = '🌸'; count = 4; break; 
-      default:           emoji = '✨'; count = 4; break;
+      case 'Follicular':    emoji = '🧚'; count = 4; break; 
+      case 'Ovulation':     emoji = '✨'; count = 5; break; 
+      case 'Luteal':        emoji = '💫'; count = 3; break; 
+      case 'Menstrual':     emoji = '🌸'; count = 4; break; 
+      case 'Period Logged': emoji = '🦋'; count = 5; break; 
+      default:              emoji = '✨'; count = 4; break;
     }
 
     return Stack(

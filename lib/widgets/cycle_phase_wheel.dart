@@ -1,7 +1,9 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
+import 'glass_container.dart';
 
 class CyclePhaseWheel extends StatelessWidget {
   final int currentCycleDay;
@@ -23,25 +25,27 @@ class CyclePhaseWheel extends StatelessWidget {
     final accentColor = AppTheme.phaseColor(currentPhase);
 
     return RepaintBoundary(
-      child: Container(
+      child: GlassContainer(
         width: 300,
         height: 300,
-        decoration: AppTheme.neuDecoration(radius: 150),
+        radius: 150,
+        blur: 20,
+        opacity: 0.1,
+        borderColor: accentColor.withOpacity(0.2),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Outer track (Inner shadow groove)
+            // Inner decorative ring
             Container(
-              width: 260,
-              height: 260,
-              decoration: AppTheme.neuInnerDecoration(radius: 130),
-            ),
-  
-            // Progress Circle (Raised center)
-            Container(
-              width: 210,
-              height: 210,
-              decoration: AppTheme.neuDecoration(radius: 105),
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.1),
+                  width: 2,
+                ),
+              ),
             ),
   
             // Progress arc

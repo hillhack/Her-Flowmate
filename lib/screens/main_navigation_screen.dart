@@ -14,6 +14,7 @@ import 'history_screen.dart';
 import 'profile_screen.dart';
 import 'mode_settings_screen.dart';
 import '../widgets/notification_widgets.dart';
+import '../widgets/glass_container.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -46,9 +47,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Container(
+            icon: GlassContainer(
               padding: const EdgeInsets.all(8),
-              decoration: AppTheme.neuDecoration(radius: 12),
+              radius: 12,
               child: const Icon(Icons.menu_rounded, color: AppTheme.textDark),
             ),
             onPressed: () => Scaffold.of(context).openDrawer(),
@@ -73,8 +74,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         child: _screens[_selectedIndex],
       ),
       floatingActionButton: (_selectedIndex == 0 && storage.userGoal != 'pregnant')
-          ? FloatingActionButton(
-              onPressed: () {
+          ? GestureDetector(
+              onTap: () {
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
@@ -82,13 +83,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   builder: (context) => const LogPeriodScreen(),
                 );
               },
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              highlightElevation: 0,
-              child: Container(
+              child: GlassContainer(
                 width: 64,
                 height: 64,
-                decoration: AppTheme.neuDecoration(radius: 32),
+                radius: 32,
                 child: const Icon(Icons.add_rounded, size: 32, color: AppTheme.accentPink),
               ),
             ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack)
@@ -107,9 +105,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            Container(
+            GlassContainer(
               width: 80, height: 80,
-              decoration: AppTheme.neuDecoration(radius: 40),
+              radius: 40,
               child: Center(
                 child: Text(
                   initial,
@@ -205,25 +203,31 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   Widget _actionDrawerItem({required IconData icon, required String title, required VoidCallback onTap}) {
-    return Container(
+    return GlassContainer(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: AppTheme.neuDecoration(radius: 20),
+      radius: 20,
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
       child: ListTile(
         leading: Icon(icon, color: AppTheme.accentPink, size: 24),
         title: Text(title, style: GoogleFonts.inter(color: AppTheme.textDark, fontSize: 16, fontWeight: FontWeight.w700)),
-        onTap: () {
-          Navigator.pop(context);
-          onTap();
-        },
       ),
     );
   }
 
   Widget _drawerItem({required IconData icon, required String title, required int index}) {
     final isSelected = _selectedIndex == index;
-    return Container(
+    return GlassContainer(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: isSelected ? AppTheme.neuInnerDecoration(radius: 20) : AppTheme.neuDecoration(radius: 20),
+      radius: 20,
+      opacity: isSelected ? 0.2 : AppTheme.glassOpacity,
+      borderColor: isSelected ? AppTheme.accentPink.withOpacity(0.5) : Colors.white.withOpacity(0.3),
+      onTap: () {
+        _onItemTapped(index);
+        Navigator.pop(context);
+      },
       child: ListTile(
         leading: Icon(icon, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary),
         title: Text(
@@ -234,10 +238,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
           ),
         ),
-        onTap: () {
-          _onItemTapped(index);
-          Navigator.pop(context);
-        },
       ),
     );
   }

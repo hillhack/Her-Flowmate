@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Her-Flowmate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --secondary: #9C88FF;
+            --accent: #48DBFB;
+            --bg-gradient: linear-gradient(135deg, #FFF5F7 0%, #F0F4FF 100%);
+            --glass: rgba(255, 255, 255, 0.75);
+            --text: #2D3436;
+            --text-secondary: #636E72;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 50px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin: 30px 0 15px 0;
+            font-weight: 500;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background: rgba(255, 107, 157, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 30px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--primary);
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 25px;
+                border-radius: 20px;
+            }
+            .logo {
+                font-size: 1.8rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Her-Flowmate</div>
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: March 20, 2026</p>
+        </header>
+
+        <section>
+            <p>Welcome to <strong>Her-Flowmate</strong>. Your privacy is not just a feature; it's our core principle. This policy explains how your data is handled when you use our mobile application.</p>
+
+            <div class="highlight-box">
+                <p>🔒 <strong>The "Local-First" Guarantee:</strong> All health and personal data you enter into Her-Flowmate is stored <strong>locally on your device</strong>. We do not upload your sensitive health data to any servers or cloud storage.</p>
+            </div>
+
+            <h2>1. Information We Collect</h2>
+            <p>Her-Flowmate is designed to help you track your cycle and health. The following data is stored on your device:</p>
+            <ul>
+                <li><strong>Cycle Data:</strong> Period start and end dates, cycle length, and flow intensity.</li>
+                <li><strong>Health Logs:</strong> Symptoms, moods, medication intake, and biological notes.</li>
+                <li><strong>Lifestyle Data:</strong> Water intake, weight, and sleep duration.</li>
+                <li><strong>Profile Details:</strong> Your name, age, and goal (e.g., "Track Cycle" or "Predict Pregnancy"), if provided.</li>
+            </ul>
+
+            <h2>2. How Your Data is Used</h2>
+            <p>Your data is used solely for the functionality of the app on your device, including:</p>
+            <ul>
+                <li>Predicting your next period and fertile window.</li>
+                <li>Generating insights and graphs (e.g., weight and water intake trends).</li>
+                <li>Sending local reminders for cycle phases or medications.</li>
+            </ul>
+
+            <h2>3. Data Storage and Security</h2>
+            <p>Because your data is stored locally using Hive and SharedPreferences, your privacy is protected by your device's own security (passcode, biometric lock, etc.). We do not have access to your health data, and we cannot recover it if you delete the app or lose your device.</p>
+
+            <h2>4. Third-Party Services</h2>
+            <p>To provide a better experience, we use a limited amount of third-party services:</p>
+            <ul>
+                <li><strong>Google Fonts:</strong> Used to provide premium typography.</li>
+                <li><strong>Local Notifications:</strong> Handled entirely on the device to remind you of important dates.</li>
+            </ul>
+            <p>We do not share your health data with any third-party advertisers or analytics companies.</p>
+
+            <h2>5. Your Rights and Control</h2>
+            <p>Since all data is local, you have full control over it:</p>
+            <ul>
+                <li><strong>Access & Export:</strong> You can view and export your logs directly within the app.</li>
+                <li><strong>Deletion:</strong> You can clear all logs or delete the app to permanently remove all data from your device.</li>
+            </ul>
+
+            <h2>6. Changes to This Policy</h2>
+            <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
+
+            <h2>7. Contact Us</h2>
+            <p>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at:</p>
+            <p><a href="mailto:herflowmate.app@gmail.com">herflowmate.app@gmail.com</a></p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Her-Flowmate Project. Built with privacy in mind.</p>
+        </footer>
+    </div>
+</body>
+</html>

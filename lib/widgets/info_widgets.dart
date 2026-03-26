@@ -23,7 +23,8 @@ class GlassInfoButton extends StatelessWidget {
   }
 }
 
-void showGlassInfoPopup(BuildContext context, {
+void showGlassInfoPopup(
+  BuildContext context, {
   required String title,
   required String explanation,
   String? tip,
@@ -51,19 +52,32 @@ void showGlassInfoPopup(BuildContext context, {
             children: [
               Center(
                 child: Container(
-                  width: 48, height: 6,
-                  decoration: BoxDecoration(color: AppTheme.shadowDark, borderRadius: BorderRadius.circular(3)),
+                  width: 48,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: AppTheme.shadowDark,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
               Text(
                 title,
-                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
               ),
               const SizedBox(height: 16),
               Text(
                 explanation,
-                style: GoogleFonts.inter(fontSize: 16, color: AppTheme.textDark, height: 1.5, fontWeight: FontWeight.w500),
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  color: AppTheme.textDark,
+                  height: 1.5,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               if (tip != null) ...[
                 const SizedBox(height: 24),
@@ -79,7 +93,11 @@ void showGlassInfoPopup(BuildContext context, {
                         Expanded(
                           child: Text(
                             tip,
-                            style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700),
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: AppTheme.textSecondary,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ],
@@ -96,7 +114,11 @@ void showGlassInfoPopup(BuildContext context, {
                   child: Center(
                     child: Text(
                       'Got it!',
-                      style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.accentPink),
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.accentPink,
+                      ),
                     ),
                   ),
                 ),

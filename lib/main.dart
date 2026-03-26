@@ -10,7 +10,7 @@ import 'screens/welcome_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
     debugPrint('FLUTTER ERROR: ${details.exception}');
@@ -60,15 +60,15 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storage = context.watch<StorageService>();
-    
+
     if (!storage.hasCompletedLogin) {
       return const WelcomeScreen();
     }
-    
+
     if (!storage.hasCompletedOnboarding) {
       return const OnboardingScreen();
     }
-    
+
     return const MainNavigationScreen();
   }
 }

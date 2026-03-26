@@ -21,7 +21,9 @@ class CyclePhaseWheel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double progress = cycleLength > 0 ? currentCycleDay / cycleLength.clamp(1, 999) : 0.0;
+    final double progress = cycleLength > 0
+        ? currentCycleDay / cycleLength.clamp(1, 999)
+        : 0.0;
     final accentColor = AppTheme.phaseColor(currentPhase);
 
     return RepaintBoundary(
@@ -47,16 +49,13 @@ class CyclePhaseWheel extends StatelessWidget {
                 ),
               ),
             ),
-  
+
             // Progress arc
             CustomPaint(
               size: const Size(260, 260),
-              painter: _ArcPainter(
-                progress: progress,
-                color: accentColor,
-              ),
+              painter: _ArcPainter(progress: progress, color: accentColor),
             ),
-  
+
             // Content
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -107,7 +106,8 @@ class _ArcPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2 - 13.0; // Align with the center of the 260px ring
+    final radius =
+        size.width / 2 - 13.0; // Align with the center of the 260px ring
 
     final rect = Rect.fromCircle(center: center, radius: radius);
 
@@ -118,14 +118,8 @@ class _ArcPainter extends CustomPainter {
       ..color = color;
 
     // Background track for the arc? No, keep it clean Neumorphic.
-    
-    canvas.drawArc(
-      rect,
-      -pi / 2,
-      2 * pi * progress,
-      false,
-      paint,
-    );
+
+    canvas.drawArc(rect, -pi / 2, 2 * pi * progress, false, paint);
   }
 
   @override

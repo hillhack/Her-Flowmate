@@ -39,14 +39,20 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
             child: GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: const Icon(Icons.arrow_back_rounded,
-                  color: AppTheme.textDark),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppTheme.textDark,
+              ),
             ),
           ),
         ),
-        title: Text('Mode Settings',
-            style: GoogleFonts.poppins(
-                color: AppTheme.textDark, fontWeight: FontWeight.w700)),
+        title: Text(
+          'Mode Settings',
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
         centerTitle: true,
       ),
       body: Container(
@@ -60,17 +66,19 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                 Text(
                   'What are you currently tracking?',
                   style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.textDark),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textDark,
+                  ),
                 ).animate().fadeIn(),
                 const SizedBox(height: 10),
                 Text(
                   'Switch your focus anytime. Your data history remains safe.',
                   style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: AppTheme.textDark.withOpacity(0.6),
-                      height: 1.4),
+                    fontSize: 16,
+                    color: AppTheme.textDark.withOpacity(0.6),
+                    height: 1.4,
+                  ),
                 ).animate().fadeIn(delay: 100.ms),
                 const SizedBox(height: 32),
 
@@ -109,16 +117,41 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                     onPressed: () async {
                       final storage = context.read<StorageService>();
                       if (_selectedGoal != storage.userGoal) {
-                        if (_selectedGoal == 'pregnant' && storage.dueDate == null && storage.pregnancyWeeks == null) {
-                          if (mounted) Navigator.push(context, MaterialPageRoute(builder: (_) => OnboardingScreen(forceGoal: 'pregnant', initialPage: 2)));
-                        } else if ((_selectedGoal == 'track_cycle' || _selectedGoal == 'conceive') && storage.getLogs().isEmpty) {
-                          if (mounted) Navigator.push(context, MaterialPageRoute(builder: (_) => OnboardingScreen(forceGoal: _selectedGoal, initialPage: 2)));
+                        if (_selectedGoal == 'pregnant' &&
+                            storage.dueDate == null &&
+                            storage.pregnancyWeeks == null) {
+                          if (mounted)
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => OnboardingScreen(
+                                  forceGoal: 'pregnant',
+                                  initialPage: 2,
+                                ),
+                              ),
+                            );
+                        } else if ((_selectedGoal == 'track_cycle' ||
+                                _selectedGoal == 'conceive') &&
+                            storage.getLogs().isEmpty) {
+                          if (mounted)
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => OnboardingScreen(
+                                  forceGoal: _selectedGoal,
+                                  initialPage: 2,
+                                ),
+                              ),
+                            );
                         } else {
                           await storage.updateUserGoal(_selectedGoal);
                           if (mounted) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Tracking mode updated! ✨'), behavior: SnackBarBehavior.floating),
+                              const SnackBar(
+                                content: Text('Tracking mode updated! ✨'),
+                                behavior: SnackBarBehavior.floating,
+                              ),
                             );
                           }
                         }
@@ -126,33 +159,50 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                         Navigator.pop(context);
                       }
                     },
-                    icon: const Icon(Icons.check_circle_rounded, color: AppTheme.accentPink),
-                    label: Text('Confirm Change',
-                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700, color: AppTheme.accentPink)),
+                    icon: const Icon(
+                      Icons.check_circle_rounded,
+                      color: AppTheme.accentPink,
+                    ),
+                    label: Text(
+                      'Confirm Change',
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.accentPink,
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
                       minimumSize: const Size(double.infinity, 64),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
                   ),
                 ).animate().fadeIn(delay: 650.ms),
-                
+
                 const SizedBox(height: 16),
-                
+
                 TextButton(
                   onPressed: () async {
                     await context.read<StorageService>().logout();
                     if (mounted) {
                       Navigator.pushAndRemoveUntil(
-                      context, 
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (route) => false,
-                    );
+                        context,
+                        MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        (route) => false,
+                      );
                     }
                   },
-                  child: Text('Logout from Account', 
-                    style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w600, fontSize: 14)),
+                  child: Text(
+                    'Logout from Account',
+                    style: GoogleFonts.inter(
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
                 ).animate().fadeIn(delay: 800.ms),
               ],
             ),
@@ -171,8 +221,12 @@ class _ModeCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _ModeCard({
-    required this.title, required this.subtitle, required this.icon,
-    required this.iconColor, required this.isSelected, required this.onTap,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.iconColor,
+    required this.isSelected,
+    required this.onTap,
   });
 
   @override
@@ -184,45 +238,62 @@ class _ModeCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 18),
         padding: const EdgeInsets.all(20),
         decoration: isSelected
-            ? AppTheme.glassDecoration(radius: 24, opacity: 0.2, borderColor: iconColor)
+            ? AppTheme.glassDecoration(
+                radius: 24,
+                opacity: 0.2,
+                borderColor: iconColor,
+              )
             : AppTheme.glassDecoration(radius: 24, opacity: 0.05),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isSelected ? iconColor.withOpacity(0.12) : Colors.transparent,
+                color: isSelected
+                    ? iconColor.withOpacity(0.12)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon,
-                  color: isSelected
-                      ? iconColor
-                      : AppTheme.textDark.withOpacity(0.35),
-                  size: 30),
+              child: Icon(
+                icon,
+                color: isSelected
+                    ? iconColor
+                    : AppTheme.textDark.withOpacity(0.35),
+                size: 30,
+              ),
             ),
             const SizedBox(width: 18),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: GoogleFonts.poppins(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: isSelected ? iconColor : AppTheme.textDark,
-                      )),
+                  Text(
+                    title,
+                    style: GoogleFonts.poppins(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected ? iconColor : AppTheme.textDark,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: AppTheme.textDark.withOpacity(0.6))),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textDark.withOpacity(0.6),
+                    ),
+                  ),
                 ],
               ),
             ),
-            if (isSelected) 
+            if (isSelected)
               Icon(Icons.check_circle_rounded, color: iconColor, size: 24)
             else
-              const Icon(Icons.circle_outlined, color: AppTheme.textSecondary, size: 24),
+              const Icon(
+                Icons.circle_outlined,
+                color: AppTheme.textSecondary,
+                size: 24,
+              ),
           ],
         ),
       ),

@@ -16,17 +16,17 @@ class StorageService extends ChangeNotifier {
       _prefs = await SharedPreferences.getInstance();
       debugPrint('StorageService: Initializing Hive...');
       await Hive.initFlutter();
-      
+
       if (!Hive.isAdapterRegistered(0)) {
         debugPrint('StorageService: Registering PeriodLogAdapter...');
         Hive.registerAdapter(PeriodLogAdapter());
       }
-      
+
       if (!Hive.isAdapterRegistered(1)) {
         debugPrint('StorageService: Registering DailyLogAdapter...');
         Hive.registerAdapter(DailyLogAdapter());
       }
-      
+
       debugPrint('StorageService: Opening boxes...');
       await Hive.openBox<PeriodLog>(boxName);
       await Hive.openBox<DailyLog>(dailyBoxName);
@@ -38,12 +38,14 @@ class StorageService extends ChangeNotifier {
   }
 
   bool get hasCompletedLogin => _prefs.getBool('hasCompletedLogin') ?? false;
-  bool get hasCompletedOnboarding => _prefs.getBool('hasCompletedOnboarding') ?? false;
+  bool get hasCompletedOnboarding =>
+      _prefs.getBool('hasCompletedOnboarding') ?? false;
   bool get isLoggedIn => _prefs.getBool('isLoggedIn') ?? false;
   bool get isEmailUser => _prefs.getBool('isEmailUser') ?? false;
   String get userName => _prefs.getString('userName') ?? 'Guest';
   String get userGoal => _prefs.getString('userGoal') ?? 'track_cycle';
-  int? get userAge => _prefs.containsKey('userAge') ? _prefs.getInt('userAge') : null;
+  int? get userAge =>
+      _prefs.containsKey('userAge') ? _prefs.getInt('userAge') : null;
   bool get isMinimalMode => _prefs.getBool('isMinimalMode') ?? false;
   // Pregnancy data
   DateTime? get dueDate {
@@ -71,7 +73,10 @@ class StorageService extends ChangeNotifier {
 
   Future<void> savePregnancyData({DateTime? conceptionDate, int? weeks}) async {
     if (conceptionDate != null) {
-      await _prefs.setInt('conceptionDate', conceptionDate.millisecondsSinceEpoch);
+      await _prefs.setInt(
+        'conceptionDate',
+        conceptionDate.millisecondsSinceEpoch,
+      );
     }
     if (weeks != null) {
       await _prefs.setInt('pregnancyWeeks', weeks);
@@ -162,7 +167,9 @@ class StorageService extends ChangeNotifier {
       if (count > 0) averageCycleLength = (totalDays / count).round();
     }
 
-    final nextDate = logs.first.startDate.add(Duration(days: averageCycleLength));
+    final nextDate = logs.first.startDate.add(
+      Duration(days: averageCycleLength),
+    );
     await NotificationService().schedulePeriodReminder(nextDate);
   }
 
@@ -180,11 +187,13 @@ class StorageService extends ChangeNotifier {
 
   Future<String> exportLogsToJson() async {
     final logs = getLogs();
-    return logs.map((l) {
-      final start = l.startDate.toIso8601String();
-      final end = l.endDate?.toIso8601String() ?? 'null';
-      return '$start|$end';
-    }).join(',');
+    return logs
+        .map((l) {
+          final start = l.startDate.toIso8601String();
+          final end = l.endDate?.toIso8601String() ?? 'null';
+          return '$start|$end';
+        })
+        .join(',');
   }
 
   Future<void> exportLogsToPdf() async {
@@ -209,16 +218,13 @@ class StorageService extends ChangeNotifier {
 
   Future<void> saveDailyLog(DailyLog log) async {
     // Delete existing log for this day to replace it
-    final existingKey = _dailyBox.keys.firstWhere(
-      (k) {
-        final existing = _dailyBox.get(k);
-        return existing != null && 
-               existing.date.year == log.date.year && 
-               existing.date.month == log.date.month && 
-               existing.date.day == log.date.day;
-      },
-      orElse: () => null,
-    );
+    final existingKey = _dailyBox.keys.firstWhere((k) {
+      final existing = _dailyBox.get(k);
+      return existing != null &&
+          existing.date.year == log.date.year &&
+          existing.date.month == log.date.month &&
+          existing.date.day == log.date.day;
+    }, orElse: () => null);
     if (existingKey != null) {
       await _dailyBox.delete(existingKey);
     }
@@ -228,10 +234,11 @@ class StorageService extends ChangeNotifier {
 
   DailyLog? getDailyLog(DateTime date) {
     try {
-      return _dailyBox.values.firstWhere((log) => 
-        log.date.year == date.year && 
-        log.date.month == date.month && 
-        log.date.day == date.day
+      return _dailyBox.values.firstWhere(
+        (log) =>
+            log.date.year == date.year &&
+            log.date.month == date.month &&
+            log.date.day == date.day,
       );
     } catch (_) {
       return null;

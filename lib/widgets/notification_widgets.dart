@@ -17,7 +17,10 @@ class NotificationBell extends StatelessWidget {
         child: Stack(
           clipBehavior: Clip.none,
           children: [
-            const Icon(Icons.notifications_none_rounded, color: AppTheme.textDark),
+            const Icon(
+              Icons.notifications_none_rounded,
+              color: AppTheme.textDark,
+            ),
             if (hasUnread)
               Positioned(
                 right: -2,
@@ -149,11 +152,29 @@ class NotificationPanel extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w700, color: AppTheme.textDark)),
-                        Text(time, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary)),
+                        Text(
+                          title,
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.textDark,
+                          ),
+                        ),
+                        Text(
+                          time,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            color: AppTheme.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
-                    Text(body, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary)),
+                    Text(
+                      body,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
                   ],
                 ),
               ),

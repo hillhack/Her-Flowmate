@@ -18,13 +18,20 @@ class PredictionDetailsScreen extends StatelessWidget {
           icon: GlassContainer(
             padding: const EdgeInsets.all(8),
             radius: 12,
-            child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+            child: const Icon(
+              Icons.arrow_back_rounded,
+              color: AppTheme.textDark,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Cycle Phases',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w800, fontSize: 20),
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
       ),
@@ -73,7 +80,13 @@ class PredictionDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPhaseSection(String name, String days, String description, String hormones, Color color) {
+  Widget _buildPhaseSection(
+    String name,
+    String days,
+    String description,
+    String hormones,
+    Color color,
+  ) {
     return GlassContainer(
       padding: const EdgeInsets.all(24),
       radius: 32,
@@ -83,18 +96,44 @@ class PredictionDetailsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(name, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+              Text(
+                name,
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: const Icon(Icons.biotech_rounded, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.biotech_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(days, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.accentPink, fontWeight: FontWeight.w800)),
+          Text(
+            days,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: AppTheme.accentPink,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
           const SizedBox(height: 16),
-          Text(description, style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textSecondary, height: 1.5, fontWeight: FontWeight.w500)),
+          Text(
+            description,
+            style: GoogleFonts.inter(
+              fontSize: 15,
+              color: AppTheme.textSecondary,
+              height: 1.5,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.all(16),
@@ -111,8 +150,22 @@ class PredictionDetailsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hormone State', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                      Text(hormones, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, fontWeight: FontWeight.w800)),
+                      Text(
+                        'Hormone State',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: AppTheme.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        hormones,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: AppTheme.textDark,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
                     ],
                   ),
                 ),

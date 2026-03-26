@@ -13,31 +13,37 @@ class EducationHubScreen extends StatelessWidget {
     final List<Map<String, String>> articles = [
       {
         'title': 'Hormones 101',
-        'subtitle': 'The essential guide to Estrogen, Progesterone, and your cycle.',
+        'subtitle':
+            'The essential guide to Estrogen, Progesterone, and your cycle.',
         'icon': '🧬',
         'color': 'FFBA68C8',
-        'content': 'Your menstrual cycle is regulated by a complex dance of hormones. Estrogen peaks right before ovulation, giving you a boost in energy and confidence. After ovulation, Progesterone takes over, which can make you feel more relaxed or sometimes sluggish as your body prepares for a potential pregnancy.\\n\\nUnderstanding this cycle allows you to predict your moods and energy levels, giving yourself grace when you need rest.',
+        'content':
+            'Your menstrual cycle is regulated by a complex dance of hormones. Estrogen peaks right before ovulation, giving you a boost in energy and confidence. After ovulation, Progesterone takes over, which can make you feel more relaxed or sometimes sluggish as your body prepares for a potential pregnancy.\\n\\nUnderstanding this cycle allows you to predict your moods and energy levels, giving yourself grace when you need rest.',
       },
       {
         'title': 'Cycle Syncing Workouts',
-        'subtitle': 'How to align your exercise routine with your cycle phases.',
+        'subtitle':
+            'How to align your exercise routine with your cycle phases.',
         'icon': '🏃‍♀️',
         'color': 'FFFF4081',
-        'content': 'Cycle syncing your workouts means adjusting the intensity of your exercise based on where you are in your menstrual cycle.\\n\\n• **Menstrual Phase:** Stick to gentle movements like walking or yin yoga.\\n• **Follicular Phase:** As energy rises, reintroduce cardio and strength training.\\n• **Ovulation:** Your energy peaks! Go for HIIT or heavy lifting.\\n• **Luteal Phase:** Transition from high energy to steady-state cardio, then back to gentle Pilates as your period approaches.',
+        'content':
+            'Cycle syncing your workouts means adjusting the intensity of your exercise based on where you are in your menstrual cycle.\\n\\n• **Menstrual Phase:** Stick to gentle movements like walking or yin yoga.\\n• **Follicular Phase:** As energy rises, reintroduce cardio and strength training.\\n• **Ovulation:** Your energy peaks! Go for HIIT or heavy lifting.\\n• **Luteal Phase:** Transition from high energy to steady-state cardio, then back to gentle Pilates as your period approaches.',
       },
       {
         'title': 'Nutrition by Phase',
         'subtitle': 'Eat to support your hormones naturally.',
         'icon': '🥑',
         'color': 'FF4CAF50',
-        'content': 'Food is medicine for your hormones.\\n\\n• **Menstrual Phase:** Focus on iron-rich foods (spinach, red meat, lentils) to replenish blood loss. Add vitamin C to boost iron absorption.\\n• **Follicular Phase:** Incorporate fermented foods and fresh salads to metabolize rising estrogen.\\n• **Ovulation:** Eat anti-inflammatory foods like berries, almonds, and raw veggies to support the liver.\\n• **Luteal Phase:** Complex carbs (sweet potatoes, oats) and magnesium-rich foods (dark chocolate) help curb cravings and ease PMS.',
+        'content':
+            'Food is medicine for your hormones.\\n\\n• **Menstrual Phase:** Focus on iron-rich foods (spinach, red meat, lentils) to replenish blood loss. Add vitamin C to boost iron absorption.\\n• **Follicular Phase:** Incorporate fermented foods and fresh salads to metabolize rising estrogen.\\n• **Ovulation:** Eat anti-inflammatory foods like berries, almonds, and raw veggies to support the liver.\\n• **Luteal Phase:** Complex carbs (sweet potatoes, oats) and magnesium-rich foods (dark chocolate) help curb cravings and ease PMS.',
       },
       {
         'title': 'Understanding PCOS',
         'subtitle': 'Symptoms, management, and living gracefully with PCOS.',
         'icon': '🦋',
         'color': 'FF00BCD4',
-        'content': 'Polycystic Ovary Syndrome (PCOS) revolves around hormonal imbalances that can cause irregular cycles, acne, and cysts.\\n\\nManaging PCOS often involves a holistic approach including blood sugar stabilization, reducing stress to lower cortisol, and specific supplements like Inositol. Every body responds differently, so work with an endocrinologist to find the exact protocol that helps you feel your best.',
+        'content':
+            'Polycystic Ovary Syndrome (PCOS) revolves around hormonal imbalances that can cause irregular cycles, acne, and cysts.\\n\\nManaging PCOS often involves a holistic approach including blood sugar stabilization, reducing stress to lower cortisol, and specific supplements like Inositol. Every body responds differently, so work with an endocrinologist to find the exact protocol that helps you feel your best.',
       },
     ];
 
@@ -47,12 +53,19 @@ class EducationHubScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textDark),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppTheme.textDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Knowledge Base',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w800, fontSize: 20),
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
       ),
@@ -73,44 +86,64 @@ class EducationHubScreen extends StatelessWidget {
               final color = Color(int.parse(a['color']!, radix: 16));
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => _ArticleDetailScreen(
-                      title: a['title']!,
-                      content: a['content']!,
-                      icon: a['icon']!,
-                      themeColor: color,
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => _ArticleDetailScreen(
+                        title: a['title']!,
+                        content: a['content']!,
+                        icon: a['icon']!,
+                        themeColor: color,
+                      ),
                     ),
-                  ));
+                  );
                 },
-                child: GlassContainer(
-                  radius: 24,
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: color.withOpacity(0.15),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(a['icon']!, style: const TextStyle(fontSize: 24)),
+                child:
+                    GlassContainer(
+                      radius: 24,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: color.withOpacity(0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              a['icon']!,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            a['title']!,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.textDark,
+                              height: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            a['subtitle']!,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: AppTheme.textSecondary,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Text(
-                        a['title']!,
-                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textDark, height: 1.2),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        a['subtitle']!,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, height: 1.3),
-                      ),
-                    ],
-                  ),
-                ).animate().scale(delay: (100 * index).ms, duration: 400.ms, curve: Curves.easeOutBack),
+                    ).animate().scale(
+                      delay: (100 * index).ms,
+                      duration: 400.ms,
+                      curve: Curves.easeOutBack,
+                    ),
               );
             },
           ),
@@ -141,7 +174,10 @@ class _ArticleDetailScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textDark),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppTheme.textDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -151,7 +187,10 @@ class _ArticleDetailScreen extends StatelessWidget {
         height: double.infinity,
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + kToolbarHeight, bottom: 40),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top + kToolbarHeight,
+            bottom: 40,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -171,24 +210,33 @@ class _ArticleDetailScreen extends StatelessWidget {
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w900, color: AppTheme.textDark, height: 1.2),
+                  style: GoogleFonts.poppins(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    color: AppTheme.textDark,
+                    height: 1.2,
+                  ),
                 ).animate().fadeIn(delay: 200.ms),
               ),
               const SizedBox(height: 32),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: GlassContainer(
-                  padding: const EdgeInsets.all(32),
-                  radius: 32,
-                  child: Text(
-                    content.replaceAll('\\n', '\n'),
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: AppTheme.textDark.withOpacity(0.8),
-                      height: 1.8,
-                    ),
-                  ),
-                ).animate().slideY(begin: 0.1, delay: 300.ms).fadeIn(delay: 300.ms),
+                child:
+                    GlassContainer(
+                          padding: const EdgeInsets.all(32),
+                          radius: 32,
+                          child: Text(
+                            content.replaceAll('\\n', '\n'),
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              color: AppTheme.textDark.withOpacity(0.8),
+                              height: 1.8,
+                            ),
+                          ),
+                        )
+                        .animate()
+                        .slideY(begin: 0.1, delay: 300.ms)
+                        .fadeIn(delay: 300.ms),
               ),
             ],
           ),

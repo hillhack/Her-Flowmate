@@ -21,30 +21,40 @@ class WelcomeScreen extends StatelessWidget {
           child: Stack(
             children: [
               const FloatingSparkles(),
-              
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Spacer(flex: 3),
-                    
+
                     // Top area: Glowing Logo
                     Center(
                       child: const BrandLogo(size: 100)
-                        .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                        .shimmer(duration: 2.seconds, color: Colors.white24)
-                        .scale(begin: const Offset(1, 1), end: const Offset(1.05, 1.05), duration: 2.seconds, curve: Curves.easeInOut),
+                          .animate(
+                            onPlay: (controller) =>
+                                controller.repeat(reverse: true),
+                          )
+                          .shimmer(duration: 2.seconds, color: Colors.white24)
+                          .scale(
+                            begin: const Offset(1, 1),
+                            end: const Offset(1.05, 1.05),
+                            duration: 2.seconds,
+                            curve: Curves.easeInOut,
+                          ),
                     ),
-                    
+
                     const SizedBox(height: 48),
-                    
+
                     // Center area: App Name & Subtext
                     const BrandName(fontSize: 40)
-                      .animate().fadeIn(duration: 800.ms).slideY(begin: 0.2, curve: Curves.easeOutBack),
-                    
+                        .animate()
+                        .fadeIn(duration: 800.ms)
+                        .slideY(begin: 0.2, curve: Curves.easeOutBack),
+
                     const SizedBox(height: 12),
-                    
+
                     Text(
                       'Your gentle cycle companion',
                       style: GoogleFonts.inter(
@@ -54,38 +64,43 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn(delay: 400.ms, duration: 800.ms),
-                    
+
                     const Spacer(flex: 4),
-                    
+
                     // Bottom area: Main Button
                     GlassContainer(
-                      radius: 24,
-                      onTap: () {
-                        showPhaseDelight(context, 'Follicular');
-                        Future.delayed(700.ms, () {
-                          if (context.mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            );
-                          }
-                        });
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: 72,
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Get Started',
-                          style: GoogleFonts.poppins(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w800,
-                            color: AppTheme.accentPink,
+                          radius: 24,
+                          onTap: () {
+                            showPhaseDelight(context, 'Follicular');
+                            Future.delayed(700.ms, () {
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: 72,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Get Started',
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w800,
+                                color: AppTheme.accentPink,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.5, curve: Curves.easeOutCubic),
-                    
+                        )
+                        .animate()
+                        .fadeIn(delay: 800.ms)
+                        .slideY(begin: 0.5, curve: Curves.easeOutCubic),
+
                     const SizedBox(height: 24),
                     TextButton(
                       onPressed: () async {

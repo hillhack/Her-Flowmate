@@ -31,7 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
             child: GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppTheme.textDark,
+              ),
             ),
           ),
         ),
@@ -46,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Spacer(flex: 2),
-                
+
                 Column(
                   children: [
                     Text(
@@ -60,32 +63,36 @@ class _LoginScreenState extends State<LoginScreen> {
                     const BrandName(fontSize: 42),
                   ],
                 ).animate().fadeIn().slideY(begin: -0.2),
-                
+
                 const SizedBox(height: 64),
-                
+
                 // Google Login Button
                 _AuthButton(
                   label: 'Continue with Google',
                   icon: Icons.g_mobiledata_rounded,
                   onTap: () => _handleLogin(context, true),
                 ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1),
-                
+
                 const SizedBox(height: 24),
-                
+
                 // Guest Login Button
                 _AuthButton(
                   label: 'Continue as Guest',
                   icon: Icons.person_outline_rounded,
                   onTap: () => _handleLogin(context, false),
                 ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.1),
-                
+
                 const Spacer(flex: 2),
-                
+
                 // Data Info Section
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.info_outline_rounded, size: 18, color: AppTheme.textSecondary),
+                    const Icon(
+                      Icons.info_outline_rounded,
+                      size: 18,
+                      color: AppTheme.textSecondary,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Guest Mode Privacy',
@@ -107,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                
+
                 const SizedBox(height: 48),
               ],
             ),
@@ -119,17 +126,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin(BuildContext context, bool isGoogle) async {
     final storage = context.read<StorageService>();
-    
-    // 1. Update state. 
+
+    // 1. Update state.
     await storage.completeLogin(isGoogle);
 
     // 2. Navigate explicitly to the next screen.
     // This is more robust than relying on the root MaterialApp home changing.
     if (context.mounted) {
-      final nextScreen = storage.hasCompletedOnboarding 
-          ? const MainNavigationScreen() 
+      final nextScreen = storage.hasCompletedOnboarding
+          ? const MainNavigationScreen()
           : const OnboardingScreen();
-          
+
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => nextScreen),
@@ -144,7 +151,11 @@ class _AuthButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _AuthButton({required this.label, required this.icon, required this.onTap});
+  const _AuthButton({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

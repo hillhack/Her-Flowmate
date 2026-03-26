@@ -21,7 +21,14 @@ class PhaseCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text('Current Phase', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                Text(
+                  'Current Phase',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(width: 8),
                 GlassInfoButton(
                   onTap: () => showGlassInfoPopup(
@@ -34,9 +41,23 @@ class PhaseCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(phaseName, style: GoogleFonts.poppins(fontSize: 32, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+            Text(
+              phaseName,
+              style: GoogleFonts.poppins(
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textDark,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(AppTheme.phaseTip(phaseName).headline, style: GoogleFonts.inter(fontSize: 16, color: AppTheme.phaseColor(phaseName), fontWeight: FontWeight.w600)),
+            Text(
+              AppTheme.phaseTip(phaseName).headline,
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                color: AppTheme.phaseColor(phaseName),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
@@ -72,22 +93,55 @@ class StatusRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label1, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                  Text(
+                    label1,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text('$val1', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                  Text(
+                    '$val1',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
                 ],
               ),
             ),
-            Container(width: 1.5, height: 40, color: AppTheme.shadowDark.withOpacity(0.2)),
+            Container(
+              width: 1.5,
+              height: 40,
+              color: AppTheme.shadowDark.withOpacity(0.2),
+            ),
             const SizedBox(width: 24),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label2, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                  Text(
+                    label2,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text(val2 is int && val2 < 0 ? '${val2.abs()}d late' : (label2 == 'Days Left' ? '$val2' : 'In $val2 days'), 
-                    style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                  Text(
+                    val2 is int && val2 < 0
+                        ? '${val2.abs()}d late'
+                        : (label2 == 'Days Left' ? '$val2' : 'In $val2 days'),
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -125,18 +179,42 @@ class FertilityCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                    Text(
+                      title,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text('High probability today', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                    Text(
+                      'High probability today',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.textDark,
+                      ),
+                    ),
                   ],
                 ),
                 GlassContainer(
                   radius: 16,
                   padding: const EdgeInsets.all(12),
                   borderColor: Colors.white.withOpacity(0.5),
-                  child: const Icon(Icons.favorite_rounded, color: AppTheme.accentPink, size: 24)
-                    .animate(onPlay: (c) => c.repeat())
-                    .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 800.ms, curve: Curves.easeInOut),
+                  child:
+                      const Icon(
+                            Icons.favorite_rounded,
+                            color: AppTheme.accentPink,
+                            size: 24,
+                          )
+                          .animate(onPlay: (c) => c.repeat())
+                          .scale(
+                            begin: const Offset(1, 1),
+                            end: const Offset(1.2, 1.2),
+                            duration: 800.ms,
+                            curve: Curves.easeInOut,
+                          ),
                 ),
               ],
             ),
@@ -144,13 +222,28 @@ class FertilityCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Chance of Conception', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                Text('$currentConceptionChance%', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+                Text(
+                  'Chance of Conception',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  '$currentConceptionChance%',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.accentPink,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
             Container(
-              height: 12, width: double.infinity,
+              height: 12,
+              width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(6),
@@ -162,7 +255,13 @@ class FertilityCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppTheme.accentPink,
                     borderRadius: BorderRadius.circular(6),
-                    boxShadow: [BoxShadow(color: AppTheme.accentPink.withOpacity(0.4), blurRadius: 8, spreadRadius: 1)],
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.accentPink.withOpacity(0.4),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -184,7 +283,11 @@ class MedicalDisclaimer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Text(
           'This is an estimate based on cycle patterns and should not be considered medical advice.',
-          style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary.withOpacity(0.6), fontStyle: FontStyle.italic),
+          style: GoogleFonts.inter(
+            fontSize: 11,
+            color: AppTheme.textSecondary.withOpacity(0.6),
+            fontStyle: FontStyle.italic,
+          ),
           textAlign: TextAlign.center,
         ),
       ),

@@ -26,15 +26,36 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
   final TextEditingController _notesController = TextEditingController();
 
   final List<String> _allSymptoms = [
-    'Cramps', 'Headache', 'Bloating', 'Acne', 'Backache', 'Tender Breasts', 'Nausea', 'Fatigue', 'Cravings'
+    'Cramps',
+    'Headache',
+    'Bloating',
+    'Acne',
+    'Backache',
+    'Tender Breasts',
+    'Nausea',
+    'Fatigue',
+    'Cravings',
   ];
 
   final List<String> _allFlows = ['Light', 'Medium', 'Heavy'];
-  final List<String> _allActivities = ['Walking', 'Running', 'Yoga', 'Strength', 'Cycling', 'Swimming', 'Rest Day'];
+  final List<String> _allActivities = [
+    'Walking',
+    'Running',
+    'Yoga',
+    'Strength',
+    'Cycling',
+    'Swimming',
+    'Rest Day',
+  ];
 
   final Map<String, String> _allMoods = {
-    'Happy': '😊', 'Energetic': '⚡', 'Tired': '😴', 
-    'Sad': '😢', 'Anxious': '😰', 'Angry': '😠', 'Sensitive': '🥺'
+    'Happy': '😊',
+    'Energetic': '⚡',
+    'Tired': '😴',
+    'Sad': '😢',
+    'Anxious': '😰',
+    'Angry': '😠',
+    'Sensitive': '🥺',
   };
 
   @override
@@ -46,7 +67,8 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
       final existing = storage.getDailyLog(_selectedDate);
       if (existing != null) {
         setState(() {
-          if (existing.moods?.isNotEmpty == true) _selectedMood = existing.moods!.first;
+          if (existing.moods?.isNotEmpty == true)
+            _selectedMood = existing.moods!.first;
           _selectedSymptoms.addAll(existing.symptoms ?? []);
           _waterIntake = existing.waterIntake ?? 0;
           _notesController.text = existing.notes ?? '';
@@ -70,7 +92,10 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
         opacity: 0.05,
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 32.0,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -139,15 +164,20 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                         _selectedFlow = null;
                         _selectedActivities.clear();
                       });
-                      final existing = context.read<StorageService>().getDailyLog(date);
+                      final existing = context
+                          .read<StorageService>()
+                          .getDailyLog(date);
                       if (existing != null) {
                         setState(() {
-                          if (existing.moods?.isNotEmpty == true) _selectedMood = existing.moods!.first;
+                          if (existing.moods?.isNotEmpty == true)
+                            _selectedMood = existing.moods!.first;
                           _selectedSymptoms.addAll(existing.symptoms ?? []);
                           _waterIntake = existing.waterIntake ?? 0;
                           _notesController.text = existing.notes ?? '';
                           _selectedFlow = existing.flowIntensity;
-                          _selectedActivities.addAll(existing.physicalActivity ?? []);
+                          _selectedActivities.addAll(
+                            existing.physicalActivity ?? [],
+                          );
                         });
                       }
                     }
@@ -156,7 +186,11 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        const Icon(Icons.calendar_today_rounded, color: AppTheme.accentPink, size: 24),
+                        const Icon(
+                          Icons.calendar_today_rounded,
+                          color: AppTheme.accentPink,
+                          size: 24,
+                        ),
                         const SizedBox(width: 14),
                         Text(
                           DateFormat('EEEE, MMM d, yyyy').format(_selectedDate),
@@ -167,7 +201,11 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                           ),
                         ),
                         const Spacer(),
-                        const Icon(Icons.check_circle_rounded, color: AppTheme.accentPink, size: 22),
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          color: AppTheme.accentPink,
+                          size: 22,
+                        ),
                       ],
                     ),
                   ),
@@ -187,11 +225,24 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                       onTap: () => setState(() => _selectedMood = e.key),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSel ? AppTheme.accentPink : Colors.white.withOpacity(0.5),
+                          color: isSel
+                              ? AppTheme.accentPink
+                              : Colors.white.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: isSel ? [BoxShadow(color: AppTheme.accentPink.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))] : [],
+                          boxShadow: isSel
+                              ? [
+                                  BoxShadow(
+                                    color: AppTheme.accentPink.withOpacity(0.3),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : [],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -202,8 +253,12 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                               e.key,
                               style: GoogleFonts.inter(
                                 fontSize: 14,
-                                fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
-                                color: isSel ? Colors.white : AppTheme.textSecondary,
+                                fontWeight: isSel
+                                    ? FontWeight.bold
+                                    : FontWeight.w600,
+                                color: isSel
+                                    ? Colors.white
+                                    : AppTheme.textSecondary,
                               ),
                             ),
                           ],
@@ -226,23 +281,44 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          isSel ? _selectedSymptoms.remove(sym) : _selectedSymptoms.add(sym);
+                          isSel
+                              ? _selectedSymptoms.remove(sym)
+                              : _selectedSymptoms.add(sym);
                         });
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSel ? const Color(0xFFBA68C8) : Colors.white.withOpacity(0.5),
+                          color: isSel
+                              ? const Color(0xFFBA68C8)
+                              : Colors.white.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: isSel ? [BoxShadow(color: const Color(0xFFBA68C8).withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))] : [],
+                          boxShadow: isSel
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(
+                                      0xFFBA68C8,
+                                    ).withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : [],
                         ),
                         child: Text(
                           sym,
                           style: GoogleFonts.inter(
                             fontSize: 13,
-                            fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
-                            color: isSel ? Colors.white : AppTheme.textSecondary,
+                            fontWeight: isSel
+                                ? FontWeight.bold
+                                : FontWeight.w600,
+                            color: isSel
+                                ? Colors.white
+                                : AppTheme.textSecondary,
                           ),
                         ),
                       ),
@@ -251,7 +327,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                 ).animate().fadeIn(delay: 400.ms),
 
                 const SizedBox(height: 32),
-                
+
                 // ── Flow Intensity ─────────────────────────────────────────
                 _stepLabel('🩸', 'Flow Intensity'),
                 const SizedBox(height: 16),
@@ -263,20 +339,38 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                         onTap: () => setState(() => _selectedFlow = flowStr),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          margin: EdgeInsets.only(right: flowStr == _allFlows.last ? 0 : 12),
+                          margin: EdgeInsets.only(
+                            right: flowStr == _allFlows.last ? 0 : 12,
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           decoration: BoxDecoration(
-                            color: isSel ? AppTheme.accentPink : Colors.white.withOpacity(0.5),
+                            color: isSel
+                                ? AppTheme.accentPink
+                                : Colors.white.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: isSel ? [BoxShadow(color: AppTheme.accentPink.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))] : [],
+                            boxShadow: isSel
+                                ? [
+                                    BoxShadow(
+                                      color: AppTheme.accentPink.withOpacity(
+                                        0.3,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ]
+                                : [],
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             flowStr,
                             style: GoogleFonts.inter(
                               fontSize: 14,
-                              fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
-                              color: isSel ? Colors.white : AppTheme.textSecondary,
+                              fontWeight: isSel
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
+                              color: isSel
+                                  ? Colors.white
+                                  : AppTheme.textSecondary,
                             ),
                           ),
                         ),
@@ -298,23 +392,44 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     return GestureDetector(
                       onTap: () {
                         setState(() {
-                          isSel ? _selectedActivities.remove(act) : _selectedActivities.add(act);
+                          isSel
+                              ? _selectedActivities.remove(act)
+                              : _selectedActivities.add(act);
                         });
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSel ? const Color(0xFF81C784) : Colors.white.withOpacity(0.5),
+                          color: isSel
+                              ? const Color(0xFF81C784)
+                              : Colors.white.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(24),
-                          boxShadow: isSel ? [BoxShadow(color: const Color(0xFF81C784).withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))] : [],
+                          boxShadow: isSel
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(
+                                      0xFF81C784,
+                                    ).withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : [],
                         ),
                         child: Text(
                           act,
                           style: GoogleFonts.inter(
                             fontSize: 14,
-                            fontWeight: isSel ? FontWeight.bold : FontWeight.w600,
-                            color: isSel ? Colors.white : AppTheme.textSecondary,
+                            fontWeight: isSel
+                                ? FontWeight.bold
+                                : FontWeight.w600,
+                            color: isSel
+                                ? Colors.white
+                                : AppTheme.textSecondary,
                           ),
                         ),
                       ),
@@ -331,7 +446,11 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.remove_circle_outline, color: AppTheme.accentPink, size: 32),
+                      icon: const Icon(
+                        Icons.remove_circle_outline,
+                        color: AppTheme.accentPink,
+                        size: 32,
+                      ),
                       onPressed: () {
                         if (_waterIntake > 0) setState(() => _waterIntake--);
                       },
@@ -339,11 +458,19 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     const SizedBox(width: 24),
                     Text(
                       '$_waterIntake',
-                      style: GoogleFonts.poppins(fontSize: 32, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                      style: GoogleFonts.poppins(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textDark,
+                      ),
                     ),
                     const SizedBox(width: 24),
                     IconButton(
-                      icon: const Icon(Icons.add_circle, color: AppTheme.accentPink, size: 32),
+                      icon: const Icon(
+                        Icons.add_circle,
+                        color: AppTheme.accentPink,
+                        size: 32,
+                      ),
                       onPressed: () {
                         if (_waterIntake < 20) setState(() => _waterIntake++);
                       },
@@ -357,7 +484,10 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                 _stepLabel('📝', 'Journal'),
                 const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(24),
@@ -368,7 +498,9 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'How was your day?',
-                      hintStyle: GoogleFonts.inter(color: AppTheme.textSecondary.withOpacity(0.5)),
+                      hintStyle: GoogleFonts.inter(
+                        color: AppTheme.textSecondary.withOpacity(0.5),
+                      ),
                     ),
                     style: GoogleFonts.inter(color: AppTheme.textDark),
                   ),
@@ -382,11 +514,17 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     final log = DailyLog(
                       date: _selectedDate,
                       moods: _selectedMood != null ? [_selectedMood!] : null,
-                      symptoms: _selectedSymptoms.isNotEmpty ? List.from(_selectedSymptoms) : null,
+                      symptoms: _selectedSymptoms.isNotEmpty
+                          ? List.from(_selectedSymptoms)
+                          : null,
                       waterIntake: _waterIntake,
-                      notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+                      notes: _notesController.text.isNotEmpty
+                          ? _notesController.text
+                          : null,
                       flowIntensity: _selectedFlow,
-                      physicalActivity: _selectedActivities.isNotEmpty ? List.from(_selectedActivities) : null,
+                      physicalActivity: _selectedActivities.isNotEmpty
+                          ? List.from(_selectedActivities)
+                          : null,
                     );
 
                     await context.read<StorageService>().saveDailyLog(log);

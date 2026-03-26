@@ -10,7 +10,6 @@ import '../widgets/glass_container.dart';
 import '../widgets/info_widgets.dart';
 import '../widgets/cycle_widgets.dart';
 
-
 import 'log_period_screen.dart';
 import 'education_hub_screen.dart';
 import 'daily_checkin_screen.dart';
@@ -39,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
       showGlassInfoPopup(
         context,
         title: 'Welcome to Your Dashboard 🌸',
-        explanation: 'The home dashboard is designed to be minimal. You can tap the ⓘ icons on any card to learn more about your current cycle metrics.',
+        explanation:
+            'The home dashboard is designed to be minimal. You can tap the ⓘ icons on any card to learn more about your current cycle metrics.',
         tip: 'Tapping a card directly will take you to its detailed breakdown.',
       );
       storage.markInfoPopupAsSeen();
@@ -50,12 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final storage = context.watch<StorageService>();
     final pred = context.watch<PredictionService>();
-    
+
     return Scaffold(
       backgroundColor: AppTheme.frameColor,
       body: Stack(
         children: [
-          Container(decoration: const BoxDecoration(gradient: AppTheme.bgGradient)),
+          Container(
+            decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
+          ),
           _buildDreamyBackground(),
           SafeArea(
             child: SingleChildScrollView(
@@ -71,26 +73,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 24),
                   _buildQuickLogCard(context),
                   const SizedBox(height: 32),
-                
-                if (storage.userGoal == 'pregnant')
-                  _buildPregnancyDashboard(context, storage)
-                else if (storage.userGoal == 'conceive')
-                  _buildTTCDashboard(context, storage)
-                else
-                  _buildCycleDashboard(context, storage, pred),
-                  
-                const SizedBox(height: 24),
-                _buildEducationalCard(context),
-                  
-                const SizedBox(height: 32),
-                _buildMedicalDisclaimer(),
-                const SizedBox(height: 120),
-              ],
+
+                  if (storage.userGoal == 'pregnant')
+                    _buildPregnancyDashboard(context, storage)
+                  else if (storage.userGoal == 'conceive')
+                    _buildTTCDashboard(context, storage)
+                  else
+                    _buildCycleDashboard(context, storage, pred),
+
+                  const SizedBox(height: 24),
+                  _buildEducationalCard(context),
+
+                  const SizedBox(height: 32),
+                  _buildMedicalDisclaimer(),
+                  const SizedBox(height: 120),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    ),
+        ],
+      ),
     );
   }
 
@@ -101,11 +103,18 @@ class _HomeScreenState extends State<HomeScreen> {
           top: -50,
           left: -50,
           child: Container(
-            width: 300, height: 300,
+            width: 300,
+            height: 300,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppTheme.accentPink.withOpacity(0.15),
-              boxShadow: [BoxShadow(color: AppTheme.accentPink.withOpacity(0.15), blurRadius: 90, spreadRadius: 60)],
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.accentPink.withOpacity(0.15),
+                  blurRadius: 90,
+                  spreadRadius: 60,
+                ),
+              ],
             ),
           ),
         ),
@@ -113,11 +122,18 @@ class _HomeScreenState extends State<HomeScreen> {
           top: 200,
           right: -100,
           child: Container(
-            width: 350, height: 350,
+            width: 350,
+            height: 350,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white.withOpacity(0.4),
-              boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.4), blurRadius: 100, spreadRadius: 70)],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.4),
+                  blurRadius: 100,
+                  spreadRadius: 70,
+                ),
+              ],
             ),
           ),
         ),
@@ -125,11 +141,18 @@ class _HomeScreenState extends State<HomeScreen> {
           bottom: -50,
           left: 50,
           child: Container(
-            width: 250, height: 250,
+            width: 250,
+            height: 250,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFFBA68C8).withOpacity(0.1),
-              boxShadow: [BoxShadow(color: const Color(0xFFBA68C8).withOpacity(0.1), blurRadius: 80, spreadRadius: 40)],
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFBA68C8).withOpacity(0.1),
+                  blurRadius: 80,
+                  spreadRadius: 40,
+                ),
+              ],
             ),
           ),
         ),
@@ -155,7 +178,11 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.accentPink.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.favorite_rounded, color: AppTheme.accentPink, size: 16),
+            child: const Icon(
+              Icons.favorite_rounded,
+              color: AppTheme.accentPink,
+              size: 16,
+            ),
           ),
           const SizedBox(width: 12),
           Text(
@@ -191,26 +218,50 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.accentPurple.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.add_reaction_rounded, color: AppTheme.accentPurple, size: 28),
+            child: const Icon(
+              Icons.add_reaction_rounded,
+              color: AppTheme.accentPurple,
+              size: 28,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Daily Quick Log', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.textDark)),
+                Text(
+                  'Daily Quick Log',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textDark,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text('Track mood, symptoms & flow', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary)),
+                Text(
+                  'Track mood, symptoms & flow',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
               ],
             ),
           ),
-          const Icon(Icons.add_circle_outline_rounded, color: AppTheme.accentPurple),
+          const Icon(
+            Icons.add_circle_outline_rounded,
+            color: AppTheme.accentPurple,
+          ),
         ],
       ),
     ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1);
   }
 
-  Widget _buildCycleDashboard(BuildContext context, StorageService storage, PredictionService pred) {
+  Widget _buildCycleDashboard(
+    BuildContext context,
+    StorageService storage,
+    PredictionService pred,
+  ) {
     final cycleDay = pred.currentCycleDay;
     final daysToNext = pred.daysUntilNextPeriod;
     final phaseName = pred.phaseDisplayName;
@@ -247,7 +298,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildTTCDashboard(BuildContext context, StorageService storage) {
     final pred = context.watch<PredictionService>();
-    final nextOvulation = pred.nextPeriodDate?.subtract(const Duration(days: 14)) ?? DateTime.now();
+    final nextOvulation =
+        pred.nextPeriodDate?.subtract(const Duration(days: 14)) ??
+        DateTime.now();
 
     return Column(
       children: [
@@ -261,13 +314,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Next Ovulation', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                    Text(
+                      'Next Ovulation',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: 8),
-                    Text(DateFormat('MMM d').format(nextOvulation), style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                    Text(
+                      DateFormat('MMM d').format(nextOvulation),
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.textDark,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const Icon(Icons.wb_sunny_rounded, color: Colors.orangeAccent, size: 28),
+              const Icon(
+                Icons.wb_sunny_rounded,
+                color: Colors.orangeAccent,
+                size: 28,
+              ),
             ],
           ),
         ).animate().fadeIn(delay: 200.ms),
@@ -275,11 +346,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPregnancyDashboard(BuildContext context, StorageService storage) {
+  Widget _buildPregnancyDashboard(
+    BuildContext context,
+    StorageService storage,
+  ) {
     final weeks = storage.pregnancyWeeks ?? 8;
-    final dueDate = storage.dueDate ?? DateTime.now().add(const Duration(days: 220));
+    final dueDate =
+        storage.dueDate ?? DateTime.now().add(const Duration(days: 220));
     final daysRemaining = dueDate.difference(DateTime.now()).inDays;
-    
+
     String babySize = 'Raspberry';
     if (weeks >= 12) babySize = 'Lime';
     if (weeks >= 20) babySize = 'Banana';
@@ -293,13 +368,31 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Pregnancy Progress', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+              Text(
+                'Pregnancy Progress',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Week $weeks', style: GoogleFonts.poppins(fontSize: 32, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-                  const Icon(Icons.pregnant_woman_rounded, color: AppTheme.accentPink, size: 40),
+                  Text(
+                    'Week $weeks',
+                    style: GoogleFonts.poppins(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
+                  const Icon(
+                    Icons.pregnant_woman_rounded,
+                    color: AppTheme.accentPink,
+                    size: 40,
+                  ),
                 ],
               ),
             ],
@@ -312,37 +405,70 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Baby Size', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+              Text(
+                'Baby Size',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 8),
-              Text('About the size of a $babySize', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+              Text(
+                'About the size of a $babySize',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
+              ),
             ],
           ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 24),
-        _buildCycleStatusRow(weeks, daysRemaining, label1: 'Weeks', label2: 'Days Left'),
+        _buildCycleStatusRow(
+          weeks,
+          daysRemaining,
+          label1: 'Weeks',
+          label2: 'Days Left',
+        ),
       ],
     );
   }
 
-  Widget _buildFloralRingDashboard(BuildContext context, PredictionService pred) {
+  Widget _buildFloralRingDashboard(
+    BuildContext context,
+    PredictionService pred,
+  ) {
     final phaseName = pred.phaseDisplayName;
     final day = pred.currentCycleDay == 0 ? 1 : pred.currentCycleDay;
     final cycleLen = pred.averageCycleLength;
-    
+
     String ovulationText = '';
     if (pred.nextPeriodDate != null) {
-      final currentOvDate = pred.nextPeriodDate!.subtract(const Duration(days: 14));
+      final currentOvDate = pred.nextPeriodDate!.subtract(
+        const Duration(days: 14),
+      );
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
-      final ovDate = DateTime(currentOvDate.year, currentOvDate.month, currentOvDate.day);
+      final ovDate = DateTime(
+        currentOvDate.year,
+        currentOvDate.month,
+        currentOvDate.day,
+      );
       final daysUntil = ovDate.difference(today).inDays;
       String daysText;
-      if (daysUntil == 0) daysText = '(Today)';
-      else if (daysUntil == 1) daysText = '(Tomorrow)';
-      else if (daysUntil < 0) daysText = '(Passed)';
-      else daysText = '(in $daysUntil days)';
+      if (daysUntil == 0)
+        daysText = '(Today)';
+      else if (daysUntil == 1)
+        daysText = '(Tomorrow)';
+      else if (daysUntil < 0)
+        daysText = '(Passed)';
+      else
+        daysText = '(in $daysUntil days)';
 
-      ovulationText = 'Ovulation: ${DateFormat('MMM d').format(currentOvDate)} $daysText';
+      ovulationText =
+          'Ovulation: ${DateFormat('MMM d').format(currentOvDate)} $daysText';
     }
 
     return Center(
@@ -379,25 +505,74 @@ class _HomeScreenState extends State<HomeScreen> {
                     text: TextSpan(
                       style: GoogleFonts.poppins(color: AppTheme.textDark),
                       children: [
-                        const TextSpan(text: 'Day ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                        TextSpan(text: '$day', style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800, height: 1.0)),
-                        TextSpan(text: ' of $cycleLen', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                        const TextSpan(
+                          text: 'Day ',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '$day',
+                          style: const TextStyle(
+                            fontSize: 48,
+                            fontWeight: FontWeight.w800,
+                            height: 1.0,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' of $cycleLen',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [AppTheme.phaseColor(phaseName).withOpacity(0.6), AppTheme.phaseColor(phaseName)]),
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [BoxShadow(color: AppTheme.phaseColor(phaseName).withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 8,
                     ),
-                    child: Text(phaseName + ' Phase', style: GoogleFonts.inter(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppTheme.phaseColor(phaseName).withOpacity(0.6),
+                          AppTheme.phaseColor(phaseName),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.phaseColor(
+                            phaseName,
+                          ).withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      phaseName + ' Phase',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   if (ovulationText.isNotEmpty) ...[
                     const SizedBox(height: 12),
-                    Text(ovulationText, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w600)),
+                    Text(
+                      ovulationText,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        color: AppTheme.textDark,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                   const SizedBox(height: 16),
                 ],
@@ -409,7 +584,12 @@ class _HomeScreenState extends State<HomeScreen> {
     ).animate().fadeIn(duration: 800.ms).scale(curve: Curves.easeOutBack);
   }
 
-  Widget _buildCycleStatusRow(dynamic val1, dynamic val2, {String label1 = 'Cycle Day', String label2 = 'Next Period'}) {
+  Widget _buildCycleStatusRow(
+    dynamic val1,
+    dynamic val2, {
+    String label1 = 'Cycle Day',
+    String label2 = 'Next Period',
+  }) {
     return GlassContainer(
       padding: const EdgeInsets.all(28),
       radius: 32,
@@ -419,23 +599,56 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label1, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                Text(
+                  label1,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text('$val1', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                Text(
+                  '$val1',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
+                ),
               ],
             ),
           ),
           // Vertical divider
-          Container(width: 1.5, height: 40, color: Colors.white.withOpacity(0.2)),
+          Container(
+            width: 1.5,
+            height: 40,
+            color: Colors.white.withOpacity(0.2),
+          ),
           const SizedBox(width: 24),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label2, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                Text(
+                  label2,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text(val2 is int && val2 < 0 ? '${val2.abs()}d late' : (label2 == 'Days Left' ? '$val2' : 'In $val2 days'), 
-                  style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                Text(
+                  val2 is int && val2 < 0
+                      ? '${val2.abs()}d late'
+                      : (label2 == 'Days Left' ? '$val2' : 'In $val2 days'),
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
+                ),
               ],
             ),
           ),
@@ -444,7 +657,10 @@ class _HomeScreenState extends State<HomeScreen> {
     ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1);
   }
 
-  Widget _buildFertilityCard(PredictionService pred, {String title = 'Fertility Status'}) {
+  Widget _buildFertilityCard(
+    PredictionService pred, {
+    String title = 'Fertility Status',
+  }) {
     final chance = pred.currentConceptionChance;
     return GlassContainer(
       padding: const EdgeInsets.all(28),
@@ -458,19 +674,44 @@ class _HomeScreenState extends State<HomeScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(chance > 50 ? 'High probability today' : 'Low probability today', 
-                    style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                  Text(
+                    chance > 50
+                        ? 'High probability today'
+                        : 'Low probability today',
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
                 ],
               ),
               GlassContainer(
                 radius: 16,
                 padding: const EdgeInsets.all(12),
                 borderColor: Colors.white.withOpacity(0.2),
-                child: const Icon(Icons.favorite_rounded, color: AppTheme.accentPink, size: 24)
-                  .animate(onPlay: (c) => c.repeat())
-                  .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 800.ms, curve: Curves.easeInOut),
+                child:
+                    const Icon(
+                          Icons.favorite_rounded,
+                          color: AppTheme.accentPink,
+                          size: 24,
+                        )
+                        .animate(onPlay: (c) => c.repeat())
+                        .scale(
+                          begin: const Offset(1, 1),
+                          end: const Offset(1.2, 1.2),
+                          duration: 800.ms,
+                          curve: Curves.easeInOut,
+                        ),
               ),
             ],
           ),
@@ -478,14 +719,29 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Chance of Conception', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-              Text('$chance%', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+              Text(
+                'Chance of Conception',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '$chance%',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.accentPink,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
           // Simple Progress Bar
           Container(
-            height: 12, width: double.infinity,
+            height: 12,
+            width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               borderRadius: BorderRadius.circular(6),
@@ -497,7 +753,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   color: AppTheme.accentPink,
                   borderRadius: BorderRadius.circular(6),
-                  boxShadow: [BoxShadow(color: AppTheme.accentPink.withOpacity(0.4), blurRadius: 8, spreadRadius: 1)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.accentPink.withOpacity(0.4),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -513,17 +775,29 @@ class _HomeScreenState extends State<HomeScreen> {
       radius: 40,
       child: Column(
         children: [
-          const Icon(Icons.auto_awesome_rounded, color: AppTheme.accentPink, size: 48),
+          const Icon(
+            Icons.auto_awesome_rounded,
+            color: AppTheme.accentPink,
+            size: 48,
+          ),
           const SizedBox(height: 20),
           Text(
             'Ready to start?',
-            style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w900, color: AppTheme.textDark),
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              color: AppTheme.textDark,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             'Log your first period to see your cycle predictions and insights.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
+            style: GoogleFonts.inter(
+              fontSize: 15,
+              color: AppTheme.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 32),
           GlassContainer(
@@ -538,7 +812,13 @@ class _HomeScreenState extends State<HomeScreen> {
             radius: 20,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Text('Log First Period', style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+              child: Text(
+                'Log First Period',
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.accentPink,
+                ),
+              ),
             ),
           ),
         ],
@@ -552,7 +832,11 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Text(
           'This is an estimate based on cycle patterns and should not be considered medical advice.',
-          style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary.withOpacity(0.6), fontStyle: FontStyle.italic),
+          style: GoogleFonts.inter(
+            fontSize: 11,
+            color: AppTheme.textSecondary.withOpacity(0.6),
+            fontStyle: FontStyle.italic,
+          ),
           textAlign: TextAlign.center,
         ),
       ),
@@ -562,7 +846,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEducationalCard(BuildContext context) {
     return GlassContainer(
       radius: 28,
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EducationHubScreen())),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const EducationHubScreen()),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Row(
@@ -573,16 +860,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: AppTheme.accentPink.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.menu_book_rounded, color: AppTheme.accentPink, size: 32),
+              child: const Icon(
+                Icons.menu_book_rounded,
+                color: AppTheme.accentPink,
+                size: 32,
+              ),
             ),
             const SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Education Hub', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                  Text(
+                    'Education Hub',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text('Discover insights about your cycle and body', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500)),
+                  Text(
+                    'Discover insights about your cycle and body',
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -596,7 +901,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHormoneDetailCard(PredictionService pred, int day) {
     final levels = pred.getHormoneLevels(day);
     final descriptions = pred.getHormoneDescriptions(day);
-    final phase = pred.getPhaseForDay(DateTime.now().add(Duration(days: day - pred.currentCycleDay)));
+    final phase = pred.getPhaseForDay(
+      DateTime.now().add(Duration(days: day - pred.currentCycleDay)),
+    );
 
     return GlassContainer(
       padding: const EdgeInsets.all(24),
@@ -607,11 +914,33 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Day $day Details', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+              Text(
+                'Day $day Details',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
+              ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: AppTheme.phaseColor(phase.displayName).withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-                child: Text(phase.displayName, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.phaseColor(phase.displayName))),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.phaseColor(
+                    phase.displayName,
+                  ).withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  phase.displayName,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.phaseColor(phase.displayName),
+                  ),
+                ),
               ),
             ],
           ),
@@ -619,15 +948,33 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _hormoneStat('Estrogen', descriptions['Estrogen']!, AppTheme.hormoneColors['Estrogen']!),
-              _hormoneStat('Progesterone', descriptions['Progesterone']!, AppTheme.hormoneColors['Progesterone']!),
-              _hormoneStat('LH', (levels['LH']! > 0.7) ? 'Peak' : 'Stable', AppTheme.hormoneColors['LH']!),
+              _hormoneStat(
+                'Estrogen',
+                descriptions['Estrogen']!,
+                AppTheme.hormoneColors['Estrogen']!,
+              ),
+              _hormoneStat(
+                'Progesterone',
+                descriptions['Progesterone']!,
+                AppTheme.hormoneColors['Progesterone']!,
+              ),
+              _hormoneStat(
+                'LH',
+                (levels['LH']! > 0.7) ? 'Peak' : 'Stable',
+                AppTheme.hormoneColors['LH']!,
+              ),
             ],
           ),
           const SizedBox(height: 20),
           Text(
-            day == pred.currentCycleDay ? 'You are currently in your ${phase.displayName} phase.' : 'On Day $day, you will likely be in the ${phase.displayName} phase.',
-            style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
+            day == pred.currentCycleDay
+                ? 'You are currently in your ${phase.displayName} phase.'
+                : 'On Day $day, you will likely be in the ${phase.displayName} phase.',
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: AppTheme.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
@@ -640,13 +987,31 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Row(
           children: [
-            Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
             const SizedBox(width: 6),
-            Text(label, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 4),
-        Text(value, style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w800,
+            color: AppTheme.textDark,
+          ),
+        ),
       ],
     );
   }
@@ -693,13 +1058,17 @@ class _CycleRingPainter extends CustomPainter {
   final Color activeColor;
   final Color trackColor;
 
-  _CycleRingPainter({required this.progress, required this.activeColor, required this.trackColor});
+  _CycleRingPainter({
+    required this.progress,
+    required this.activeColor,
+    required this.trackColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 8;
-    
+
     final trackPaint = Paint()
       ..color = trackColor
       ..style = PaintingStyle.stroke
@@ -726,6 +1095,7 @@ class _CycleRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CycleRingPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.activeColor != activeColor;
+    return oldDelegate.progress != progress ||
+        oldDelegate.activeColor != activeColor;
   }
 }

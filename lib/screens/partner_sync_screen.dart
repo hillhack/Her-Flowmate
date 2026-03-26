@@ -10,7 +10,6 @@ import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/glass_container.dart';
 
-
 class PartnerSyncScreen extends StatefulWidget {
   const PartnerSyncScreen({super.key});
 
@@ -34,10 +33,15 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
       Clipboard.setData(ClipboardData(text: _syncCode!));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Sync code copied to clipboard!', style: GoogleFonts.inter()),
+          content: Text(
+            'Sync code copied to clipboard!',
+            style: GoogleFonts.inter(),
+          ),
           backgroundColor: AppTheme.accentPink,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       );
     }
@@ -48,24 +52,31 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
     final storage = context.watch<StorageService>();
     final pred = context.watch<PredictionService>();
     final phase = pred.currentPhase;
-    final name = storage.userName.isNotEmpty ? storage.userName.split(' ').first : 'Your Partner';
+    final name = storage.userName.isNotEmpty
+        ? storage.userName.split(' ').first
+        : 'Your Partner';
 
     String partnerMessage = '';
     switch (phase) {
       case CyclePhase.menstrual:
-        partnerMessage = "$name is currently on her Period. Energy levels might be low. It's a great time for extra cuddles, hot tea, and bringing her favorite snacks!";
+        partnerMessage =
+            "$name is currently on her Period. Energy levels might be low. It's a great time for extra cuddles, hot tea, and bringing her favorite snacks!";
         break;
       case CyclePhase.follicular:
-        partnerMessage = "$name is in her Follicular Phase. She's likely feeling energetic, creative, and ready to socialize. Plan a fun date out!";
+        partnerMessage =
+            "$name is in her Follicular Phase. She's likely feeling energetic, creative, and ready to socialize. Plan a fun date out!";
         break;
       case CyclePhase.ovulation:
-        partnerMessage = "$name is Ovulating! She's likely feeling confident, outgoing, and radiant. A perfect time for romantic evenings.";
+        partnerMessage =
+            "$name is Ovulating! She's likely feeling confident, outgoing, and radiant. A perfect time for romantic evenings.";
         break;
       case CyclePhase.luteal:
-        partnerMessage = "$name is in her Luteal Phase. She might start feeling more inward, moody, or physically tired as her period approaches. Be extra patient and supportive!";
+        partnerMessage =
+            "$name is in her Luteal Phase. She might start feeling more inward, moody, or physically tired as her period approaches. Be extra patient and supportive!";
         break;
       default:
-        partnerMessage = "$name hasn't logged enough data yet, but today is always a good day to show her some extra love!";
+        partnerMessage =
+            "$name hasn't logged enough data yet, but today is always a good day to show her some extra love!";
         break;
     }
 
@@ -75,12 +86,19 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppTheme.textDark),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            color: AppTheme.textDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Partner Sync',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w800, fontSize: 20),
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
       ),
@@ -93,27 +111,43 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.favorite_rounded, color: AppTheme.accentPink, size: 64),
-                  ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+                  child:
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.favorite_rounded,
+                          color: AppTheme.accentPink,
+                          size: 64,
+                        ),
+                      ).animate().scale(
+                        duration: 600.ms,
+                        curve: Curves.easeOutBack,
+                      ),
                 ),
                 const SizedBox(height: 32),
-                
+
                 Text(
                   'Share Your Cycle',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                  style: GoogleFonts.poppins(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
                 ).animate().fadeIn(delay: 200.ms),
                 const SizedBox(height: 12),
                 Text(
                   'Generate a secure sync code so your partner can understand your phases and know exactly how to support you.',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textSecondary, height: 1.5),
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    color: AppTheme.textSecondary,
+                    height: 1.5,
+                  ),
                 ).animate().fadeIn(delay: 300.ms),
 
                 const SizedBox(height: 40),
@@ -130,37 +164,83 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(colors: [Color(0xFFBA68C8), AppTheme.accentPink]),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFFBA68C8),
+                                  AppTheme.accentPink,
+                                ],
+                              ),
                               borderRadius: BorderRadius.circular(24),
-                              boxShadow: [BoxShadow(color: AppTheme.accentPink.withOpacity(0.4), blurRadius: 12, offset: const Offset(0, 4))],
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.accentPink.withOpacity(0.4),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
                             child: Text(
                               'Generate Sync Code',
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
                       ] else ...[
-                        Text('Your Sync Code', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                        Text(
+                          'Your Sync Code',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: AppTheme.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                         const SizedBox(height: 12),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 24,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.8),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: AppTheme.accentPink.withOpacity(0.3), width: 2),
+                            border: Border.all(
+                              color: AppTheme.accentPink.withOpacity(0.3),
+                              width: 2,
+                            ),
                           ),
                           child: Text(
                             _syncCode!,
-                            style: GoogleFonts.robotoMono(fontSize: 28, fontWeight: FontWeight.w900, color: AppTheme.textDark, letterSpacing: 4),
+                            style: GoogleFonts.robotoMono(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              color: AppTheme.textDark,
+                              letterSpacing: 4,
+                            ),
                           ),
-                        ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
+                        ).animate().scale(
+                          duration: 400.ms,
+                          curve: Curves.easeOutBack,
+                        ),
                         const SizedBox(height: 20),
                         TextButton.icon(
                           onPressed: _copyCode,
-                          icon: const Icon(Icons.copy_rounded, color: AppTheme.accentPink),
-                          label: Text('Copy Code', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.accentPink)),
+                          icon: const Icon(
+                            Icons.copy_rounded,
+                            color: AppTheme.accentPink,
+                          ),
+                          label: Text(
+                            'Copy Code',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.accentPink,
+                            ),
+                          ),
                         ),
                       ],
                     ],
@@ -171,7 +251,11 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
 
                 Text(
                   'Preview: What they will see today',
-                  style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
                 ).animate().fadeIn(delay: 500.ms),
                 const SizedBox(height: 16),
 
@@ -185,16 +269,40 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                         children: [
                           Container(
                             padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(color: AppTheme.phaseColor(phase.displayName).withOpacity(0.2), shape: BoxShape.circle),
-                            child: Icon(Icons.wb_sunny_rounded, color: AppTheme.phaseColor(phase.displayName)),
+                            decoration: BoxDecoration(
+                              color: AppTheme.phaseColor(
+                                phase.displayName,
+                              ).withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.wb_sunny_rounded,
+                              color: AppTheme.phaseColor(phase.displayName),
+                            ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("${name}'s Phase", style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                                Text(phase.displayName, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.phaseColor(phase.displayName))),
+                                Text(
+                                  "${name}'s Phase",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    color: AppTheme.textSecondary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  phase.displayName,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppTheme.phaseColor(
+                                      phase.displayName,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -206,11 +314,18 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.4),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white.withOpacity(0.6)),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.6),
+                          ),
                         ),
                         child: Text(
                           partnerMessage,
-                          style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, height: 1.5, fontStyle: FontStyle.italic),
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: AppTheme.textDark,
+                            height: 1.5,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ),
                     ],

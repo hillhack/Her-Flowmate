@@ -66,16 +66,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             letterSpacing: -0.5,
           ),
         ),
-        actions: const [
-          NotificationBell(),
-          SizedBox(width: 12),
-        ],
+        actions: const [NotificationBell(), SizedBox(width: 12)],
       ),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         child: _screens[_selectedIndex],
       ),
-      floatingActionButton: (_selectedIndex == 0 && storage.userGoal != 'pregnant')
+      floatingActionButton:
+          (_selectedIndex == 0 && storage.userGoal != 'pregnant')
           ? GestureDetector(
               onTap: () {
                 showModalBottomSheet(
@@ -88,7 +86,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 width: 64,
                 height: 64,
                 radius: 32,
-                child: const Icon(Icons.add_rounded, size: 32, color: AppTheme.accentPink),
+                child: const Icon(
+                  Icons.add_rounded,
+                  size: 32,
+                  color: AppTheme.accentPink,
+                ),
               ),
             ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack)
           : null,
@@ -136,7 +138,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     const SizedBox(width: 16),
                     Text(
                       'Log Period',
-                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textDark,
+                      ),
                     ),
                   ],
                 ),
@@ -162,7 +168,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     const SizedBox(width: 16),
                     Text(
                       'Daily Check-in',
-                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textDark,
+                      ),
                     ),
                   ],
                 ),
@@ -175,7 +185,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   Widget _buildDrawer(BuildContext context, StorageService storage) {
-    final initial = storage.userName.isNotEmpty ? storage.userName[0].toUpperCase() : 'U';
+    final initial = storage.userName.isNotEmpty
+        ? storage.userName[0].toUpperCase()
+        : 'U';
 
     return Drawer(
       backgroundColor: AppTheme.frameColor,
@@ -186,103 +198,154 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           children: [
             const SizedBox(height: 32),
             GlassContainer(
-              width: 80, height: 80,
+              width: 80,
+              height: 80,
               radius: 40,
               child: Center(
                 child: Text(
                   initial,
-                  style: GoogleFonts.poppins(color: AppTheme.accentPink, fontWeight: FontWeight.bold, fontSize: 32),
+                  style: GoogleFonts.poppins(
+                    color: AppTheme.accentPink,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
             Text(
               storage.userName.isNotEmpty ? storage.userName : 'Guest',
-              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textDark,
+              ),
             ),
             const SizedBox(height: 48),
-            
+
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  _drawerItem(icon: Icons.home_rounded, title: 'Home', index: 0),
-                  const SizedBox(height: 12),
-                  _actionDrawerItem(
-                    icon: Icons.calendar_month_rounded, 
-                    title: 'Calendar', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CalendarScreen()))
+                  _drawerItem(
+                    icon: Icons.home_rounded,
+                    title: 'Home',
+                    index: 0,
                   ),
                   const SizedBox(height: 12),
-                  _drawerItem(icon: Icons.lightbulb_rounded, title: 'Insights', index: 1),
+                  _actionDrawerItem(
+                    icon: Icons.calendar_month_rounded,
+                    title: 'Calendar',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CalendarScreen()),
+                    ),
+                  ),
                   const SizedBox(height: 12),
-                  _drawerItem(icon: Icons.history_rounded, title: 'History', index: 2),
+                  _drawerItem(
+                    icon: Icons.lightbulb_rounded,
+                    title: 'Insights',
+                    index: 1,
+                  ),
+                  const SizedBox(height: 12),
+                  _drawerItem(
+                    icon: Icons.history_rounded,
+                    title: 'History',
+                    index: 2,
+                  ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
                     icon: Icons.favorite_rounded,
                     title: 'Partner Sync',
                     onTap: () {
                       Navigator.pop(context); // Close drawer
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const PartnerSyncScreen()));
-                    }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PartnerSyncScreen(),
+                        ),
+                      );
+                    },
                   ),
-                  
+
                   const SizedBox(height: 24),
                   Divider(color: AppTheme.shadowDark.withOpacity(0.3)),
                   const SizedBox(height: 24),
 
                   _actionDrawerItem(
-                    icon: Icons.settings_rounded, 
-                    title: 'Settings', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ModeSettingsScreen()))
-                  ),
-                  const SizedBox(height: 12),
-                  _actionDrawerItem(
-                    icon: Icons.help_outline_rounded, 
-                    title: 'Help', 
-                    onTap: () => showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        backgroundColor: AppTheme.bgColor,
-                        title: const Text('Help'),
-                        content: const Text('HerFlowmate is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.'),
-                        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Got it'))],
+                    icon: Icons.settings_rounded,
+                    title: 'Settings',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ModeSettingsScreen(),
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
-                    icon: Icons.contact_support_rounded, 
-                    title: 'Contact Support', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FeedbackScreen()))
+                    icon: Icons.help_outline_rounded,
+                    title: 'Help',
+                    onTap: () => showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: AppTheme.bgColor,
+                        title: const Text('Help'),
+                        content: const Text(
+                          'HerFlowmate is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Got it'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _actionDrawerItem(
+                    icon: Icons.contact_support_rounded,
+                    title: 'Contact Support',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const FeedbackScreen()),
+                    ),
                   ),
                 ],
               ),
             ),
-            
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8,
+              ),
               child: _actionDrawerItem(
-                icon: Icons.logout_rounded, 
-                title: 'Logout', 
+                icon: Icons.logout_rounded,
+                title: 'Logout',
                 onTap: () async {
                   await storage.logout();
                   if (context.mounted) {
                     Navigator.pushAndRemoveUntil(
-                      context, 
+                      context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (route) => false,
                     );
                   }
-                }
+                },
               ),
             ),
-            
+
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
               child: Text(
                 'HerFlowmate v1.0',
-                style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -291,7 +354,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 
-  Widget _actionDrawerItem({required IconData icon, required String title, required VoidCallback onTap}) {
+  Widget _actionDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return GlassContainer(
       margin: const EdgeInsets.only(bottom: 8),
       radius: 20,
@@ -301,24 +368,40 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       },
       child: ListTile(
         leading: Icon(icon, color: AppTheme.accentPink, size: 24),
-        title: Text(title, style: GoogleFonts.inter(color: AppTheme.textDark, fontSize: 16, fontWeight: FontWeight.w700)),
+        title: Text(
+          title,
+          style: GoogleFonts.inter(
+            color: AppTheme.textDark,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }
 
-  Widget _drawerItem({required IconData icon, required String title, required int index}) {
+  Widget _drawerItem({
+    required IconData icon,
+    required String title,
+    required int index,
+  }) {
     final isSelected = _selectedIndex == index;
     return GlassContainer(
       margin: const EdgeInsets.only(bottom: 8),
       radius: 20,
       opacity: isSelected ? 0.2 : AppTheme.glassOpacity,
-      borderColor: isSelected ? AppTheme.accentPink.withOpacity(0.5) : Colors.white.withOpacity(0.3),
+      borderColor: isSelected
+          ? AppTheme.accentPink.withOpacity(0.5)
+          : Colors.white.withOpacity(0.3),
       onTap: () {
         _onItemTapped(index);
         Navigator.pop(context);
       },
       child: ListTile(
-        leading: Icon(icon, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary),
+        leading: Icon(
+          icon,
+          color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+        ),
         title: Text(
           title,
           style: GoogleFonts.inter(

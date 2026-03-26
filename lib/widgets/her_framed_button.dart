@@ -33,10 +33,7 @@ class HerFramedButton extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: 12),
-                  ],
+                  if (icon != null) ...[icon!, const SizedBox(width: 12)],
                   Text(
                     label,
                     style: GoogleFonts.outfit(

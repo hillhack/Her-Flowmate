@@ -3,27 +3,27 @@ import 'package:google_fonts/google_fonts.dart';
 
 abstract final class AppTheme {
   // ── Color Palette (Exact Specification) ───────────────────────────────────
-  static const Color bgColor      = Color(0xFFF8E9EE);
-  static const Color surfaceColor  = Color(0xFFF3DDE5);
-  static const Color accentPink    = Color(0xFFE88BA3);
-  static const Color textDark      = Color(0xFF4A2F3A);
+  static const Color bgColor = Color(0xFFF8E9EE);
+  static const Color surfaceColor = Color(0xFFF3DDE5);
+  static const Color accentPink = Color(0xFFE88BA3);
+  static const Color textDark = Color(0xFF4A2F3A);
   static const Color textSecondary = Color(0xFFA97C8B);
-  
+
   // Aliases for legacy compatibility
-  static const Color frameColor    = bgColor;
-  static const Color neuSurface    = surfaceColor;
-  static const Color textMain       = textDark;
-  static const Color textMuted      = textSecondary;
-  static const Color shadowLight   = Colors.white;
-  static const Color shadowDark    = Color(0xFFD9B9C4);
+  static const Color frameColor = bgColor;
+  static const Color neuSurface = surfaceColor;
+  static const Color textMain = textDark;
+  static const Color textMuted = textSecondary;
+  static const Color shadowLight = Colors.white;
+  static const Color shadowDark = Color(0xFFD9B9C4);
 
   // Visualization Colors
-  static const Color accentPurple  = Color(0xFFBA68C8);
-  static const Color accentCyan    = Color(0xFF4DD0E1);
-  static const Color neonGreen     = Color(0xFF81C784);
-  
+  static const Color accentPurple = Color(0xFFBA68C8);
+  static const Color accentCyan = Color(0xFF4DD0E1);
+  static const Color neonGreen = Color(0xFF81C784);
+
   static const double glassOpacity = 0.4;
-  static const double glassBlur    = 16.0;
+  static const double glassBlur = 16.0;
 
   static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -41,21 +41,20 @@ abstract final class AppTheme {
   );
 
   static const Map<String, Color> phaseColors = {
-    'Menstrual':  Color(0xFFD81B60), // Deep Pink
+    'Menstrual': Color(0xFFD81B60), // Deep Pink
     'Follicular': Color(0xFFFFCCBC), // Soft Peach
-    'Ovulation':  Color(0xFFBA68C8), // Purple
-    'Luteal':     Color(0xFFD1C4E9), // Lavender/Light Purple
+    'Ovulation': Color(0xFFBA68C8), // Purple
+    'Luteal': Color(0xFFD1C4E9), // Lavender/Light Purple
   };
 
   static const Map<String, Color> hormoneColors = {
-    'Estrogen':     Color(0xFFFFCCBC), // Peach Pink
+    'Estrogen': Color(0xFFFFCCBC), // Peach Pink
     'Progesterone': Color(0xFFD1C4E9), // Lavender
-    'LH':           Color(0xFFF06292), // Bright Pink
-    'FSH':          Color(0xFFFFAB91), // Soft Coral
+    'LH': Color(0xFFF06292), // Bright Pink
+    'FSH': Color(0xFFFFAB91), // Soft Coral
   };
 
   static Color phaseColor(String phase) => phaseColors[phase] ?? accentPink;
-
 
   // ── Glassmorphism Decorations ─────────────────────────────────────────────
   static BoxDecoration glassDecoration({
@@ -88,11 +87,31 @@ abstract final class AppTheme {
   // ── Phase tip helper ──────────────────────────────────────────────────────
   static ({String headline, String body}) phaseTip(String phase) {
     switch (phase) {
-      case 'Menstrual': return (headline: 'Focus on Rest', body: 'Energy is lower. Gentle movements only.');
-      case 'Follicular': return (headline: 'Energy Rising', body: 'Perfect for starting new projects.');
-      case 'Ovulation': return (headline: 'Peak Vitality', body: 'You are at your most vibrant.');
-      case 'Luteal': return (headline: 'Nurture Yourself', body: 'Prioritize comfort and slow pace.');
-      default: return (headline: 'Stay Mindful', body: 'Listen to your body\'s needs.');
+      case 'Menstrual':
+        return (
+          headline: 'Focus on Rest',
+          body: 'Energy is lower. Gentle movements only.',
+        );
+      case 'Follicular':
+        return (
+          headline: 'Energy Rising',
+          body: 'Perfect for starting new projects.',
+        );
+      case 'Ovulation':
+        return (
+          headline: 'Peak Vitality',
+          body: 'You are at your most vibrant.',
+        );
+      case 'Luteal':
+        return (
+          headline: 'Nurture Yourself',
+          body: 'Prioritize comfort and slow pace.',
+        );
+      default:
+        return (
+          headline: 'Stay Mindful',
+          body: 'Listen to your body\'s needs.',
+        );
     }
   }
 

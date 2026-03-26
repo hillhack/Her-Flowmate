@@ -23,15 +23,28 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
   String? _flowIntensity = 'Medium';
   final List<String> _selectedSymptoms = [];
   String? _selectedMood;
-  final TextEditingController _durationController = TextEditingController(text: '5');
+  final TextEditingController _durationController = TextEditingController(
+    text: '5',
+  );
 
   final List<String> _allSymptoms = [
-    'Cramps', 'Headache', 'Bloating', 'Acne', 'Backache', 'Tender Breasts', 'Nausea'
+    'Cramps',
+    'Headache',
+    'Bloating',
+    'Acne',
+    'Backache',
+    'Tender Breasts',
+    'Nausea',
   ];
 
   final Map<String, String> _allMoods = {
-    'Happy': '😊', 'Energetic': '⚡', 'Tired': '😴', 
-    'Sad': '😢', 'Anxious': '😰', 'Angry': '😠', 'Cravings': '🍪'
+    'Happy': '😊',
+    'Energetic': '⚡',
+    'Tired': '😴',
+    'Sad': '😢',
+    'Anxious': '😰',
+    'Angry': '😠',
+    'Cravings': '🍪',
   };
 
   @override
@@ -47,7 +60,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
         opacity: 0.05,
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 32.0,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,18 +131,33 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       children: [
-                        const Icon(Icons.calendar_today_rounded, color: AppTheme.accentPink, size: 24),
+                        const Icon(
+                          Icons.calendar_today_rounded,
+                          color: AppTheme.accentPink,
+                          size: 24,
+                        ),
                         const SizedBox(width: 14),
                         Text(
-                          _selectedDate == null ? 'Select Date' : DateFormat('EEEE, MMM d, yyyy').format(_selectedDate!),
+                          _selectedDate == null
+                              ? 'Select Date'
+                              : DateFormat(
+                                  'EEEE, MMM d, yyyy',
+                                ).format(_selectedDate!),
                           style: GoogleFonts.inter(
                             fontSize: 16,
-                            color: _selectedDate == null ? AppTheme.textSecondary : AppTheme.textDark,
+                            color: _selectedDate == null
+                                ? AppTheme.textSecondary
+                                : AppTheme.textDark,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         const Spacer(),
-                        if (_selectedDate != null) const Icon(Icons.check_circle_rounded, color: AppTheme.accentPink, size: 22),
+                        if (_selectedDate != null)
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            color: AppTheme.accentPink,
+                            size: 22,
+                          ),
                       ],
                     ),
                   ),
@@ -142,28 +173,52 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   padding: const EdgeInsets.all(8),
                   child: Row(
                     children: [
-                      Expanded(child: _amPmButton('AM', _isAM, () => setState(() => _isAM = true))),
+                      Expanded(
+                        child: _amPmButton(
+                          'AM',
+                          _isAM,
+                          () => setState(() => _isAM = true),
+                        ),
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: _amPmButton('PM', !_isAM, () => setState(() => _isAM = false))),
+                      Expanded(
+                        child: _amPmButton(
+                          'PM',
+                          !_isAM,
+                          () => setState(() => _isAM = false),
+                        ),
+                      ),
                     ],
                   ),
                 ).animate().fadeIn(delay: 300.ms),
 
                 const SizedBox(height: 32),
-                
+
                 _stepLabel('3', 'How many days?'),
                 const SizedBox(height: 16),
                 Container(
-                  decoration: AppTheme.glassDecoration(radius: 16, opacity: 0.1),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                  decoration: AppTheme.glassDecoration(
+                    radius: 16,
+                    opacity: 0.1,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 4,
+                  ),
                   child: TextField(
                     controller: _durationController,
                     keyboardType: TextInputType.number,
-                    style: GoogleFonts.inter(fontSize: 18, color: AppTheme.textDark, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      color: AppTheme.textDark,
+                      fontWeight: FontWeight.w600,
+                    ),
                     decoration: InputDecoration(
-                      border: InputBorder.none, 
-                      hintText: 'Number of days', 
-                      hintStyle: GoogleFonts.inter(color: AppTheme.textSecondary.withOpacity(0.4))
+                      border: InputBorder.none,
+                      hintText: 'Number of days',
+                      hintStyle: GoogleFonts.inter(
+                        color: AppTheme.textSecondary.withOpacity(0.4),
+                      ),
                     ),
                   ),
                 ).animate().fadeIn(delay: 350.ms),
@@ -185,16 +240,24 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                           child: GlassContainer(
                             radius: 16,
                             opacity: isSelected ? 0.2 : 0.05,
-                            borderColor: isSelected ? AppTheme.accentPink : Colors.transparent,
+                            borderColor: isSelected
+                                ? AppTheme.accentPink
+                                : Colors.transparent,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               child: Center(
-                                child: Text(flow, 
+                                child: Text(
+                                  flow,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 13, 
-                                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
-                                    color: isSelected ? AppTheme.accentPink : AppTheme.textDark,
-                                  )),
+                                    fontSize: 13,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w800
+                                        : FontWeight.w700,
+                                    color: isSelected
+                                        ? AppTheme.accentPink
+                                        : AppTheme.textDark,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -227,15 +290,26 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                       child: GlassContainer(
                         radius: 12,
                         opacity: isSelected ? 0.2 : 0.05,
-                        borderColor: isSelected ? AppTheme.accentPink : Colors.transparent,
+                        borderColor: isSelected
+                            ? AppTheme.accentPink
+                            : Colors.transparent,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          child: Text(symptom,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
+                          child: Text(
+                            symptom,
                             style: GoogleFonts.inter(
                               fontSize: 12,
-                              color: isSelected ? AppTheme.accentPink : AppTheme.textDark,
-                              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
-                            )),
+                              color: isSelected
+                                  ? AppTheme.accentPink
+                                  : AppTheme.textDark,
+                              fontWeight: isSelected
+                                  ? FontWeight.w800
+                                  : FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
                     );
@@ -257,18 +331,31 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(right: 16.0),
                         child: GestureDetector(
-                          onTap: () => setState(() => _selectedMood = entry.key),
+                          onTap: () =>
+                              setState(() => _selectedMood = entry.key),
                           child: GlassContainer(
                             radius: 20,
                             width: 64,
                             opacity: isSelected ? 0.2 : 0.05,
-                            borderColor: isSelected ? AppTheme.accentPink : Colors.transparent,
+                            borderColor: isSelected
+                                ? AppTheme.accentPink
+                                : Colors.transparent,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(entry.value, style: const TextStyle(fontSize: 26)),
+                                Text(
+                                  entry.value,
+                                  style: const TextStyle(fontSize: 26),
+                                ),
                                 const SizedBox(height: 4),
-                                Text(entry.key, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.textDark, fontWeight: FontWeight.w700)),
+                                Text(
+                                  entry.key,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
+                                    color: AppTheme.textDark,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -284,48 +371,74 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                 GlassContainer(
                   radius: 24,
                   padding: EdgeInsets.zero,
-                  borderColor: _selectedDate == null ? Colors.transparent : AppTheme.accentPink.withOpacity(0.4),
-                  onTap: _selectedDate == null ? () {} : () async {
-                    final dateWithTime = DateTime(
-                      _selectedDate!.year, _selectedDate!.month, _selectedDate!.day,
-                      _isAM ? 8 : 20,
-                    );
-                    final duration = int.tryParse(_durationController.text.trim()) ?? 5;
-                    final log = PeriodLog(
-                      startDate: dateWithTime,
-                      duration: duration,
-                      flowIntensity: _flowIntensity,
-                      symptoms: _selectedSymptoms,
-                      mood: _selectedMood,
-                    );
-                    final storage = Provider.of<StorageService>(context, listen: false);
-                    final predView = Provider.of<PredictionService>(context, listen: false);
-                    await storage.saveLog(log);
-                    
-                    if (mounted) {
-                      showPhaseDelight(context, predView.phaseDisplayName);
-                      Navigator.pop(context);
-                    }
+                  borderColor: _selectedDate == null
+                      ? Colors.transparent
+                      : AppTheme.accentPink.withOpacity(0.4),
+                  onTap: _selectedDate == null
+                      ? () {}
+                      : () async {
+                          final dateWithTime = DateTime(
+                            _selectedDate!.year,
+                            _selectedDate!.month,
+                            _selectedDate!.day,
+                            _isAM ? 8 : 20,
+                          );
+                          final duration =
+                              int.tryParse(_durationController.text.trim()) ??
+                              5;
+                          final log = PeriodLog(
+                            startDate: dateWithTime,
+                            duration: duration,
+                            flowIntensity: _flowIntensity,
+                            symptoms: _selectedSymptoms,
+                            mood: _selectedMood,
+                          );
+                          final storage = Provider.of<StorageService>(
+                            context,
+                            listen: false,
+                          );
+                          final predView = Provider.of<PredictionService>(
+                            context,
+                            listen: false,
+                          );
+                          await storage.saveLog(log);
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Period logged! ✨'),
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: AppTheme.accentPink,
-                      ),
-                    );
-                  },
+                          if (mounted) {
+                            showPhaseDelight(
+                              context,
+                              predView.phaseDisplayName,
+                            );
+                            Navigator.pop(context);
+                          }
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Period logged! ✨'),
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: AppTheme.accentPink,
+                            ),
+                          );
+                        },
                   child: SizedBox(
                     height: 64,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.cloud_done_rounded, color: _selectedDate == null ? AppTheme.textSecondary : AppTheme.accentPink),
+                        Icon(
+                          Icons.cloud_done_rounded,
+                          color: _selectedDate == null
+                              ? AppTheme.textSecondary
+                              : AppTheme.accentPink,
+                        ),
                         const SizedBox(width: 12),
-                        Text('Save Log',
+                        Text(
+                          'Save Log',
                           style: GoogleFonts.inter(
-                            fontSize: 18, fontWeight: FontWeight.w800,
-                            color: _selectedDate == null ? AppTheme.textSecondary : AppTheme.accentPink,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: _selectedDate == null
+                                ? AppTheme.textSecondary
+                                : AppTheme.accentPink,
                           ),
                         ),
                       ],
@@ -346,13 +459,31 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
     return Row(
       children: [
         Container(
-          width: 32, height: 32,
-          decoration: const BoxDecoration(color: AppTheme.accentPink, shape: BoxShape.circle),
+          width: 32,
+          height: 32,
+          decoration: const BoxDecoration(
+            color: AppTheme.accentPink,
+            shape: BoxShape.circle,
+          ),
           alignment: Alignment.center,
-          child: Text(step, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w900)),
+          child: Text(
+            step,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
         ),
         const SizedBox(width: 14),
-        Text(label, style: GoogleFonts.inter(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+            color: AppTheme.textDark,
+          ),
+        ),
       ],
     );
   }
@@ -361,7 +492,9 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
     return GlassContainer(
       radius: 18,
       opacity: isActive ? 0.15 : 0.05,
-      borderColor: isActive ? AppTheme.accentPink.withOpacity(0.3) : Colors.transparent,
+      borderColor: isActive
+          ? AppTheme.accentPink.withOpacity(0.3)
+          : Colors.transparent,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -369,12 +502,21 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              label == 'AM' ? Icons.wb_sunny_rounded : Icons.nights_stay_rounded,
+              label == 'AM'
+                  ? Icons.wb_sunny_rounded
+                  : Icons.nights_stay_rounded,
               color: isActive ? AppTheme.accentPink : AppTheme.textSecondary,
               size: 22,
             ),
             const SizedBox(width: 10),
-            Text(label, style: GoogleFonts.poppins(fontSize: 18, fontWeight: isActive ? FontWeight.w900 : FontWeight.w700, color: isActive ? AppTheme.accentPink : AppTheme.textSecondary)),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: isActive ? FontWeight.w900 : FontWeight.w700,
+                color: isActive ? AppTheme.accentPink : AppTheme.textSecondary,
+              ),
+            ),
           ],
         ),
       ),

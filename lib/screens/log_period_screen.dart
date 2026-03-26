@@ -9,6 +9,7 @@ import '../models/period_log.dart';
 import '../utils/app_theme.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/delight_widgets.dart';
+import '../widgets/brand_widgets.dart';
 
 class LogPeriodScreen extends StatefulWidget {
   const LogPeriodScreen({super.key});
@@ -74,14 +75,23 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   ),
                 ).animate().fadeIn(duration: 400.ms),
                 const SizedBox(height: 8),
-                Text(
-                  'Help HerFlowmate learn your cycle better.',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: 15,
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w600,
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: 'Help '),
+                      const WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: BrandName(fontSize: 15),
+                      ),
+                      const TextSpan(text: ' learn your cycle better.'),
+                    ],
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
+                  textAlign: TextAlign.center,
                 ).animate().fadeIn(delay: 100.ms),
                 const SizedBox(height: 40),
 

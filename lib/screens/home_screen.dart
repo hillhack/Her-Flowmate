@@ -6,14 +6,10 @@ import 'package:provider/provider.dart';
 import '../services/prediction_service.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
 import '../widgets/info_widgets.dart';
 import '../widgets/cycle_widgets.dart';
-
-
+import '../widgets/neu_container.dart';
 import 'log_period_screen.dart';
-import 'education_hub_screen.dart';
-import 'daily_checkin_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int? _selectedGraphDay;
+
 
   @override
   void initState() {
@@ -65,77 +61,67 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 16),
-                  _buildCurrentModeBadge(storage),
-                  const SizedBox(height: 24),
-                  _GreetingSection(storage: storage),
-                  const SizedBox(height: 24),
-                  _buildQuickLogCard(context),
-                  const SizedBox(height: 32),
-                
-                if (storage.userGoal == 'pregnant')
-                  _buildPregnancyDashboard(context, storage)
-                else if (storage.userGoal == 'conceive')
-                  _buildTTCDashboard(context, storage)
-                else
-                  _buildCycleDashboard(context, storage, pred),
+                  _buildTopRow(context, storage),
+                  const SizedBox(height: 40),
                   
-                const SizedBox(height: 24),
-                _buildEducationalCard(context),
-                  
-                const SizedBox(height: 32),
-                _buildMedicalDisclaimer(),
-                const SizedBox(height: 120),
-              ],
+                  if (storage.userGoal == 'pregnant')
+                    _buildPregnancyDashboard(context, storage)
+                  else if (storage.userGoal == 'conceive')
+                    _buildTTCDashboard(context, storage)
+                  else
+                    _buildCycleDashboard(context, storage, pred),
+                    
+                  const SizedBox(height: 48),
+                  _buildMedicalDisclaimer(),
+                  const SizedBox(height: 120),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    ),
+        ],
+      ),
     );
   }
+
+  Widget _buildTopRow(BuildContext context, StorageService storage) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _GreetingSection(storage: storage),
+        _buildCurrentModeBadge(storage),
+      ],
+    );
+  }
+
+
 
   Widget _buildDreamyBackground() {
     return Stack(
       children: [
-        Positioned(
-          top: -50,
-          left: -50,
-          child: Container(
-            width: 300, height: 300,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppTheme.accentPink.withOpacity(0.15),
-              boxShadow: [BoxShadow(color: AppTheme.accentPink.withOpacity(0.15), blurRadius: 90, spreadRadius: 60)],
-            ),
-          ),
-        ),
-        Positioned(
-          top: 200,
-          right: -100,
-          child: Container(
-            width: 350, height: 350,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.4),
-              boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.4), blurRadius: 100, spreadRadius: 70)],
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -50,
-          left: 50,
-          child: Container(
-            width: 250, height: 250,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: const Color(0xFFBA68C8).withOpacity(0.1),
-              boxShadow: [BoxShadow(color: const Color(0xFFBA68C8).withOpacity(0.1), blurRadius: 80, spreadRadius: 40)],
-            ),
-          ),
-        ),
+        _buildGlowBlob(top: -100, right: -50, size: 250, color: AppTheme.accentPink.withOpacity(0.08)),
+        _buildGlowBlob(bottom: 100, left: -80, size: 300, color: AppTheme.accentPurple.withOpacity(0.05)),
+        _buildGlowBlob(top: 400, right: -120, size: 200, color: Colors.white.withOpacity(0.2)),
       ],
-    ).animate().fadeIn(duration: 2.seconds);
+    );
   }
+
+  Widget _buildGlowBlob({double? top, double? bottom, double? left, double? right, required double size, required Color color}) {
+    return Positioned(
+      top: top, bottom: bottom, left: left, right: right,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(color: color, blurRadius: 100, spreadRadius: 50)
+          ],
+        ),
+      ), // Removed active scaling animation for performance
+    );
+  }
+
 
   Widget _buildCurrentModeBadge(StorageService storage) {
     final mode = storage.userGoal;
@@ -143,9 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mode == 'conceive') modeLabel = 'Conceive';
     if (mode == 'pregnant') modeLabel = 'Pregnancy';
 
-    return GlassContainer(
-      radius: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    return NeuContainer(
+      radius: 20,
+      onTap: () => _showModeSelectionSheet(context, storage),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -166,55 +153,108 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.textDark,
             ),
           ),
+          const SizedBox(width: 8),
+          Icon(Icons.keyboard_arrow_down_rounded, color: AppTheme.textSecondary.withOpacity(0.5), size: 20),
         ],
       ),
     );
   }
 
-  Widget _buildQuickLogCard(BuildContext context) {
-    return GlassContainer(
-      radius: 24,
+  void _showModeSelectionSheet(BuildContext context, StorageService storage) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+        decoration: BoxDecoration(
+          color: AppTheme.bgColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Switch Mode', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+              const SizedBox(height: 8),
+              Text('Select your current health goal', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 24),
+              _modeOption(
+                context, 
+                storage, 
+                'track_cycle', 
+                'Period Tracking', 
+                'Track your cycle and symptoms', 
+                Icons.calendar_today_rounded,
+                storage.userGoal == 'track_cycle',
+              ),
+              const SizedBox(height: 12),
+              _modeOption(
+                context, 
+                storage, 
+                'conceive', 
+                'Conceive', 
+                'Identify your most fertile days', 
+                Icons.favorite_rounded,
+                storage.userGoal == 'conceive',
+              ),
+              const SizedBox(height: 12),
+              _modeOption(
+                context, 
+                storage, 
+                'pregnant', 
+                'Pregnancy', 
+                'Track your baby\'s development', 
+                Icons.pregnant_woman_rounded,
+                storage.userGoal == 'pregnant',
+              ),
+              const SizedBox(height: 32),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _modeOption(BuildContext context, StorageService storage, String goal, String title, String subtitle, IconData icon, bool isSelected) {
+    return NeuContainer(
+      radius: 20,
       onTap: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) => const DailyCheckinScreen(),
-        );
+        storage.updateUserGoal(goal);
+        Navigator.pop(context);
+        setState(() {}); // Rebuild home screen with new mode dashboard
       },
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.all(16),
+      borderColor: isSelected ? AppTheme.accentPink.withOpacity(0.5) : Colors.white.withOpacity(0.5),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.accentPurple.withOpacity(0.15),
+              color: isSelected ? AppTheme.accentPink.withOpacity(0.1) : AppTheme.textSecondary.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.add_reaction_rounded, color: AppTheme.accentPurple, size: 28),
+            child: Icon(icon, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Daily Quick Log', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.textDark)),
-                const SizedBox(height: 2),
-                Text('Track mood, symptoms & flow', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary)),
+                Text(title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.textDark)),
+                Text(subtitle, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500)),
               ],
             ),
           ),
-          const Icon(Icons.add_circle_outline_rounded, color: AppTheme.accentPurple),
+          if (isSelected)
+            const Icon(Icons.check_circle_rounded, color: AppTheme.accentPink, size: 24),
         ],
       ),
-    ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1);
+    );
   }
 
   Widget _buildCycleDashboard(BuildContext context, StorageService storage, PredictionService pred) {
-    final cycleDay = pred.currentCycleDay;
-    final daysToNext = pred.daysUntilNextPeriod;
-    final phaseName = pred.phaseDisplayName;
-    final cycleLen = pred.averageCycleLength;
     final hasLogs = storage.getLogs().isNotEmpty;
 
     if (!hasLogs) return _buildNewUserContent(context, storage);
@@ -222,28 +262,77 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       children: [
         _buildFloralRingDashboard(context, pred),
+        const SizedBox(height: 48),
+        _buildFertilityCard(pred),
         const SizedBox(height: 32),
-        CycleTimeline(
-          currentDay: cycleDay,
-          cycleLength: cycleLen,
-          pred: pred,
-        ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1),
-        const SizedBox(height: 32),
-        HormoneGraph(
-          pred: pred,
-          onDaySelected: (day) => setState(() => _selectedGraphDay = day),
-        ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Hormone Trends',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textDark,
+              ),
+            ),
+            IconButton(
+              onPressed: () => _showHormonePopup(context, pred),
+              icon: NeuContainer(
+                radius: 12,
+                padding: const EdgeInsets.all(8),
+                style: NeuStyle.convex,
+                child: const Icon(Icons.bar_chart_rounded, color: AppTheme.accentPink, size: 22),
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 16),
-        if (_selectedGraphDay != null)
-          _buildHormoneDetailCard(pred, _selectedGraphDay!),
-        const SizedBox(height: 32),
-        _buildCycleStatusRow(cycleDay, daysToNext),
+
+        RepaintBoundary(
+          child: HormoneGraph(
+            pred: pred,
+            showHeader: false,
+          ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+        ),
         const SizedBox(height: 24),
-        if (phaseName == 'Ovulation' || phaseName == 'Follicular')
-          _buildFertilityCard(pred),
+        HormoneFocusWidget(pred: pred),
+        const SizedBox(height: 24),
+        PhaseHealthTipsWidget(pred: pred),
       ],
     );
   }
+
+
+  void _showHormonePopup(BuildContext context, PredictionService pred) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: const BoxDecoration(
+          color: AppTheme.bgColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Container(width: 40, height: 6, decoration: BoxDecoration(color: AppTheme.textSecondary.withOpacity(0.2), borderRadius: BorderRadius.circular(3))),
+            const SizedBox(height: 32),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: HormoneGraph(pred: pred),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
 
   Widget _buildTTCDashboard(BuildContext context, StorageService storage) {
     final pred = context.watch<PredictionService>();
@@ -253,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         _buildFertilityCard(pred, title: 'TTC Focus: Fertility Window'),
         const SizedBox(height: 24),
-        GlassContainer(
+        NeuContainer(
           padding: const EdgeInsets.all(28),
           child: Row(
             children: [
@@ -287,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Column(
       children: [
-        GlassContainer(
+        NeuContainer(
           padding: const EdgeInsets.all(28),
           radius: 32,
           child: Column(
@@ -306,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ).animate().fadeIn(),
         const SizedBox(height: 24),
-        GlassContainer(
+        NeuContainer(
           padding: const EdgeInsets.all(28),
           radius: 32,
           child: Column(
@@ -319,7 +408,38 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 24),
-        _buildCycleStatusRow(weeks, daysRemaining, label1: 'Weeks', label2: 'Days Left'),
+        NeuContainer(
+          padding: const EdgeInsets.all(28),
+          radius: 32,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Weeks', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    Text('$weeks', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                  ],
+                ),
+              ),
+              // Vertical divider
+              Container(width: 1.5, height: 40, color: Colors.white.withOpacity(0.2)),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Days Left', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    Text('$daysRemaining', 
+                      style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
       ],
     );
   }
@@ -329,22 +449,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final day = pred.currentCycleDay == 0 ? 1 : pred.currentCycleDay;
     final cycleLen = pred.averageCycleLength;
     
-    String ovulationText = '';
-    if (pred.nextPeriodDate != null) {
-      final currentOvDate = pred.nextPeriodDate!.subtract(const Duration(days: 14));
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final ovDate = DateTime(currentOvDate.year, currentOvDate.month, currentOvDate.day);
-      final daysUntil = ovDate.difference(today).inDays;
-      String daysText;
-      if (daysUntil == 0) daysText = '(Today)';
-      else if (daysUntil == 1) daysText = '(Tomorrow)';
-      else if (daysUntil < 0) daysText = '(Passed)';
-      else daysText = '(in $daysUntil days)';
-
-      ovulationText = 'Ovulation: ${DateFormat('MMM d').format(currentOvDate)} $daysText';
-    }
-
     return Center(
       child: SizedBox(
         width: 330,
@@ -364,91 +468,64 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            // Inner Glass Circle
-            GlassContainer(
+            // Inner Neumorphic Circle
+            NeuContainer(
               width: 290,
               height: 290,
               radius: 145, // Perfect circle
-              opacity: 0.5,
-              borderColor: Colors.white.withOpacity(0.8),
-              padding: const EdgeInsets.all(24),
+              style: NeuStyle.convex,
+              borderColor: Colors.white.withOpacity(0.5),
+              padding: const EdgeInsets.all(32),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.poppins(color: AppTheme.textDark),
-                      children: [
-                        const TextSpan(text: 'Day ', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                        TextSpan(text: '$day', style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w800, height: 1.0)),
-                        TextSpan(text: ' of $cycleLen', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                      ],
-                    ),
+                  Text(
+                    'CYCLE DAY',
+                    style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w900, color: AppTheme.textSecondary, letterSpacing: 1.5),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '$day',
+                    style: GoogleFonts.poppins(fontSize: 52, fontWeight: FontWeight.w900, color: AppTheme.textDark, height: 1.0),
+                  ),
+                  Text(
+                    phaseName.toUpperCase(),
+                    style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w800, color: AppTheme.phaseColor(phaseName), letterSpacing: 1.0),
                   ),
                   const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [AppTheme.phaseColor(phaseName).withOpacity(0.6), AppTheme.phaseColor(phaseName)]),
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [BoxShadow(color: AppTheme.phaseColor(phaseName).withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))],
-                    ),
-                    child: Text(phaseName + ' Phase', style: GoogleFonts.inter(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
-                  ),
-                  if (ovulationText.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Text(ovulationText, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w600)),
-                  ],
+                  Divider(color: AppTheme.textSecondary.withOpacity(0.1), indent: 40, endIndent: 40, height: 1),
                   const SizedBox(height: 16),
+                  Text(
+                    pred.currentPhase == CyclePhase.ovulation 
+                        ? 'PEAK FERTILITY' 
+                        : 'OVULATION IN ${pred.daysUntilOvulation}D',
+                    style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w900, color: AppTheme.accentPurple, letterSpacing: 1.2),
+                  ).animate(onPlay: (c) => c.repeat())
+                   .shimmer(duration: 2.seconds, color: AppTheme.accentPurple.withOpacity(0.3)),
+                  const SizedBox(height: 8),
+                  Text(
+                    pred.nextPeriodDate != null 
+                      ? 'Period in ${pred.daysUntilNextPeriod} days' 
+                      : 'Next period: ...',
+                    style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.textSecondary),
+                  ),
                 ],
               ),
             ),
+
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 800.ms).scale(curve: Curves.easeOutBack);
+    );
   }
 
-  Widget _buildCycleStatusRow(dynamic val1, dynamic val2, {String label1 = 'Cycle Day', String label2 = 'Next Period'}) {
-    return GlassContainer(
-      padding: const EdgeInsets.all(28),
-      radius: 32,
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label1, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Text('$val1', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-              ],
-            ),
-          ),
-          // Vertical divider
-          Container(width: 1.5, height: 40, color: Colors.white.withOpacity(0.2)),
-          const SizedBox(width: 24),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label2, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
-                Text(val2 is int && val2 < 0 ? '${val2.abs()}d late' : (label2 == 'Days Left' ? '$val2' : 'In $val2 days'), 
-                  style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1);
-  }
 
-  Widget _buildFertilityCard(PredictionService pred, {String title = 'Fertility Status'}) {
+  Widget _buildFertilityCard(PredictionService pred, {String title = 'FERTILITY STATUS'}) {
     final chance = pred.currentConceptionChance;
-    return GlassContainer(
-      padding: const EdgeInsets.all(28),
-      radius: 32,
+    return NeuContainer(
+      padding: const EdgeInsets.all(32),
+      radius: 40,
+      style: NeuStyle.convex,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -458,48 +535,52 @@ class _HomeScreenState extends State<HomeScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 4),
+                  Text(title, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                  const SizedBox(height: 6),
                   Text(chance > 50 ? 'High probability today' : 'Low probability today', 
                     style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
                 ],
               ),
-              GlassContainer(
-                radius: 16,
+              NeuContainer(
+                radius: 20,
                 padding: const EdgeInsets.all(12),
-                borderColor: Colors.white.withOpacity(0.2),
+                style: NeuStyle.concave,
+                color: AppTheme.bgColor,
                 child: const Icon(Icons.favorite_rounded, color: AppTheme.accentPink, size: 24)
                   .animate(onPlay: (c) => c.repeat())
-                  .scale(begin: const Offset(1, 1), end: const Offset(1.2, 1.2), duration: 800.ms, curve: Curves.easeInOut),
+                  .scale(begin: const Offset(1, 1), end: const Offset(1.15, 1.15), duration: 1000.ms, curve: Curves.easeInOut),
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Chance of Conception', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-              Text('$chance%', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+              Text('CONCEPTION CHANCE', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w800, letterSpacing: 1.0)),
+              Text('$chance%', style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.accentPink)),
             ],
           ),
-          const SizedBox(height: 12),
-          // Simple Progress Bar
-          Container(
-            height: 12, width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerLeft,
-              widthFactor: (chance / 100).clamp(0.0, 1.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppTheme.accentPink,
-                  borderRadius: BorderRadius.circular(6),
-                  boxShadow: [BoxShadow(color: AppTheme.accentPink.withOpacity(0.4), blurRadius: 8, spreadRadius: 1)],
+          const SizedBox(height: 16),
+          // Premium Progress Bar
+          NeuContainer(
+            height: 16, width: double.infinity,
+            padding: EdgeInsets.zero,
+            radius: 8,
+            style: NeuStyle.concave,
+            child: Stack(
+              children: [
+                FractionallySizedBox(
+                  widthFactor: (chance / 100).clamp(0.0, 1.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppTheme.accentPink.withOpacity(0.6), AppTheme.accentPink],
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -508,7 +589,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildNewUserContent(BuildContext context, StorageService storage) {
-    return GlassContainer(
+    return NeuContainer(
       padding: const EdgeInsets.all(32),
       radius: 40,
       child: Column(
@@ -526,7 +607,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 32),
-          GlassContainer(
+          NeuContainer(
             onTap: () {
               showModalBottomSheet(
                 context: context,
@@ -536,6 +617,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
             radius: 20,
+            style: NeuStyle.convex,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Text('Log First Period', style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
@@ -556,98 +638,6 @@ class _HomeScreenState extends State<HomeScreen> {
           textAlign: TextAlign.center,
         ),
       ),
-    );
-  }
-
-  Widget _buildEducationalCard(BuildContext context) {
-    return GlassContainer(
-      radius: 28,
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EducationHubScreen())),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppTheme.accentPink.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.menu_book_rounded, color: AppTheme.accentPink, size: 32),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Education Hub', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-                  const SizedBox(height: 4),
-                  Text('Discover insights about your cycle and body', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500)),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right_rounded, color: AppTheme.accentPink),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.1);
-  }
-
-  Widget _buildHormoneDetailCard(PredictionService pred, int day) {
-    final levels = pred.getHormoneLevels(day);
-    final descriptions = pred.getHormoneDescriptions(day);
-    final phase = pred.getPhaseForDay(DateTime.now().add(Duration(days: day - pred.currentCycleDay)));
-
-    return GlassContainer(
-      padding: const EdgeInsets.all(24),
-      radius: 28,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Day $day Details', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: AppTheme.phaseColor(phase.displayName).withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-                child: Text(phase.displayName, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.phaseColor(phase.displayName))),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _hormoneStat('Estrogen', descriptions['Estrogen']!, AppTheme.hormoneColors['Estrogen']!),
-              _hormoneStat('Progesterone', descriptions['Progesterone']!, AppTheme.hormoneColors['Progesterone']!),
-              _hormoneStat('LH', (levels['LH']! > 0.7) ? 'Peak' : 'Stable', AppTheme.hormoneColors['LH']!),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            day == pred.currentCycleDay ? 'You are currently in your ${phase.displayName} phase.' : 'On Day $day, you will likely be in the ${phase.displayName} phase.',
-            style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
-    ).animate().fadeIn().slideX(begin: -0.05);
-  }
-
-  Widget _hormoneStat(String label, String value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-            const SizedBox(width: 6),
-            Text(label, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(value, style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-      ],
     );
   }
 }
@@ -674,14 +664,24 @@ class _GreetingSection extends StatelessWidget {
               ),
             ),
             Text(
-              DateFormat('EEEE, MMM d').format(DateTime.now()),
+              DateFormat('EEEE, MMMM d').format(DateTime.now()),
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 14,
                 color: AppTheme.textSecondary,
                 fontWeight: FontWeight.w700,
+                letterSpacing: 0.2,
               ),
             ),
           ],
+        ),
+        NeuContainer(
+          radius: 20,
+          padding: const EdgeInsets.all(10),
+          style: NeuStyle.convex,
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
+          child: const Icon(Icons.menu_rounded, color: AppTheme.textDark, size: 28),
         ),
       ],
     ).animate().fadeIn().slideX(begin: -0.05);
@@ -700,21 +700,45 @@ class _CycleRingPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 8;
     
+    // 1. Draw Track
     final trackPaint = Paint()
       ..color = trackColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12
       ..strokeCap = StrokeCap.round;
-
     canvas.drawCircle(center, radius, trackPaint);
 
-    final activePaint = Paint()
-      ..color = activeColor
+    if (progress <= 0) return;
+
+    // 2. Prepare Gradient & Paint for Active Arc
+    final sweepAngle = 2 * 3.14159265359 * progress;
+    
+    // Outer Glow (More Vibrant)
+    final shadowPaint = Paint()
+      ..color = activeColor.withOpacity(0.4)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 14
+      ..strokeWidth = 22
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+    
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -3.14159265359 / 2,
+      sweepAngle,
+      false,
+      shadowPaint,
+    );
+
+    final activePaint = Paint()
+      ..shader = SweepGradient(
+        colors: [activeColor.withOpacity(0.4), activeColor, activeColor],
+        stops: const [0.0, 0.5, 1.0],
+        transform: GradientRotation(-3.14159265359 / 2),
+      ).createShader(Rect.fromCircle(center: center, radius: radius))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 16
       ..strokeCap = StrokeCap.round;
 
-    final sweepAngle = 2 * 3.14159265359 * progress;
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       -3.14159265359 / 2, // Start at top

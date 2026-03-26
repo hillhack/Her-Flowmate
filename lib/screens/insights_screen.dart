@@ -7,7 +7,7 @@ import '../services/storage_service.dart';
 import '../models/period_log.dart';
 import '../utils/app_theme.dart';
 import '../widgets/cycle_phase_wheel.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class InsightsScreen extends StatelessWidget {
@@ -33,7 +33,7 @@ class InsightsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: GlassContainer(
+            child: NeuContainer(
               radius: 12,
               padding: EdgeInsets.zero,
               child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -109,7 +109,7 @@ class InsightsScreen extends StatelessWidget {
   }
 
   Widget _buildScoreCard(String title, String value, IconData icon) {
-    return GlassContainer(
+    return NeuContainer(
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -132,7 +132,7 @@ class InsightsScreen extends StatelessWidget {
     final isRegular = !pred.isIrregularCycle;
     final score = isRegular ? 95 : 72;
     
-    return GlassContainer(
+    return NeuContainer(
       radius: 28,
       padding: const EdgeInsets.all(24),
       borderColor: AppTheme.accentPink.withOpacity(0.3),
@@ -180,7 +180,7 @@ class InsightsScreen extends StatelessWidget {
       if (diff > 15 && diff < 90) cycleLengths.insert(0, diff); // Reverse for chronological order
     }
 
-    return GlassContainer(
+    return NeuContainer(
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -277,7 +277,7 @@ class InsightsScreen extends StatelessWidget {
     }
 
     if (counts.isEmpty) {
-      return GlassContainer(
+      return NeuContainer(
         radius: 28,
         padding: const EdgeInsets.all(24),
         child: Center(
@@ -289,7 +289,7 @@ class InsightsScreen extends StatelessWidget {
     var entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     int total = counts.values.fold(0, (sum, val) => sum + val);
 
-    return GlassContainer(
+    return NeuContainer(
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -347,7 +347,7 @@ class _DailyInsightCard extends StatelessWidget {
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
     final tip = _tips[dayOfYear % _tips.length];
 
-    return GlassContainer(
+    return NeuContainer(
       radius: 28,
       padding: const EdgeInsets.all(20),
       child: InkWell(

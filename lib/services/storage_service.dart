@@ -6,6 +6,10 @@ import '../models/daily_log.dart';
 import 'notification_service.dart';
 
 class StorageService extends ChangeNotifier {
+  StorageService();
+  static final StorageService _instance = StorageService();
+  static StorageService get instance => _instance;
+
   static const String boxName = 'period_logs';
   static const String dailyBoxName = 'daily_logs';
   late SharedPreferences _prefs;
@@ -44,6 +48,7 @@ class StorageService extends ChangeNotifier {
   String get userName => _prefs.getString('userName') ?? 'Guest';
   String get userGoal => _prefs.getString('userGoal') ?? 'track_cycle';
   int? get userAge => _prefs.containsKey('userAge') ? _prefs.getInt('userAge') : null;
+  String? get userImagePath => _prefs.getString('userImagePath');
   bool get isMinimalMode => _prefs.getBool('isMinimalMode') ?? false;
   // Pregnancy data
   DateTime? get dueDate {
@@ -113,6 +118,20 @@ class StorageService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateUserAge(int age) async {
+    await _prefs.setInt('userAge', age);
+    notifyListeners();
+  }
+
+  Future<void> updateUserImagePath(String? path) async {
+    if (path == null) {
+      await _prefs.remove('userImagePath');
+    } else {
+      await _prefs.setString('userImagePath', path);
+    }
+    notifyListeners();
+  }
+
   Future<void> saveDueDate(DateTime date) async {
     await _prefs.setInt('dueDate', date.millisecondsSinceEpoch);
     notifyListeners();
@@ -129,8 +148,11 @@ class StorageService extends ChangeNotifier {
   Future<void> stopAndReset() async {
     await _prefs.clear();
     await _box.clear();
+    await _dailyBox.clear();
     notifyListeners();
   }
+
+  Future<void> clearAllData() => stopAndReset();
 
   Box<PeriodLog> get _box => Hive.box<PeriodLog>(boxName);
 

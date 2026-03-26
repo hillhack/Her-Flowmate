@@ -4,19 +4,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
+import '../widgets/brand_widgets.dart';
 import 'login_screen.dart';
 import 'home_screen.dart';
-import 'insights_screen.dart';
 import 'log_period_screen.dart';
 import 'daily_checkin_screen.dart';
 import 'calendar_screen.dart';
-import 'feedback_screen.dart';
 import 'history_screen.dart';
+import 'education_hub_screen.dart';
 import 'profile_screen.dart';
 import 'partner_sync_screen.dart';
 import 'mode_settings_screen.dart';
-import '../widgets/notification_widgets.dart';
-import '../widgets/glass_container.dart';
+import 'feedback_screen.dart';
+import '../widgets/neu_container.dart';
+import '../widgets/period_health_widgets.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -30,8 +31,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   static const List<Widget> _screens = <Widget>[
     HomeScreen(),
-    InsightsScreen(),
-    HistoryScreen(),
+    CalendarScreen(),
     ProfileScreen(),
   ];
 
@@ -44,54 +44,93 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return Scaffold(
       backgroundColor: AppTheme.frameColor,
       drawer: _buildDrawer(context, storage),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: GlassContainer(
-              padding: const EdgeInsets.all(8),
-              radius: 12,
-              child: const Icon(Icons.menu_rounded, color: AppTheme.textDark),
-            ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-        title: Text(
-          'HerFlowmate',
-          style: GoogleFonts.poppins(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: AppTheme.textDark,
-            letterSpacing: -0.5,
-          ),
-        ),
-        actions: const [
-          NotificationBell(),
-          SizedBox(width: 12),
-        ],
-      ),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
-        child: _screens[_selectedIndex],
+        child: IndexedStack(
+          index: _selectedIndex,
+          children: _screens,
+        ),
       ),
-      floatingActionButton: (_selectedIndex == 0 && storage.userGoal != 'pregnant')
-          ? GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => _buildAddMenu(context),
-                );
-              },
-              child: GlassContainer(
-                width: 64,
-                height: 64,
-                radius: 32,
-                child: const Icon(Icons.add_rounded, size: 32, color: AppTheme.accentPink),
+      bottomNavigationBar: _buildBottomBar(),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
+      ),
+      child: NeuContainer(
+        height: 72,
+        radius: 36,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        style: NeuStyle.convex,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _bottomNavItem(0, Icons.home_rounded, 'Home'),
+            _bottomNavItem(1, Icons.calendar_month_rounded, 'Calendar'),
+            _logButton(),
+            _bottomNavItem(2, Icons.person_rounded, 'Profile'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _logButton() {
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (context) => _buildAddMenu(context),
+        );
+      },
+      child: NeuContainer(
+        width: 48,
+        height: 48,
+        radius: 24,
+        style: NeuStyle.convex,
+        child: const Icon(Icons.add_rounded, size: 28, color: AppTheme.accentPink),
+      ),
+    );
+  }
+
+  Widget _bottomNavItem(int index, IconData icon, String label) {
+    final isSelected = _selectedIndex == index;
+    return GestureDetector(
+      onTap: () => _onItemTapped(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: isSelected ? BoxDecoration(
+          color: AppTheme.accentPink.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+        ) : null,
+        child: Row(
+          children: [
+            Icon(
+              icon, 
+              color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+              size: 24,
+            ),
+            if (isSelected) 
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    color: AppTheme.accentPink,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
-            ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack)
-          : null,
+          ],
+        ),
+      ),
     );
   }
 
@@ -127,7 +166,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   builder: (context) => const LogPeriodScreen(),
                 );
               },
-              child: GlassContainer(
+              child: NeuContainer(
                 padding: const EdgeInsets.all(20),
                 radius: 24,
                 child: Row(
@@ -153,7 +192,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   builder: (context) => const DailyCheckinScreen(),
                 );
               },
-              child: GlassContainer(
+              child: NeuContainer(
                 padding: const EdgeInsets.all(20),
                 radius: 24,
                 child: Row(
@@ -185,7 +224,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            GlassContainer(
+            NeuContainer(
               width: 80, height: 80,
               radius: 40,
               child: Center(
@@ -206,26 +245,35 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  _drawerItem(icon: Icons.home_rounded, title: 'Home', index: 0),
-                  const SizedBox(height: 12),
                   _actionDrawerItem(
-                    icon: Icons.calendar_month_rounded, 
-                    title: 'Calendar', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CalendarScreen()))
+                    icon: Icons.history_rounded, 
+                    title: 'History', 
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen()))
                   ),
                   const SizedBox(height: 12),
-                  _drawerItem(icon: Icons.lightbulb_rounded, title: 'Insights', index: 1),
-                  const SizedBox(height: 12),
-                  _drawerItem(icon: Icons.history_rounded, title: 'History', index: 2),
+                  _actionDrawerItem(
+                    icon: Icons.menu_book_rounded,
+                    title: 'Cycle Guide',
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EducationHubScreen())),
+                  ),
+
                   const SizedBox(height: 12),
                   _actionDrawerItem(
                     icon: Icons.favorite_rounded,
                     title: 'Partner Sync',
                     onTap: () {
-                      Navigator.pop(context); // Close drawer
                       Navigator.push(context, MaterialPageRoute(builder: (_) => const PartnerSyncScreen()));
                     }
                   ),
+                  const SizedBox(height: 12),
+                  _actionDrawerItem(
+                    icon: Icons.health_and_safety_rounded,
+                    title: 'Period Health',
+                    onTap: () {
+                      _showPeriodHealthModal(context);
+                    }
+                  ),
+
                   
                   const SizedBox(height: 24),
                   Divider(color: AppTheme.shadowDark.withOpacity(0.3)),
@@ -245,7 +293,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                       builder: (ctx) => AlertDialog(
                         backgroundColor: AppTheme.bgColor,
                         title: const Text('Help'),
-                        content: const Text('HerFlowmate is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.'),
+                        content: Text.rich(
+                          TextSpan(
+                            children: [
+                              const WidgetSpan(child: BrandName(fontSize: 16)),
+                              const TextSpan(text: ' is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.'),
+                            ],
+                          ),
+                        ),
                         actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Got it'))],
                       ),
                     ),
@@ -280,9 +335,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-              child: Text(
-                'HerFlowmate v1.0',
-                style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const BrandName(fontSize: 14),
+                  Text(
+                    ' v1.2.0',
+                    style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
             ),
           ],
@@ -291,12 +352,21 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 
+  void _showPeriodHealthModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const PeriodHealthModal(),
+    );
+  }
+
   Widget _actionDrawerItem({required IconData icon, required String title, required VoidCallback onTap}) {
-    return GlassContainer(
+    return NeuContainer(
       margin: const EdgeInsets.only(bottom: 8),
       radius: 20,
       onTap: () {
-        Navigator.pop(context);
+        Navigator.pop(context); // Always close drawer on action
         onTap();
       },
       child: ListTile(
@@ -305,29 +375,4 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
     );
   }
-
-  Widget _drawerItem({required IconData icon, required String title, required int index}) {
-    final isSelected = _selectedIndex == index;
-    return GlassContainer(
-      margin: const EdgeInsets.only(bottom: 8),
-      radius: 20,
-      opacity: isSelected ? 0.2 : AppTheme.glassOpacity,
-      borderColor: isSelected ? AppTheme.accentPink.withOpacity(0.5) : Colors.white.withOpacity(0.3),
-      onTap: () {
-        _onItemTapped(index);
-        Navigator.pop(context);
-      },
-      child: ListTile(
-        leading: Icon(icon, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary),
-        title: Text(
-          title,
-          style: GoogleFonts.inter(
-            color: isSelected ? AppTheme.accentPink : AppTheme.textDark,
-            fontSize: 16,
-            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-}
+} // Correctly close the _MainNavigationScreenState class

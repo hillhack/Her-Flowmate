@@ -3,110 +3,169 @@ import 'package:google_fonts/google_fonts.dart';
 
 abstract final class AppTheme {
   // ── Color Palette (Exact Specification) ───────────────────────────────────
-  static const Color bgColor      = Color(0xFFF8E9EE);
-  static const Color surfaceColor  = Color(0xFFF3DDE5);
-  static const Color accentPink    = Color(0xFFE88BA3);
-  static const Color textDark      = Color(0xFF4A2F3A);
-  static const Color textSecondary = Color(0xFFA97C8B);
+  static const Color primaryPink   = Color(0xFFFF7FA5);
+  static const Color softPink      = Color(0xFFFADADD);
+  static const Color lavender      = Color(0xFFEBDFFF);
+  static const Color accentPurple  = Color(0xFFCBA8FF);
+  static const Color textDark      = Color(0xFF6A5C7A);
   
-  // Aliases for legacy compatibility
+  // Neumorphic Design System (No Borders, Soft Shadows)
+  static const Color bgColor       = Color(0xFFF8D6E6); // Neumorphic Surface
+  static const Color surfaceColor   = Color(0xFFF8D6E6);
+  static const Color neuLightShadow = Color(0xFFFFFFFF);
+  static const Color neuDarkShadow  = Color(0xFFE3C7D6);
+  
+  // Aliases and Secondary Colors
   static const Color frameColor    = bgColor;
-  static const Color neuSurface    = surfaceColor;
-  static const Color textMain       = textDark;
-  static const Color textMuted      = textSecondary;
-  static const Color shadowLight   = Colors.white;
-  static const Color shadowDark    = Color(0xFFD9B9C4);
+  static const Color textSecondary = Color(0xFF8A7E96); // Harmonized with textDark
+  static const Color accentPink    = primaryPink;
+  static const Color shadowLight   = neuLightShadow;
+  static const Color shadowDark    = neuDarkShadow;
 
-  // Visualization Colors
-  static const Color accentPurple  = Color(0xFFBA68C8);
-  static const Color accentCyan    = Color(0xFF4DD0E1);
-  static const Color neonGreen     = Color(0xFF81C784);
-  
-  static const double glassOpacity = 0.4;
-  static const double glassBlur    = 16.0;
+  // Glass Design System
+  static const double glassOpacity = 0.15;
+  static const double glassBlur    = 12.0;
 
+  // Background Gradient
   static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [bgColor, Color(0xFFFAEBEF)],
+    colors: [
+      Color(0xFFFFE6F0),
+      Color(0xFFEBDFFF),
+      Color(0xFFFFD6EC),
+    ],
   );
 
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFFE88BA3), // accentPink
-      Color(0xFFBA68C8), // accentPurple
+      primaryPink,
+      accentPurple,
     ],
   );
 
   static const Map<String, Color> phaseColors = {
-    'Menstrual':  Color(0xFFD81B60), // Deep Pink
-    'Follicular': Color(0xFFFFCCBC), // Soft Peach
-    'Ovulation':  Color(0xFFBA68C8), // Purple
-    'Luteal':     Color(0xFFD1C4E9), // Lavender/Light Purple
+    'Menstrual':  Color(0xFFFF7FA5), // Primary Pink
+    'Follicular': Color(0xFFFADADD), // Soft Pink
+    'Ovulation':  Color(0xFFCBA8FF), // Accent Purple
+    'Luteal':     Color(0xFFEBDFFF), // Lavender
   };
 
   static const Map<String, Color> hormoneColors = {
-    'Estrogen':     Color(0xFFFFCCBC), // Peach Pink
-    'Progesterone': Color(0xFFD1C4E9), // Lavender
-    'LH':           Color(0xFFF06292), // Bright Pink
-    'FSH':          Color(0xFFFFAB91), // Soft Coral
+    'Estrogen': Color(0xFFFF7FA5),
+    'Progesterone': Color(0xFFCBA8FF),
+    'LH': Color(0xFF90CAF9),
+    'FSH': Color(0xFFA5D6A7),
   };
 
-  static Color phaseColor(String phase) => phaseColors[phase] ?? accentPink;
+  static Color phaseColor(String phase) => phaseColors[phase] ?? primaryPink;
 
+  // ── Spacing System (8px Grid) ─────────────────────────────────────────────
+  static const double gridUnit = 8.0;
+  static const double margin   = 16.0;
+  static const double padding  = 24.0;
 
-  // ── Glassmorphism Decorations ─────────────────────────────────────────────
+  // ── Neumorphic Shadows ───────────────────────────────────────────────────
+  static List<BoxShadow> neuShadows({
+    double offset = 8.0,
+    double blur = 16.0,
+    Color lightColor = neuLightShadow,
+    Color darkColor = neuDarkShadow,
+  }) {
+    return [
+      BoxShadow(
+        color: lightColor,
+        offset: Offset(-offset, -offset),
+        blurRadius: blur,
+      ),
+      BoxShadow(
+        color: darkColor,
+        offset: Offset(offset, offset),
+        blurRadius: blur,
+      ),
+    ];
+  }
+
   static BoxDecoration glassDecoration({
-    double radius = 32.0,
-    Color? color,
+    double radius = 24,
+    double opacity = 0.1,
     Color? borderColor,
-    double opacity = glassOpacity,
-    bool showBorder = true,
   }) {
     return BoxDecoration(
-      color: (color ?? Colors.white).withOpacity(opacity),
+      color: (borderColor ?? Colors.white).withOpacity(opacity),
       borderRadius: BorderRadius.circular(radius),
-      border: showBorder
-          ? Border.all(
-              color: (borderColor ?? Colors.white).withOpacity(0.3),
-              width: 1.2,
-            )
-          : null,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.04),
-          blurRadius: 20,
-          spreadRadius: 2,
-          offset: const Offset(0, 8),
-        ),
-      ],
+      border: Border.all(
+        color: (borderColor ?? Colors.white).withOpacity(0.2),
+        width: 1.5,
+      ),
     );
   }
 
-  // ── Phase tip helper ──────────────────────────────────────────────────────
-  static ({String headline, String body}) phaseTip(String phase) {
+  static ({String headline}) phaseTip(String phase) {
     switch (phase) {
-      case 'Menstrual': return (headline: 'Focus on Rest', body: 'Energy is lower. Gentle movements only.');
-      case 'Follicular': return (headline: 'Energy Rising', body: 'Perfect for starting new projects.');
-      case 'Ovulation': return (headline: 'Peak Vitality', body: 'You are at your most vibrant.');
-      case 'Luteal': return (headline: 'Nurture Yourself', body: 'Prioritize comfort and slow pace.');
-      default: return (headline: 'Stay Mindful', body: 'Listen to your body\'s needs.');
+      case 'Menstrual':
+        return (headline: 'Rest and Rejuvenate');
+      case 'Follicular':
+        return (headline: 'Plan and Initiate');
+      case 'Ovulation':
+        return (headline: 'Connect and Express');
+      case 'Luteal':
+        return (headline: 'Analyze and Complete');
+      default:
+        return (headline: 'Balance and Listen');
     }
   }
 
+  // ── Phase Health Support (Refined) ────────────────────────────────────────
+  static ({List<String> exercise, List<String> diet, List<String> nutrients}) getPhaseHealthTips(String phase) {
+    switch (phase) {
+      case 'Menstrual':
+        return (
+          exercise: ['Gentle Yoga', 'Light Walking', 'Symptom Relief Stretches'],
+          diet: ['Warm Herbal Soups', 'Magnesium-Rich Oats', 'Ginger Tea'],
+          nutrients: ['Iron (rebuild)', 'Magnesium (cramps)', 'Vitamin C'],
+        );
+      case 'Follicular':
+        return (
+          exercise: ['Light Cardio', 'Creative Movement', 'Power Walking'],
+          diet: ['Fermented Salads', 'Sprouted Grains', 'Lean Proteins'],
+          nutrients: ['Zinc (hormone balance)', 'Vitamin B12', 'Vitamin E'],
+        );
+      case 'Ovulation':
+        return (
+          exercise: ['HIIT Sessions', 'High Intensity Cardio', 'Social Workouts'],
+          diet: ['Rainbow Salads', 'Cold Berries', 'Anti-inflammatory Crucifers'],
+          nutrients: ['Folate (cell health)', 'Amino Acids', 'Vitamin B'],
+        );
+      case 'Luteal':
+        return (
+          exercise: ['Steady-state Pilates', 'Mindful Resistance', 'Long Stretches'],
+          diet: ['Complex Root Veggies', 'Dark Chocolate (70%+)', 'Omega Fats'],
+          nutrients: ['Vitamin B6 (mood)', 'Magnesium (sleep)', 'Omega-3'],
+        );
+      default:
+        return (
+          exercise: ['Listen to your pulse'],
+          diet: ['Mindful nutrition'],
+          nutrients: ['Essential Multivitamin'],
+        );
+    }
+  }
+
+  // ── Theme Definition ───────────────────────────────────────────────────────
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: bgColor,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: accentPink,
-        primary: accentPink,
+        seedColor: primaryPink,
+        primary: primaryPink,
         surface: surfaceColor,
         onSurface: textDark,
       ),
-      textTheme: GoogleFonts.outfitTextTheme().apply(
+      textTheme: GoogleFonts.poppinsTextTheme().apply(
         bodyColor: textDark,
         displayColor: textDark,
       ),

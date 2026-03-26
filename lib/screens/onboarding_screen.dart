@@ -7,7 +7,7 @@ import 'main_navigation_screen.dart';
 import '../models/period_log.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 import '../widgets/brand_widgets.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -145,7 +145,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     children: [
                         GestureDetector(
                           onTap: _currentPage > widget.initialPage ? _back : () => Navigator.pop(context),
-                          child: GlassContainer(
+                          child: NeuContainer(
                             padding: const EdgeInsets.all(10),
                             radius: 14,
                             child: const Icon(Icons.arrow_back_rounded,
@@ -189,9 +189,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 // ── Continue / Finish button ──────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-                  child: GlassContainer(
+                  child: NeuContainer(
                     radius: 18,
-                    opacity: _currentPage == 0 && _selectedGoal.isNotEmpty ? 0.6 : 0.3,
                     child: TextButton.icon(
                       icon: Icon(
                         _currentPage == _totalPages - 1
@@ -331,7 +330,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          GlassContainer(
+          NeuContainer(
             padding: const EdgeInsets.all(20),
             radius: 28,
             child: const Icon(Icons.person_rounded, color: AppTheme.accentPink, size: 48),
@@ -380,7 +379,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          GlassContainer(
+          NeuContainer(
             radius: 20,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             child: TextField(
@@ -420,7 +419,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 32),
             Text("OR SELECT CONCEPTION DATE", style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w800, color: AppTheme.textSecondary, letterSpacing: 1)),
             const SizedBox(height: 16),
-            GlassContainer(
+            NeuContainer(
               padding: const EdgeInsets.all(12),
               radius: 24,
               child: CalendarDatePicker(
@@ -445,7 +444,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w800, color: AppTheme.textDark),
           ).animate().fadeIn(),
           const SizedBox(height: 24),
-          GlassContainer(
+          NeuContainer(
             padding: const EdgeInsets.all(12),
             radius: 24,
             child: CalendarDatePicker(
@@ -479,10 +478,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _timeToggle(String label, bool isSelected, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
-      child: GlassContainer(
+      child: NeuContainer(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         radius: 12,
-        opacity: isSelected ? 0.6 : 0.2,
         borderColor: isSelected ? AppTheme.accentPink : Colors.white,
         child: Center(child: Text(label, style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary))),
       ),
@@ -501,10 +499,9 @@ class _ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
+    return NeuContainer(
       height: 8,
       radius: 4,
-      opacity: 0.2,
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
         widthFactor: (current + 1) / total,

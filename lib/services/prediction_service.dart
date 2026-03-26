@@ -238,6 +238,30 @@ class PredictionService {
     return normNext.difference(normToday).inDays;
   }
 
+  int get daysUntilOvulation {
+    final logs = storageService.getLogs();
+    if (logs.isEmpty) return -1;
+    
+    final latestPeriod = logs.first;
+    final cycleLen = averageCycleLength;
+    final ovulationDay = cycleLen - 14;
+    
+    final ovDate = latestPeriod.startDate.add(Duration(days: ovulationDay));
+    final today = DateTime.now();
+    final normToday = DateTime(today.year, today.month, today.day);
+    final normOv = DateTime(ovDate.year, ovDate.month, ovDate.day);
+    
+    int diff = normOv.difference(normToday).inDays;
+    
+    // If ovulation already passed this cycle, look at next cycle
+    if (diff < 0) {
+      final nextOvDate = ovDate.add(Duration(days: cycleLen));
+      diff = nextOvDate.difference(normToday).inDays;
+    }
+    
+    return diff;
+  }
+
   // ── Hormone Logic ─────────────────────────────────────────────────────────
 
   /// Calculates simplified hormone levels (0.0 to 1.0) based on cycle day.
@@ -299,6 +323,55 @@ class PredictionService {
     return {
       'Estrogen': eStatus,
       'Progesterone': pStatus,
+    };
+  }
+
+  Map<String, dynamic> getHormoneFocus(int day) {
+    final levels = getHormoneLevels(day);
+    
+    // Find Highest
+    String highestName = 'Estrogen';
+    double highestVal = -1.0;
+    // Find Lowest
+    String lowestName = 'Progesterone';
+    double lowestVal = 2.0;
+
+    levels.forEach((name, val) {
+      if (val > highestVal) {
+        highestVal = val;
+        highestName = name;
+      }
+      if (val < lowestVal) {
+        lowestVal = val;
+        lowestName = name;
+      }
+    });
+
+    final descriptions = {
+      'Estrogen': 'Supports bone health and regulates your cycle.',
+      'Progesterone': 'Prepares your body for a potential pregnancy.',
+      'LH': 'Surges to trigger the release of an egg (ovulation).',
+      'FSH': 'Stimulates follicles to grow and prepare for release.',
+    };
+
+    final dailyContext = {
+      'Estrogen': highestVal > 0.8 ? 'Peaking now to boost your energy and mood.' : 'Lower today, may lead to quieter energy.',
+      'Progesterone': highestVal > 0.8 ? 'Peaking to support the uterine lining.' : 'Remaining low as your cycle prepares to reset.',
+      'LH': highestVal > 0.8 ? 'Surging now to trigger ovulation within 24-48h.' : 'Stable levels while follicles develop.',
+      'FSH': highestVal > 0.5 ? 'Active now to mature your eggs for the month.' : 'Resting after its early cycle work is done.',
+    };
+
+    return {
+      'highest': {
+        'name': highestName,
+        'value': highestVal,
+        'desc': dailyContext[highestName],
+      },
+      'lowest': {
+        'name': lowestName,
+        'value': lowestVal,
+        'desc': descriptions[lowestName],
+      }
     };
   }
 

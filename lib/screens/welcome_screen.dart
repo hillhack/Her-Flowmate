@@ -6,7 +6,7 @@ import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import 'login_screen.dart';
 import '../widgets/delight_widgets.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 import '../widgets/brand_widgets.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -58,7 +58,7 @@ class WelcomeScreen extends StatelessWidget {
                     const Spacer(flex: 4),
                     
                     // Bottom area: Main Button
-                    GlassContainer(
+                    NeuContainer(
                       radius: 24,
                       onTap: () {
                         showPhaseDelight(context, 'Follicular');

@@ -7,12 +7,11 @@ import 'package:intl/intl.dart';
 import '../services/storage_service.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 import '../widgets/delight_widgets.dart';
 import '../widgets/notification_widgets.dart';
 import 'prediction_details_screen.dart';
-import '../widgets/brand_widgets.dart';
-import 'insights_screen.dart';
+
 
 
 class CalendarScreen extends StatefulWidget {
@@ -47,16 +46,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final storage = context.watch<StorageService>();
 
     return Scaffold(
-      backgroundColor: AppTheme.frameColor,
-      drawer: _buildDrawer(context, storage),
+      backgroundColor: Colors.transparent, // Let parent handle BG
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Builder(
           builder: (context) => IconButton(
-            icon: GlassContainer(
+            icon: NeuContainer(
               padding: const EdgeInsets.all(8),
               radius: 12,
+              style: NeuStyle.convex,
               child: const Icon(Icons.menu_rounded, color: AppTheme.textDark),
             ),
             onPressed: () => Scaffold.of(context).openDrawer(),
@@ -81,7 +80,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: GlassContainer(
+                  child: NeuContainer(
                     radius: 32,
                     padding: const EdgeInsets.all(16),
                     child: TableCalendar(
@@ -148,7 +147,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: GlassContainer(
+                        child: NeuContainer(
                           radius: 20,
                           onTap: () {},
                           child: Padding(
@@ -159,7 +158,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: GlassContainer(
+                        child: NeuContainer(
                           radius: 20,
                           onTap: () => Navigator.pop(context),
                           child: Padding(
@@ -187,7 +186,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final biology = pred.getPhaseBiology(cycleDay);
     final chance = pred.getConceptionChance(date);
 
-    return GlassContainer(
+    return NeuContainer(
       padding: const EdgeInsets.all(24),
       radius: 28,
       child: Column(
@@ -238,7 +237,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildLegend(PredictionService pred) {
-    return GlassContainer(
+    return NeuContainer(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       radius: 28,
       child: Row(
@@ -341,92 +340,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ],
     );
   }
-
-  Widget _buildDrawer(BuildContext context, StorageService storage) {
-    final initial = storage.userName.isNotEmpty ? storage.userName[0].toUpperCase() : 'U';
-
-    return Drawer(
-      backgroundColor: AppTheme.frameColor,
-      elevation: 0,
-      width: MediaQuery.of(context).size.width * 0.8,
-      child: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 32),
-            GlassContainer(
-              width: 80, height: 80,
-              radius: 40,
-              child: Center(
-                child: Text(
-                  initial,
-                  style: GoogleFonts.poppins(color: AppTheme.accentPink, fontWeight: FontWeight.bold, fontSize: 32),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              storage.userName.isNotEmpty ? storage.userName : 'Guest',
-              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark),
-            ),
-            const SizedBox(height: 48),
-            
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: [
-                  _drawerActionItem(context, icon: Icons.home_rounded, title: 'Home', onTap: () => Navigator.popUntil(context, (r) => r.isFirst)),
-                  const SizedBox(height: 12),
-                  _drawerActionItem(context, icon: Icons.calendar_month_rounded, title: 'Calendar', onTap: () => Navigator.pop(context)),
-                  const SizedBox(height: 12),
-                  _drawerActionItem(context, icon: Icons.lightbulb_rounded, title: 'Insights', onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const InsightsScreen()));
-                  }),
-                  
-                  const SizedBox(height: 24),
-                  Divider(color: AppTheme.shadowDark.withOpacity(0.3)),
-                  const SizedBox(height: 24),
-
-                  _drawerActionItem(context, icon: Icons.settings_rounded, title: 'Settings', onTap: () {}),
-                  const SizedBox(height: 12),
-                  _drawerActionItem(context, icon: Icons.contact_support_rounded, title: 'Contact Support', onTap: () {}),
-                ],
-              ),
-            ),
-            
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const BrandName(fontSize: 14),
-                  Text(
-                    ' v1.2.0',
-                    style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _drawerActionItem(BuildContext context, {required IconData icon, required String title, required VoidCallback onTap}) {
-    return GlassContainer(
-      margin: const EdgeInsets.only(bottom: 8),
-      radius: 20,
-      onTap: () {
-        Navigator.pop(context);
-        onTap();
-      },
-      child: ListTile(
-        leading: Icon(icon, color: AppTheme.accentPink, size: 24),
-        title: Text(title, style: GoogleFonts.inter(color: AppTheme.textDark, fontSize: 16, fontWeight: FontWeight.w700)),
-      ),
-    );
-  }
 }
 
 class _DailyLogSheet extends StatelessWidget {
@@ -449,9 +362,8 @@ class _DailyLogSheet extends StatelessWidget {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
       ),
       padding: const EdgeInsets.only(top: 16),
-      child: GlassContainer(
+      child: NeuContainer(
         radius: 40,
-        opacity: 0.05,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -470,114 +382,114 @@ class _DailyLogSheet extends StatelessWidget {
                       Text(DateFormat('EEEE').format(date), style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
                     ],
                   ),
-                    GlassContainer(
-                      radius: 16,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Text('Day ${pred.getCycleDay(date)}', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.accentPink)),
+                  NeuContainer(
+                    radius: 16,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text('Day ${pred.getCycleDay(date)}', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.accentPink)),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                children: [
+                  Text('Phase:', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                  const SizedBox(width: 8),
+                  Text(pred.getPhaseForDay(date).displayName, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, fontWeight: FontWeight.w700)),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+            
+            // Hormone Status Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: NeuContainer(
+                padding: const EdgeInsets.all(20),
+                radius: 24,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Hormone Status', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _hormoneMiniItem('Estrogen', pred.getHormoneDescriptions(pred.getCycleDay(date))['Estrogen']!),
+                        _hormoneMiniItem('Progesterone', pred.getHormoneDescriptions(pred.getCycleDay(date))['Progesterone']!),
+                      ],
                     ),
                   ],
                 ),
               ),
+            ),
 
-              const SizedBox(height: 16),
-              
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  children: [
-                    Text('Phase:', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                    const SizedBox(width: 8),
-                    Text(pred.getPhaseForDay(date).displayName, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, fontWeight: FontWeight.w700)),
-                  ],
-                ),
-              ),
-
+            if (dailyLog != null) ...[
               const SizedBox(height: 24),
-              
-              // Hormone Status Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: GlassContainer(
+                child: NeuContainer(
                   padding: const EdgeInsets.all(20),
                   radius: 24,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hormone Status', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _hormoneMiniItem('Estrogen', pred.getHormoneDescriptions(pred.getCycleDay(date))['Estrogen']!),
-                          _hormoneMiniItem('Progesterone', pred.getHormoneDescriptions(pred.getCycleDay(date))['Progesterone']!),
+                          Text('Daily Check-in', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+                          if (dailyLog.moods?.isNotEmpty == true)
+                            Text(dailyLog.moods!.first, style: const TextStyle(fontSize: 24)),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      if (dailyLog.symptoms?.isNotEmpty == true) ...[
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: dailyLog.symptoms!.map((s) => Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(color: AppTheme.accentPink.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                            child: Text(s, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.accentPink, fontWeight: FontWeight.w600)),
+                          )).toList(),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                      if (dailyLog.waterIntake != null && dailyLog.waterIntake! > 0) ...[
+                        Row(
+                          children: [
+                            const Text('💧', style: TextStyle(fontSize: 14)),
+                            const SizedBox(width: 8),
+                            Text('${dailyLog.waterIntake} Glasses', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      if (dailyLog.notes?.isNotEmpty == true) ...[
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.3), borderRadius: BorderRadius.circular(12)),
+                          child: Text(dailyLog.notes!, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontStyle: FontStyle.italic)),
+                        ),
+                      ],
                     ],
                   ),
                 ),
               ),
+            ],
 
-              if (dailyLog != null) ...[
-                const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: GlassContainer(
-                    padding: const EdgeInsets.all(20),
-                    radius: 24,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Daily Check-in', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
-                            if (dailyLog.moods?.isNotEmpty == true)
-                              Text(dailyLog.moods!.first, style: const TextStyle(fontSize: 24)),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        if (dailyLog.symptoms?.isNotEmpty == true) ...[
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: dailyLog.symptoms!.map((s) => Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(color: AppTheme.accentPink.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                              child: Text(s, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.accentPink, fontWeight: FontWeight.w600)),
-                            )).toList(),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                        if (dailyLog.waterIntake != null && dailyLog.waterIntake! > 0) ...[
-                          Row(
-                            children: [
-                              const Text('💧', style: TextStyle(fontSize: 14)),
-                              const SizedBox(width: 8),
-                              Text('${dailyLog.waterIntake} Glasses', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                        if (dailyLog.notes?.isNotEmpty == true) ...[
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(color: Colors.white.withOpacity(0.3), borderRadius: BorderRadius.circular(12)),
-                            child: Text(dailyLog.notes!, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontStyle: FontStyle.italic)),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-
-              const SizedBox(height: 24),
-            
+            const SizedBox(height: 24),
+          
             // Conception Chance Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: GlassContainer(
+              child: NeuContainer(
                 padding: const EdgeInsets.all(24),
                 radius: 28,
                 child: Column(
@@ -627,7 +539,7 @@ class _DailyLogSheet extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: GlassContainer(
+                    child: NeuContainer(
                       radius: 20,
                       onTap: () {
                         showPhaseDelight(context, 'Period Logged');
@@ -650,7 +562,7 @@ class _DailyLogSheet extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: GlassContainer(
+                    child: NeuContainer(
                       radius: 20,
                       onTap: () => Navigator.pop(context),
                       child: Padding(

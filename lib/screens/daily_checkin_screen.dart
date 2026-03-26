@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../models/daily_log.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 import '../widgets/delight_widgets.dart';
 
 class DailyCheckinScreen extends StatefulWidget {
@@ -65,9 +65,8 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
       ),
       padding: const EdgeInsets.only(top: 16),
-      child: GlassContainer(
+      child: NeuContainer(
         radius: 40,
-        opacity: 0.05,
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
@@ -110,7 +109,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                 // ── Date ────────────────────────────────────────────
                 _stepLabel('📅', 'Date'),
                 const SizedBox(height: 16),
-                GlassContainer(
+                NeuContainer(
                   radius: 24,
                   onTap: () async {
                     final date = await showDatePicker(

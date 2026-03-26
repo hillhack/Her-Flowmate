@@ -46,6 +46,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Container(
       decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
       child: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             // Custom Top Bar (replacing AppBar)

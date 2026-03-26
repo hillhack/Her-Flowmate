@@ -65,7 +65,7 @@ class NotificationPanel extends StatelessWidget {
         radius: 32,
         opacity: 0.05,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min, // Now it can be min without Expanded children
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Center(
@@ -91,7 +91,11 @@ class NotificationPanel extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Expanded(
+            // Replaced Expanded with a constrained Box for the scrollable list
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.6,
+              ),
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),

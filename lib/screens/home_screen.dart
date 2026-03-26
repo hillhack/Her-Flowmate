@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         _buildDreamyBackground(),
         SafeArea(
+          bottom: false,
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -947,6 +948,7 @@ class _GreetingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(

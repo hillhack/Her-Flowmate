@@ -17,6 +17,7 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
       child: SafeArea(
+        bottom: false,
         child: Column(
           children: [
             // Custom Top Bar (replacing AppBar)

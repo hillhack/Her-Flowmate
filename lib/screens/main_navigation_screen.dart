@@ -223,10 +223,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   Widget _buildDrawer(BuildContext context, StorageService storage) {
-    final initial = storage.userName.isNotEmpty
-        ? storage.userName[0].toUpperCase()
-        : 'U';
-
     return Drawer(
       backgroundColor: AppTheme.frameColor,
       elevation: 0,
@@ -234,31 +230,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       child: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 32),
-            NeuContainer(
-              width: 80,
-              height: 80,
-              radius: 40,
-              child: Center(
-                child: Text(
-                  initial,
-                  style: GoogleFonts.poppins(
-                    color: AppTheme.accentPink,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 32,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              storage.userName.isNotEmpty ? storage.userName : 'Guest',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textDark,
-              ),
-            ),
+            const SizedBox(height: 48),
+            const Center(child: BrandName(fontSize: 24)),
             const SizedBox(height: 48),
 
             Expanded(

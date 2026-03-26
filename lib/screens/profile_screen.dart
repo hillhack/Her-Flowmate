@@ -22,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
           children: [
             // Custom Top Bar (replacing AppBar)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 16),
               child: Row(
                 children: [
                   Builder(
@@ -33,14 +33,22 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () => Scaffold.of(context).openDrawer(),
                       child: const Icon(
                         Icons.menu_rounded,
-                        color: AppTheme.textDark,
+                        color: AppTheme.accentPink,
                         size: 26,
                       ),
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Center(
-                      child: BrandName(fontSize: 22),
+                      child: Text(
+                        'Profile',
+                        style: GoogleFonts.poppins(
+                          color: AppTheme.midnightPlum,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 22,
+                          letterSpacing: -0.5,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 48), // Spacer to balance menu button

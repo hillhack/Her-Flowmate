@@ -57,11 +57,21 @@ class GlassContainer extends StatelessWidget {
             ),
     );
 
-    // 2. Common Decoration for Border
+    // 2. Common Decoration for Border & Reflection
     final glassBorder = Positioned.fill(
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white.withOpacity(0.4),
+              Colors.white.withOpacity(0.05),
+              Colors.black.withOpacity(0.05),
+            ],
+            stops: const [0.0, 0.5, 1.0],
+          ),
           border: Border.all(
             color: (borderColor ?? Colors.white).withOpacity(0.2),
             width: 1.5,

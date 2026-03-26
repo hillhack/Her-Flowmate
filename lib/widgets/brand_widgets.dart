@@ -19,8 +19,8 @@ class BrandName extends StatelessWidget {
         style: GoogleFonts.outfit(
           fontSize: fontSize,
           fontWeight: FontWeight.w900,
-          color: Colors.white, // This will be masked by the gradient
-          letterSpacing: -0.5,
+          color: Colors.white,
+          letterSpacing: -1.0, // Tighter for more professional look
         ),
       ),
     );

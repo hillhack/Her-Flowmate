@@ -54,30 +54,40 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildDreamyBackground(),
         SafeArea(
           bottom: false,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 16),
-                _buildTopRow(context, storage),
-                const SizedBox(height: 24),
-                _GreetingSection(storage: storage),
-                const SizedBox(height: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 24), // Premium top breathing room
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: _buildTopRow(context, storage),
+              ),
+              const SizedBox(height: 32),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _GreetingSection(storage: storage),
+                      const SizedBox(height: 48),
 
-                if (storage.userGoal == 'pregnant')
-                  _buildPregnancyDashboard(context, storage)
-                else if (storage.userGoal == 'conceive')
-                  _buildTTCDashboard(context, storage)
-                else
-                  _buildCycleDashboard(context, storage, pred),
+                      if (storage.userGoal == 'pregnant')
+                        _buildPregnancyDashboard(context, storage)
+                      else if (storage.userGoal == 'conceive')
+                        _buildTTCDashboard(context, storage)
+                      else
+                        _buildCycleDashboard(context, storage, pred),
 
-                const SizedBox(height: 48),
-                _buildMedicalDisclaimer(),
-                const SizedBox(height: 120),
-              ],
-            ),
+                      const SizedBox(height: 48),
+                      _buildMedicalDisclaimer(),
+                      const SizedBox(height: 120),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -954,19 +964,20 @@ class _GreetingSection extends StatelessWidget {
         Text(
           'Hello, ${storage.userName.split(' ').first}!',
           style: GoogleFonts.poppins(
-            fontSize: 28,
-            fontWeight: FontWeight.w900,
-            color: AppTheme.textDark,
-            letterSpacing: -0.5,
+            fontSize: 32, // Slightly larger
+            fontWeight: FontWeight.w800, // Black is a bit too heavy, w800 is premium
+            color: AppTheme.midnightPlum,
+            letterSpacing: -1.0,
           ),
         ),
+        const SizedBox(height: 4),
         Text(
           DateFormat('EEEE, MMMM d').format(DateTime.now()),
           style: GoogleFonts.inter(
-            fontSize: 14,
+            fontSize: 16,
             color: AppTheme.textSecondary,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.2,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
         ),
       ],

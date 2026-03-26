@@ -74,13 +74,13 @@ class _NeuContainerState extends State<NeuContainer> {
               : null,
           boxShadow: [
             BoxShadow(
-              color: AppTheme.neuLightShadow,
+              color: AppTheme.shadowLight,
               offset: Offset(-currentOffset, -currentOffset),
               blurRadius: currentBlur,
               inset: isConcave,
             ),
             BoxShadow(
-              color: AppTheme.neuDarkShadow,
+              color: AppTheme.shadowDark,
               offset: Offset(currentOffset, currentOffset),
               blurRadius: currentBlur,
               inset: isConcave,

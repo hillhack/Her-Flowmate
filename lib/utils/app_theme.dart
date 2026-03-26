@@ -2,60 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract final class AppTheme {
-  // ── Color Palette (Exact Specification) ───────────────────────────────────
-  static const Color primaryPink = Color(0xFFFF7FA5);
-  static const Color softPink = Color(0xFFFADADD);
-  static const Color lavender = Color(0xFFEBDFFF);
-  static const Color accentPurple = Color(0xFFCBA8FF);
-  static const Color textDark = Color(0xFF6A5C7A);
-
-  // Neumorphic Design System (No Borders, Soft Shadows)
-  static const Color bgColor = Color(0xFFF8D6E6); // Neumorphic Surface
-  static const Color surfaceColor = Color(0xFFF8D6E6);
+  // ── Premium Color Palette (Rose Quartz & Midnight Pearl) ───────────────────
+  static const Color roseGold = Color(0xFFF48FB1); // More vibrant rose
+  static const Color softRose = Color(0xFFFFF1F5); // Creamy soft rose
+  static const Color deepRose = Color(0xFFD81B60);
+  static const Color midnightPlum = Color(0xFF2D1B36); // Deep, high contrast text
+  static const Color textDark = midnightPlum;
+  static const Color textSecondary = Color(0xFF6B5876); // Muted plum
+  
+  // Design Foundations
+  static const Color bgColor = Color(0xFFFDEEF4); // Subtle pink surface
+  static const Color surfaceColor = bgColor;
   static const Color neuLightShadow = Color(0xFFFFFFFF);
-  static const Color neuDarkShadow = Color(0xFFE3C7D6);
+  static const Color neuDarkShadow = Color(0xFFEBCAD8);
 
-  // Aliases and Secondary Colors
+  // Aliases
   static const Color frameColor = bgColor;
-  static const Color textSecondary = Color(
-    0xFF8A7E96,
-  ); // Harmonized with textDark
-  static const Color accentPink = primaryPink;
+  static const Color accentPink = roseGold;
   static const Color shadowLight = neuLightShadow;
   static const Color shadowDark = neuDarkShadow;
 
   // Glass Design System
-  static const double glassOpacity = 0.15;
-  static const double glassBlur = 12.0;
+  static const double glassOpacity = 0.12;
+  static const double glassBlur = 16.0;
 
-  // Background Gradient
+  // Background Gradient (Sophisticated Trio)
   static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFFFE6F0), Color(0xFFEBDFFF), Color(0xFFFFD6EC)],
+    colors: [
+      Color(0xFFFFF8FB), // Top Left: High light
+      Color(0xFFFDEEF4), // Middle: Main surface
+      Color(0xFFF6D9E6), // Bottom Right: Depth
+    ],
   );
 
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [primaryPink, accentPurple],
+    colors: [roseGold, Color(0xFF8E24AA)], // Rose to Rich Purple
   );
 
   static const Map<String, Color> phaseColors = {
-    'Menstrual': Color(0xFFFF7FA5), // Primary Pink
-    'Follicular': Color(0xFFFADADD), // Soft Pink
-    'Ovulation': Color(0xFFCBA8FF), // Accent Purple
-    'Luteal': Color(0xFFEBDFFF), // Lavender
+    'Menstrual': Color(0xFFF06292), // Vibrant Rose
+    'Follicular': Color(0xFFFFB2C1), // Soft Nude Pink
+    'Ovulation': Color(0xFFAB47BC), // Deep Orchid
+    'Luteal': Color(0xFF9575CD), // Muted Lavender
   };
 
   static const Map<String, Color> hormoneColors = {
-    'Estrogen': Color(0xFFFF7FA5),
-    'Progesterone': Color(0xFFCBA8FF),
-    'LH': Color(0xFF90CAF9),
-    'FSH': Color(0xFFA5D6A7),
+    'Estrogen': Color(0xFFF06292),
+    'Progesterone': Color(0xFFAB47BC),
+    'LH': Color(0xFF42A5F5), // Premium Azure
+    'FSH': Color(0xFF66BB6A), // Premium Emerald
   };
 
-  static Color phaseColor(String phase) => phaseColors[phase] ?? primaryPink;
+  // Aliases for Backward Compatibility
+  static const Color primaryPink = roseGold;
+  static const Color accentPurple = Color(0xFFAB47BC); // Ovulation phase deep orchid
+  static const Color lavender = Color(0xFF9575CD); // Luteal phase muted lavender
+  static const Color softPink = softRose;
+
+  static Color phaseColor(String phase) => phaseColors[phase] ?? roseGold;
 
   // ── Spacing System (8px Grid) ─────────────────────────────────────────────
   static const double gridUnit = 8.0;

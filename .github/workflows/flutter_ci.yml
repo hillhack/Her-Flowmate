@@ -1,54 +1,63 @@
-name: Flutter CI
+name: Flutter CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
-  build:
+  test:
+    name: Run Tests & Analyze
     runs-on: ubuntu-latest
-
     steps:
-      # Checkout repository
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # Setup Flutter SDK
-      - name: Set up Flutter
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: '3.29.0' # Matches the user's environment
+          channel: 'stable'
           cache: true
 
-      # Cache pub dependencies
-      - name: Cache pub packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            .dart_tool
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
-
-      # Check Flutter version
-      - name: Flutter version
-        run: flutter --version
-
-      # Install dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
-      # Enforce formatting (strict)
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
+      - name: Check Formatting
+        run: dart format --set-exit-if-changed .
 
-      # Analyze (non-blocking for warnings/infos)
-      - name: Analyze project
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - name: Static Analysis
+        run: flutter analyze
 
-      # Run tests
-      - name: Run tests
+      - name: Run Widget Tests
         run: flutter test
+
+  build_web:
+    name: Verify Web Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0'
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - name: Build Web
+        run: flutter build web --release
+
+  build_android:
+    name: Verify Android Build
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0'
+          channel: 'stable'
+          cache: true
+      - run: flutter pub get
+      - name: Build APK
+        run: flutter build apk --debug # Debug build for faster verification in CI

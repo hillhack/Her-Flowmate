@@ -342,8 +342,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final phaseName = pred.phaseDisplayName;
     final day = pred.currentCycleDay == 0 ? 1 : pred.currentCycleDay;
     final cycleLen = pred.averageCycleLength;
-    final nextPeriod = pred.daysUntilNextPeriod;
-    final nextOvulation = pred.nextPeriodDate?.subtract(const Duration(days: 14)).difference(DateTime.now()).inDays ?? 14;
 
     return Center(
       child: SizedBox(
@@ -395,15 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Text(phaseName + ' Phase', style: GoogleFonts.inter(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
-                  const SizedBox(height: 12),
-                  Text(AppTheme.phaseTip(phaseName).headline + ',', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w700)),
-                  Text(AppTheme.phaseTip(phaseName).body, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary), textAlign: TextAlign.center),
                   const SizedBox(height: 16),
-                  Container(height: 1, width: 220, color: AppTheme.textSecondary.withOpacity(0.2)),
-                  const SizedBox(height: 12),
-                  Text('Next period in: $nextPeriod days', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 4),
-                  Text('Ovulation in: ${nextOvulation > 0 ? nextOvulation : 0} days', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.accentPink, fontWeight: FontWeight.w700)),
                 ],
               ),
             ),

@@ -12,8 +12,6 @@ import '../widgets/delight_widgets.dart';
 import '../widgets/notification_widgets.dart';
 import 'prediction_details_screen.dart';
 
-
-
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
 
@@ -63,13 +61,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         title: Text(
           'Cycle Calendar',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w800, fontSize: 20),
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
-        actions: const [
-          NotificationBell(),
-          SizedBox(width: 8),
-        ],
+        actions: const [NotificationBell(), SizedBox(width: 8)],
       ),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
@@ -87,7 +86,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       firstDay: DateTime.utc(2020, 1, 1),
                       lastDay: DateTime.utc(2030, 12, 31),
                       focusedDay: _focusedDay,
-                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                      selectedDayPredicate: (day) =>
+                          isSameDay(_selectedDay, day),
                       onDaySelected: (selectedDay, focusedDay) {
                         setState(() {
                           _selectedDay = selectedDay;
@@ -99,23 +99,57 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,
                         titleCentered: true,
-                        titleTextStyle: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark),
-                        leftChevronIcon: const Icon(Icons.chevron_left_rounded, color: AppTheme.accentPink, size: 28),
-                        rightChevronIcon: const Icon(Icons.chevron_right_rounded, color: AppTheme.accentPink, size: 28),
+                        titleTextStyle: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.textDark,
+                        ),
+                        leftChevronIcon: const Icon(
+                          Icons.chevron_left_rounded,
+                          color: AppTheme.accentPink,
+                          size: 28,
+                        ),
+                        rightChevronIcon: const Icon(
+                          Icons.chevron_right_rounded,
+                          color: AppTheme.accentPink,
+                          size: 28,
+                        ),
                       ),
                       daysOfWeekStyle: DaysOfWeekStyle(
-                        weekdayStyle: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w700),
-                        weekendStyle: GoogleFonts.inter(color: AppTheme.accentPink, fontWeight: FontWeight.w700),
+                        weekdayStyle: GoogleFonts.inter(
+                          color: AppTheme.textSecondary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        weekendStyle: GoogleFonts.inter(
+                          color: AppTheme.accentPink,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                       calendarBuilders: CalendarBuilders(
                         defaultBuilder: (context, day, focusedDay) {
-                          return _buildCalendarCell(day, pred, storage, isSelected: false);
+                          return _buildCalendarCell(
+                            day,
+                            pred,
+                            storage,
+                            isSelected: false,
+                          );
                         },
                         selectedBuilder: (context, day, focusedDay) {
-                          return _buildCalendarCell(day, pred, storage, isSelected: true);
+                          return _buildCalendarCell(
+                            day,
+                            pred,
+                            storage,
+                            isSelected: true,
+                          );
                         },
                         todayBuilder: (context, day, focusedDay) {
-                          return _buildCalendarCell(day, pred, storage, isSelected: false, isToday: true);
+                          return _buildCalendarCell(
+                            day,
+                            pred,
+                            storage,
+                            isSelected: false,
+                            isToday: true,
+                          );
                         },
                       ),
                     ),
@@ -129,14 +163,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: _buildLegend(pred),
                 ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
-                
+
                 const SizedBox(height: 24),
 
                 // Floating Phase Explanation Card
                 if (_selectedDay != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: _buildPhaseExplanationCard(context, pred, _selectedDay!),
+                    child: _buildPhaseExplanationCard(
+                      context,
+                      pred,
+                      _selectedDay!,
+                    ),
                   ),
 
                 const SizedBox(height: 24),
@@ -152,7 +190,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           onTap: () {},
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Center(child: Text('Add Note', style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: AppTheme.textDark))),
+                            child: Center(
+                              child: Text(
+                                'Add Note',
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppTheme.textDark,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -163,14 +209,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           onTap: () => Navigator.pop(context),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Center(child: Text('View Insights', style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: AppTheme.textDark))),
+                            child: Center(
+                              child: Text(
+                                'View Insights',
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w700,
+                                  color: AppTheme.textDark,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ).animate().fadeIn(delay: 400.ms),
-                
+
                 const SizedBox(height: 120),
               ],
             ),
@@ -180,7 +234,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildPhaseExplanationCard(BuildContext context, PredictionService pred, DateTime date) {
+  Widget _buildPhaseExplanationCard(
+    BuildContext context,
+    PredictionService pred,
+    DateTime date,
+  ) {
     final cycleDay = pred.getCycleDay(date);
     final phase = pred.getPhaseForDay(date);
     final biology = pred.getPhaseBiology(cycleDay);
@@ -198,36 +256,120 @@ class _CalendarScreenState extends State<CalendarScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(DateFormat('MMMM d').format(date), style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-                  Text('Cycle Day: $cycleDay', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+                  Text(
+                    DateFormat('MMMM d').format(date),
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
+                  Text(
+                    'Cycle Day: $cycleDay',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: AppTheme.phaseColor(phase.displayName).withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-                child: Text(phase.displayName, style: GoogleFonts.poppins(fontSize: 13, fontWeight: FontWeight.w800, color: AppTheme.phaseColor(phase.displayName))),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.phaseColor(
+                    phase.displayName,
+                  ).withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  phase.displayName,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.phaseColor(phase.displayName),
+                  ),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          Text('What is happening today:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+          Text(
+            'What is happening today:',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: AppTheme.textDark,
+            ),
+          ),
           const SizedBox(height: 6),
-          Text(biology['insight']!, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, height: 1.4, fontWeight: FontWeight.w500)),
+          Text(
+            biology['insight']!,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: AppTheme.textSecondary,
+              height: 1.4,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
           const SizedBox(height: 16),
-          Text('Hormone activity:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+          Text(
+            'Hormone activity:',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: AppTheme.textDark,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(biology['hormoneActivity']!, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.accentPink, fontWeight: FontWeight.w700)),
+          Text(
+            biology['hormoneActivity']!,
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: AppTheme.accentPink,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 16),
-          Text('Fertility status:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+          Text(
+            'Fertility status:',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              color: AppTheme.textDark,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(pred.getConceptionStatus(chance), style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, fontWeight: FontWeight.w700)),
+          Text(
+            pred.getConceptionStatus(chance),
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: AppTheme.textDark,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PredictionDetailsScreen())),
-                child: Text('Learn More →', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PredictionDetailsScreen(),
+                  ),
+                ),
+                child: Text(
+                  'Learn More →',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.accentPink,
+                  ),
+                ),
               ),
             ],
           ),
@@ -252,7 +394,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildCalendarCell(DateTime day, PredictionService pred, StorageService storage, {required bool isSelected, bool isToday = false}) {
+  Widget _buildCalendarCell(
+    DateTime day,
+    PredictionService pred,
+    StorageService storage, {
+    required bool isSelected,
+    bool isToday = false,
+  }) {
     final phase = pred.getPhaseForDay(day);
     final isPeriod = phase == CyclePhase.menstrual;
     final isOvulation = phase == CyclePhase.ovulation;
@@ -261,7 +409,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     Color? bgColor;
     BoxBorder? border;
-    
+
     if (isSelected) {
       bgColor = AppTheme.accentPink.withOpacity(0.8);
       border = Border.all(color: AppTheme.accentPink, width: 2);
@@ -274,7 +422,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
 
     if (isToday && !isSelected) {
-      border = Border.all(color: AppTheme.accentPink.withOpacity(0.5), width: 1.5);
+      border = Border.all(
+        color: AppTheme.accentPink.withOpacity(0.5),
+        width: 1.5,
+      );
     }
 
     return Container(
@@ -283,9 +434,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
         color: bgColor,
         shape: BoxShape.circle,
         border: border,
-        boxShadow: isOvulation ? [
-          BoxShadow(color: AppTheme.phaseColors['Ovulation']!.withOpacity(0.4), blurRadius: 8, spreadRadius: 1)
-        ] : null,
+        boxShadow: isOvulation
+            ? [
+                BoxShadow(
+                  color: AppTheme.phaseColors['Ovulation']!.withOpacity(0.4),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                ),
+              ]
+            : null,
       ),
       alignment: Alignment.center,
       child: Stack(
@@ -295,7 +452,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
             '${day.day}',
             style: GoogleFonts.inter(
               color: isSelected || isPeriod ? Colors.white : AppTheme.textDark,
-              fontWeight: isSelected || isToday || isPeriod ? FontWeight.w800 : FontWeight.w600,
+              fontWeight: isSelected || isToday || isPeriod
+                  ? FontWeight.w800
+                  : FontWeight.w600,
               fontSize: 14,
             ),
           ),
@@ -308,7 +467,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 decoration: BoxDecoration(
                   color: AppTheme.phaseColors['Ovulation'],
                   shape: BoxShape.circle,
-                  boxShadow: [BoxShadow(color: AppTheme.phaseColors['Ovulation']!, blurRadius: 4)]
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.phaseColors['Ovulation']!,
+                      blurRadius: 4,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -318,7 +482,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
               right: 2,
               child: Container(
                 padding: const EdgeInsets.all(2),
-                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
                 child: Text(
                   storage.getDailyLog(day)?.moods?.first ?? '📝',
                   style: const TextStyle(fontSize: 8),
@@ -334,9 +501,20 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
         const SizedBox(width: 8),
-        Text(label, style: GoogleFonts.inter(color: AppTheme.textSecondary, fontSize: 13, fontWeight: FontWeight.w700)),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            color: AppTheme.textSecondary,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }
@@ -351,7 +529,9 @@ class _DailyLogSheet extends StatelessWidget {
     final pred = context.watch<PredictionService>();
     final chance = pred.getConceptionChance(date);
     final isHigh = chance >= 25;
-    final statusText = isHigh ? 'High Fertility' : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
+    final statusText = isHigh
+        ? 'High Fertility'
+        : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
 
     final storage = context.watch<StorageService>();
     final dailyLog = storage.getDailyLog(date);
@@ -367,9 +547,16 @@ class _DailyLogSheet extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(width: 44, height: 6, decoration: BoxDecoration(color: AppTheme.shadowDark, borderRadius: BorderRadius.circular(3))),
+            Container(
+              width: 44,
+              height: 6,
+              decoration: BoxDecoration(
+                color: AppTheme.shadowDark,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
             const SizedBox(height: 24),
-            
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -378,34 +565,72 @@ class _DailyLogSheet extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(DateFormat('MMMM d').format(date), style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
-                      Text(DateFormat('EEEE').format(date), style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                      Text(
+                        DateFormat('MMMM d').format(date),
+                        style: GoogleFonts.poppins(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
+                      Text(
+                        DateFormat('EEEE').format(date),
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: AppTheme.textSecondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                   NeuContainer(
                     radius: 16,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text('Day ${pred.getCycleDay(date)}', style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.accentPink)),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      'Day ${pred.getCycleDay(date)}',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.accentPink,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
 
             const SizedBox(height: 16),
-            
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
-                  Text('Phase:', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+                  Text(
+                    'Phase:',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(width: 8),
-                  Text(pred.getPhaseForDay(date).displayName, style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark, fontWeight: FontWeight.w700)),
+                  Text(
+                    pred.getPhaseForDay(date).displayName,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textDark,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 24),
-            
+
             // Hormone Status Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -415,13 +640,30 @@ class _DailyLogSheet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Hormone Status', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+                    Text(
+                      'Hormone Status',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _hormoneMiniItem('Estrogen', pred.getHormoneDescriptions(pred.getCycleDay(date))['Estrogen']!),
-                        _hormoneMiniItem('Progesterone', pred.getHormoneDescriptions(pred.getCycleDay(date))['Progesterone']!),
+                        _hormoneMiniItem(
+                          'Estrogen',
+                          pred.getHormoneDescriptions(
+                            pred.getCycleDay(date),
+                          )['Estrogen']!,
+                        ),
+                        _hormoneMiniItem(
+                          'Progesterone',
+                          pred.getHormoneDescriptions(
+                            pred.getCycleDay(date),
+                          )['Progesterone']!,
+                        ),
                       ],
                     ),
                   ],
@@ -442,9 +684,19 @@ class _DailyLogSheet extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Daily Check-in', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+                          Text(
+                            'Daily Check-in',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: AppTheme.textSecondary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                           if (dailyLog.moods?.isNotEmpty == true)
-                            Text(dailyLog.moods!.first, style: const TextStyle(fontSize: 24)),
+                            Text(
+                              dailyLog.moods!.first,
+                              style: const TextStyle(fontSize: 24),
+                            ),
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -452,20 +704,45 @@ class _DailyLogSheet extends StatelessWidget {
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
-                          children: dailyLog.symptoms!.map((s) => Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(color: AppTheme.accentPink.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                            child: Text(s, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.accentPink, fontWeight: FontWeight.w600)),
-                          )).toList(),
+                          children: dailyLog.symptoms!
+                              .map(
+                                (s) => Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.accentPink.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    s,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppTheme.accentPink,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
                         ),
                         const SizedBox(height: 12),
                       ],
-                      if (dailyLog.waterIntake != null && dailyLog.waterIntake! > 0) ...[
+                      if (dailyLog.waterIntake != null &&
+                          dailyLog.waterIntake! > 0) ...[
                         Row(
                           children: [
                             const Text('💧', style: TextStyle(fontSize: 14)),
                             const SizedBox(width: 8),
-                            Text('${dailyLog.waterIntake} Glasses', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textDark, fontWeight: FontWeight.w600)),
+                            Text(
+                              '${dailyLog.waterIntake} Glasses',
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                color: AppTheme.textDark,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -474,8 +751,18 @@ class _DailyLogSheet extends StatelessWidget {
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.3), borderRadius: BorderRadius.circular(12)),
-                          child: Text(dailyLog.notes!, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.textSecondary, fontStyle: FontStyle.italic)),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            dailyLog.notes!,
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: AppTheme.textSecondary,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
                         ),
                       ],
                     ],
@@ -485,7 +772,7 @@ class _DailyLogSheet extends StatelessWidget {
             ],
 
             const SizedBox(height: 24),
-          
+
             // Conception Chance Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -495,20 +782,49 @@ class _DailyLogSheet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Fertility Window', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+                    Text(
+                      'Fertility Window',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(statusText, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+                    Text(
+                      statusText,
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.textDark,
+                      ),
+                    ),
                     const SizedBox(height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Chance of Conception', style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-                        Text('$chance%', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+                        Text(
+                          'Chance of Conception',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: AppTheme.textSecondary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          '$chance%',
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.accentPink,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     Container(
-                      height: 10, width: double.infinity,
+                      height: 10,
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(5),
@@ -516,23 +832,32 @@ class _DailyLogSheet extends StatelessWidget {
                       child: FractionallySizedBox(
                         alignment: Alignment.centerLeft,
                         widthFactor: (chance / 100).clamp(0.01, 1.0),
-                        child: Container(decoration: BoxDecoration(color: AppTheme.accentPink, borderRadius: BorderRadius.circular(5))),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppTheme.accentPink,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
             Text(
               'This is an estimate based on your cycle patterns.',
-              style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary.withOpacity(0.6), fontStyle: FontStyle.italic),
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                color: AppTheme.textSecondary.withOpacity(0.6),
+                fontStyle: FontStyle.italic,
+              ),
               textAlign: TextAlign.center,
             ),
 
             const SizedBox(height: 32),
-            
+
             // Action Buttons
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -551,7 +876,13 @@ class _DailyLogSheet extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('Log Period', style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+                              Text(
+                                'Log Period',
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w800,
+                                  color: AppTheme.accentPink,
+                                ),
+                              ),
                               const SizedBox(width: 4),
                               const Text('🦋', style: TextStyle(fontSize: 12)),
                             ],
@@ -567,14 +898,22 @@ class _DailyLogSheet extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: Center(child: Text('Log Symptom', style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: AppTheme.textDark))),
+                        child: Center(
+                          child: Text(
+                            'Log Symptom',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w800,
+                              color: AppTheme.textDark,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 48),
           ],
         ),
@@ -586,8 +925,22 @@ class _DailyLogSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
-        Text(status, style: GoogleFonts.inter(fontSize: 16, color: AppTheme.textDark, fontWeight: FontWeight.w800)),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppTheme.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          status,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
       ],
     );
   }

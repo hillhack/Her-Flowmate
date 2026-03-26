@@ -27,13 +27,20 @@ class TimelineScreen extends StatelessWidget {
             child: NeuContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppTheme.textDark,
+              ),
             ),
           ),
         ),
         title: Text(
           'Cycle Timeline',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w800, fontSize: 20),
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
       ),
@@ -48,9 +55,18 @@ class TimelineScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildLegendItem('Period', AppTheme.phaseColors['Menstrual']!),
-                    _buildLegendItem('Follicular', AppTheme.phaseColors['Follicular']!),
-                    _buildLegendItem('Ovulation', AppTheme.phaseColors['Ovulation']!),
+                    _buildLegendItem(
+                      'Period',
+                      AppTheme.phaseColors['Menstrual']!,
+                    ),
+                    _buildLegendItem(
+                      'Follicular',
+                      AppTheme.phaseColors['Follicular']!,
+                    ),
+                    _buildLegendItem(
+                      'Ovulation',
+                      AppTheme.phaseColors['Ovulation']!,
+                    ),
                     _buildLegendItem('Luteal', AppTheme.phaseColors['Luteal']!),
                   ],
                 ),
@@ -68,11 +84,14 @@ class TimelineScreen extends StatelessWidget {
                     final phaseColor = AppTheme.phaseColor(phase);
 
                     return _TimelineRow(
-                      day: day,
-                      isToday: isToday,
-                      phaseName: phase,
-                      phaseColor: phaseColor,
-                    ).animate().fadeIn(delay: Duration(milliseconds: 30 * index)).slideX(begin: 0.05);
+                          day: day,
+                          isToday: isToday,
+                          phaseName: phase,
+                          phaseColor: phaseColor,
+                        )
+                        .animate()
+                        .fadeIn(delay: Duration(milliseconds: 30 * index))
+                        .slideX(begin: 0.05);
                   },
                 ),
               ),
@@ -87,11 +106,19 @@ class TimelineScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 14, height: 14,
+          width: 14,
+          height: 14,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(height: 6),
-        Text(label, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.textSecondary, fontWeight: FontWeight.w700)),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 10,
+            color: AppTheme.textSecondary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }
@@ -113,8 +140,10 @@ class _TimelineRow extends StatelessWidget {
   final Color phaseColor;
 
   const _TimelineRow({
-    required this.day, required this.isToday, 
-    required this.phaseName, required this.phaseColor
+    required this.day,
+    required this.isToday,
+    required this.phaseName,
+    required this.phaseColor,
   });
 
   @override
@@ -128,55 +157,73 @@ class _TimelineRow extends StatelessWidget {
             child: Text(
               '$day',
               style: GoogleFonts.poppins(
-                fontSize: 14, 
+                fontSize: 14,
                 fontWeight: isToday ? FontWeight.w900 : FontWeight.w700,
                 color: isToday ? AppTheme.accentPink : AppTheme.textSecondary,
               ),
             ),
           ),
-          
+
           // Marker
           Column(
             children: [
               Container(
-                width: 18, height: 18,
+                width: 18,
+                height: 18,
                 decoration: BoxDecoration(
                   color: isToday ? phaseColor : AppTheme.frameColor,
                   border: Border.all(color: phaseColor, width: 2),
                   shape: BoxShape.circle,
-                  boxShadow: isToday ? [
-                    BoxShadow(color: phaseColor.withOpacity(0.4), blurRadius: 8)
-                  ] : null,
+                  boxShadow: isToday
+                      ? [
+                          BoxShadow(
+                            color: phaseColor.withOpacity(0.4),
+                            blurRadius: 8,
+                          ),
+                        ]
+                      : null,
                 ),
-                child: isToday ? const Icon(Icons.star_rounded, size: 10, color: Colors.white) : null,
+                child: isToday
+                    ? const Icon(
+                        Icons.star_rounded,
+                        size: 10,
+                        color: Colors.white,
+                      )
+                    : null,
               ),
               Expanded(
                 child: Container(width: 2, color: phaseColor.withOpacity(0.2)),
               ),
             ],
           ),
-          
+
           const SizedBox(width: 20),
-          
+
           // Content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 24),
-              child: isToday 
-                ? NeuContainer(
-                    radius: 20,
-                    onTap: () {},
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    child: _rowContent(),
-                  )
-                : Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: phaseColor.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(20),
+              child: isToday
+                  ? NeuContainer(
+                      radius: 20,
+                      onTap: () {},
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      child: _rowContent(),
+                    )
+                  : Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        color: phaseColor.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: _rowContent(),
                     ),
-                    child: _rowContent(),
-                  ),
             ),
           ),
         ],
@@ -190,15 +237,19 @@ class _TimelineRow extends StatelessWidget {
         Text(
           isToday ? 'Today' : 'Cycle Day $day',
           style: GoogleFonts.inter(
-            fontSize: 14, 
+            fontSize: 14,
             fontWeight: isToday ? FontWeight.w800 : FontWeight.w700,
-            color: AppTheme.textDark
+            color: AppTheme.textDark,
           ),
         ),
         const Spacer(),
         Text(
           phaseName,
-          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w800, color: phaseColor),
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: phaseColor,
+          ),
         ),
       ],
     );

@@ -27,13 +27,19 @@ class PhaseDetailsScreen extends StatelessWidget {
             child: GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppTheme.textDark,
+              ),
             ),
           ),
         ),
         title: Text(
           'Phase Details',
-          style: GoogleFonts.poppins(color: AppTheme.textDark, fontWeight: FontWeight.w700),
+          style: GoogleFonts.poppins(
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         centerTitle: true,
       ),
@@ -60,19 +66,34 @@ class PhaseDetailsScreen extends StatelessWidget {
                           ),
                           child: const SparkleEffect(
                             trigger: true,
-                            child: Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 48),
+                            child: Icon(
+                              Icons.auto_awesome_rounded,
+                              color: Colors.white,
+                              size: 48,
+                            ),
                           ),
-                        ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+                        ).animate().scale(
+                          duration: 600.ms,
+                          curve: Curves.easeOutBack,
+                        ),
                         const SizedBox(height: 24),
                         Text(
                           phaseName,
-                          style: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                          style: GoogleFonts.poppins(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.textDark,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           details.oneLiner,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(fontSize: 16, color: color, fontWeight: FontWeight.w600),
+                          style: GoogleFonts.inter(
+                            fontSize: 16,
+                            color: color,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
@@ -86,7 +107,11 @@ class PhaseDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   details.description,
-                  style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textDark.withOpacity(0.8), height: 1.6),
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    color: AppTheme.textDark.withOpacity(0.8),
+                    height: 1.6,
+                  ),
                 ).animate().fadeIn(delay: 200.ms),
 
                 const SizedBox(height: 32),
@@ -108,7 +133,11 @@ class PhaseDetailsScreen extends StatelessWidget {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w700, color: AppTheme.textDark),
+      style: GoogleFonts.poppins(
+        fontSize: 20,
+        fontWeight: FontWeight.w700,
+        color: AppTheme.textDark,
+      ),
     );
   }
 
@@ -121,12 +150,20 @@ class PhaseDetailsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(Icons.check_circle_outline_rounded, color: accentColor, size: 20),
+              Icon(
+                Icons.check_circle_outline_rounded,
+                color: accentColor,
+                size: 20,
+              ),
               const SizedBox(width: 14),
               Expanded(
                 child: Text(
                   tip,
-                  style: GoogleFonts.inter(fontSize: 14, color: AppTheme.textDark.withOpacity(0.8), fontWeight: FontWeight.w500),
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: AppTheme.textDark.withOpacity(0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -141,55 +178,60 @@ class PhaseDetailsScreen extends StatelessWidget {
       case 'Menstrual':
         return _PhaseInfo(
           oneLiner: 'Time for Reset and Reflection',
-          description: 'Your cycle begins on the first day of your period. Progesterone and estrogen levels are at their lowest, which can lead to lower energy levels. Your body is working hard to shed its lining.',
+          description:
+              'Your cycle begins on the first day of your period. Progesterone and estrogen levels are at their lowest, which can lead to lower energy levels. Your body is working hard to shed its lining.',
           tips: [
             'Prioritize rest and gentle movement like light yoga.',
             'Stay warm and hydrated with herbal teas.',
             'Focus on iron-rich foods like spinach and lean proteins.',
-            'Use a heating pad for comfort if experiencing cramps.'
+            'Use a heating pad for comfort if experiencing cramps.',
           ],
         );
       case 'Follicular':
         return _PhaseInfo(
           oneLiner: 'Energy and Creativity Peak',
-          description: 'Estrogen levels begin to rise as your body prepares to release an egg. This is often when you feel most vibrant, focused, and ready to take on new challenges.',
+          description:
+              'Estrogen levels begin to rise as your body prepares to release an egg. This is often when you feel most vibrant, focused, and ready to take on new challenges.',
           tips: [
             'Try high-intensity workouts or new fitness classes.',
             'Great time for creative projects or social planning.',
             'Include probiotic-rich foods to support hormone metabolism.',
-            'Stay socially active and embrace your rising energy.'
+            'Stay socially active and embrace your rising energy.',
           ],
         );
       case 'Ovulation':
         return _PhaseInfo(
           oneLiner: 'The Height of Your Cycle',
-          description: 'The release of an egg marks your peak fertility. Libido is often higher, and you may feel extra confident and social. This is a short but powerful phase.',
+          description:
+              'The release of an egg marks your peak fertility. Libido is often higher, and you may feel extra confident and social. This is a short but powerful phase.',
           tips: [
             'Connect with others; your communication skills are peaking.',
             'Support liver health with leafy greens and cruciferous vegetables.',
             'Notice your body\'s signals like changes in temperature or fluid.',
-            'Stay hydrated to support metabolic processes.'
+            'Stay hydrated to support metabolic processes.',
           ],
         );
       case 'Luteal':
         return _PhaseInfo(
           oneLiner: 'Turning Inward and Slowing Down',
-          description: 'Progesterone rises, making you feel more relaxed but potentially more sensitive. Towards the end of this phase, you might notice PMS symptoms as hormones prepare to drop.',
+          description:
+              'Progesterone rises, making you feel more relaxed but potentially more sensitive. Towards the end of this phase, you might notice PMS symptoms as hormones prepare to drop.',
           tips: [
             'Opt for strength training or steady-pace cardio.',
             'Increase complex carbohydrates like sweet potatoes to stabilize mood.',
             'Practice mindfulness and prioritize early bedtimes.',
-            'Cut back on caffeine to help reduce pre-period anxiety.'
+            'Cut back on caffeine to help reduce pre-period anxiety.',
           ],
         );
       default:
         return _PhaseInfo(
           oneLiner: 'Understand Your Rhythm',
-          description: 'Tracking your cycle helps you live in harmony with your natural biological fluctuations.',
+          description:
+              'Tracking your cycle helps you live in harmony with your natural biological fluctuations.',
           tips: [
             'Keep logging your symptoms every day.',
             'Notice patterns across different months.',
-            'Be patient with yourself as your energy shifts.'
+            'Be patient with yourself as your energy shifts.',
           ],
         );
     }
@@ -199,5 +241,9 @@ class PhaseDetailsScreen extends StatelessWidget {
 class _PhaseInfo {
   final String oneLiner, description;
   final List<String> tips;
-  _PhaseInfo({required this.oneLiner, required this.description, required this.tips});
+  _PhaseInfo({
+    required this.oneLiner,
+    required this.description,
+    required this.tips,
+  });
 }

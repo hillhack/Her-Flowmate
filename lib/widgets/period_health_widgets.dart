@@ -25,7 +25,8 @@ class PeriodHealthModal extends StatelessWidget {
               children: [
                 Center(
                   child: Container(
-                    width: 48, height: 6,
+                    width: 48,
+                    height: 6,
                     decoration: BoxDecoration(
                       color: AppTheme.textSecondary.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(3),
@@ -36,13 +37,21 @@ class PeriodHealthModal extends StatelessWidget {
                 Text(
                   'Period Health Insights',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Understand your cycle indicators',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 32),
 
@@ -66,7 +75,7 @@ class PeriodHealthModal extends StatelessWidget {
                 _buildSectionTitle('🔬', 'Clots'),
                 const SizedBox(height: 16),
                 _buildInfoCard(
-                  'Small clots (size of a penny or smaller) are usually normal and happen when the blood is shedding quickly. If you see large clots (larger than a quarter), it might be worth mentioning to your doctor.'
+                  'Small clots (size of a penny or smaller) are usually normal and happen when the blood is shedding quickly. If you see large clots (larger than a quarter), it might be worth mentioning to your doctor.',
                 ),
                 const SizedBox(height: 32),
 
@@ -74,9 +83,9 @@ class PeriodHealthModal extends StatelessWidget {
                 _buildSectionTitle('📉', 'Pain Level'),
                 const SizedBox(height: 16),
                 _buildInfoCard(
-                  'Mild cramping is common and can often be managed with heat or gentle movement. However, debilitating pain that prevents daily activities is not "normal" and should be discussed with a healthcare professional.'
+                  'Mild cramping is common and can often be managed with heat or gentle movement. However, debilitating pain that prevents daily activities is not "normal" and should be discussed with a healthcare professional.',
                 ),
-                
+
                 const SizedBox(height: 48),
                 NeuContainer(
                   radius: 20,
@@ -84,7 +93,14 @@ class PeriodHealthModal extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Center(
-                      child: Text('Close', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800, color: AppTheme.accentPink)),
+                      child: Text(
+                        'Close',
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppTheme.accentPink,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -102,7 +118,14 @@ class PeriodHealthModal extends StatelessWidget {
       children: [
         Text(emoji, style: const TextStyle(fontSize: 20)),
         const SizedBox(width: 12),
-        Text(title, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark)),
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: AppTheme.textDark,
+          ),
+        ),
       ],
     );
   }
@@ -114,7 +137,12 @@ class PeriodHealthModal extends StatelessWidget {
       style: NeuStyle.concave,
       child: Text(
         text,
-        style: GoogleFonts.inter(fontSize: 14, height: 1.6, color: AppTheme.textDark.withOpacity(0.8), fontWeight: FontWeight.w500),
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          height: 1.6,
+          color: AppTheme.textDark.withOpacity(0.8),
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

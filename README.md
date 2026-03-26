@@ -29,7 +29,13 @@ To achieve the smallest app size and best performance in production, use the fol
 3. Run `flutter run`.
 
 ## 🤝 Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Before pushing your changes, please ensure that you run the following command to maintain consistent code style:
+
+```bash
+dart format .
+```
+
+Please feel free to submit a Pull Request.
 
 ---
 *HerFlowmate - Understand Your Own Rhythm.*

@@ -45,11 +45,11 @@ class _NeuContainerState extends State<NeuContainer> {
   Widget build(BuildContext context) {
     // Specifically follow the design guide's shadow rules
     final bool isConcave = widget.style == NeuStyle.concave || _isPressed;
-    
-    // Design guide spec: 
+
+    // Design guide spec:
     // Outset: 8x8x16 #e3c7d6, -8x-8x16 #ffffff
     // Inset: 6x6x12 #e3c7d6, -6x-6x12 #ffffff
-    
+
     final double currentOffset = isConcave ? 6.0 : widget.offset;
     final double currentBlur = isConcave ? 12.0 : widget.blur;
 
@@ -69,7 +69,9 @@ class _NeuContainerState extends State<NeuContainer> {
         decoration: BoxDecoration(
           color: widget.color,
           borderRadius: BorderRadius.circular(widget.radius),
-          border: widget.borderColor != null ? Border.all(color: widget.borderColor!, width: 1.5) : null,
+          border: widget.borderColor != null
+              ? Border.all(color: widget.borderColor!, width: 1.5)
+              : null,
           boxShadow: [
             BoxShadow(
               color: AppTheme.neuLightShadow,

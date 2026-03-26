@@ -3,54 +3,49 @@ import 'package:google_fonts/google_fonts.dart';
 
 abstract final class AppTheme {
   // ── Color Palette (Exact Specification) ───────────────────────────────────
-  static const Color primaryPink   = Color(0xFFFF7FA5);
-  static const Color softPink      = Color(0xFFFADADD);
-  static const Color lavender      = Color(0xFFEBDFFF);
-  static const Color accentPurple  = Color(0xFFCBA8FF);
-  static const Color textDark      = Color(0xFF6A5C7A);
-  
+  static const Color primaryPink = Color(0xFFFF7FA5);
+  static const Color softPink = Color(0xFFFADADD);
+  static const Color lavender = Color(0xFFEBDFFF);
+  static const Color accentPurple = Color(0xFFCBA8FF);
+  static const Color textDark = Color(0xFF6A5C7A);
+
   // Neumorphic Design System (No Borders, Soft Shadows)
-  static const Color bgColor       = Color(0xFFF8D6E6); // Neumorphic Surface
-  static const Color surfaceColor   = Color(0xFFF8D6E6);
+  static const Color bgColor = Color(0xFFF8D6E6); // Neumorphic Surface
+  static const Color surfaceColor = Color(0xFFF8D6E6);
   static const Color neuLightShadow = Color(0xFFFFFFFF);
-  static const Color neuDarkShadow  = Color(0xFFE3C7D6);
-  
+  static const Color neuDarkShadow = Color(0xFFE3C7D6);
+
   // Aliases and Secondary Colors
-  static const Color frameColor    = bgColor;
-  static const Color textSecondary = Color(0xFF8A7E96); // Harmonized with textDark
-  static const Color accentPink    = primaryPink;
-  static const Color shadowLight   = neuLightShadow;
-  static const Color shadowDark    = neuDarkShadow;
+  static const Color frameColor = bgColor;
+  static const Color textSecondary = Color(
+    0xFF8A7E96,
+  ); // Harmonized with textDark
+  static const Color accentPink = primaryPink;
+  static const Color shadowLight = neuLightShadow;
+  static const Color shadowDark = neuDarkShadow;
 
   // Glass Design System
   static const double glassOpacity = 0.15;
-  static const double glassBlur    = 12.0;
+  static const double glassBlur = 12.0;
 
   // Background Gradient
   static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFFFE6F0),
-      Color(0xFFEBDFFF),
-      Color(0xFFFFD6EC),
-    ],
+    colors: [Color(0xFFFFE6F0), Color(0xFFEBDFFF), Color(0xFFFFD6EC)],
   );
 
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [
-      primaryPink,
-      accentPurple,
-    ],
+    colors: [primaryPink, accentPurple],
   );
 
   static const Map<String, Color> phaseColors = {
-    'Menstrual':  Color(0xFFFF7FA5), // Primary Pink
+    'Menstrual': Color(0xFFFF7FA5), // Primary Pink
     'Follicular': Color(0xFFFADADD), // Soft Pink
-    'Ovulation':  Color(0xFFCBA8FF), // Accent Purple
-    'Luteal':     Color(0xFFEBDFFF), // Lavender
+    'Ovulation': Color(0xFFCBA8FF), // Accent Purple
+    'Luteal': Color(0xFFEBDFFF), // Lavender
   };
 
   static const Map<String, Color> hormoneColors = {
@@ -64,8 +59,8 @@ abstract final class AppTheme {
 
   // ── Spacing System (8px Grid) ─────────────────────────────────────────────
   static const double gridUnit = 8.0;
-  static const double margin   = 16.0;
-  static const double padding  = 24.0;
+  static const double margin = 16.0;
+  static const double padding = 24.0;
 
   // ── Neumorphic Shadows ───────────────────────────────────────────────────
   static List<BoxShadow> neuShadows({
@@ -119,11 +114,16 @@ abstract final class AppTheme {
   }
 
   // ── Phase Health Support (Refined) ────────────────────────────────────────
-  static ({List<String> exercise, List<String> diet, List<String> nutrients}) getPhaseHealthTips(String phase) {
+  static ({List<String> exercise, List<String> diet, List<String> nutrients})
+  getPhaseHealthTips(String phase) {
     switch (phase) {
       case 'Menstrual':
         return (
-          exercise: ['Gentle Yoga', 'Light Walking', 'Symptom Relief Stretches'],
+          exercise: [
+            'Gentle Yoga',
+            'Light Walking',
+            'Symptom Relief Stretches',
+          ],
           diet: ['Warm Herbal Soups', 'Magnesium-Rich Oats', 'Ginger Tea'],
           nutrients: ['Iron (rebuild)', 'Magnesium (cramps)', 'Vitamin C'],
         );
@@ -135,13 +135,25 @@ abstract final class AppTheme {
         );
       case 'Ovulation':
         return (
-          exercise: ['HIIT Sessions', 'High Intensity Cardio', 'Social Workouts'],
-          diet: ['Rainbow Salads', 'Cold Berries', 'Anti-inflammatory Crucifers'],
+          exercise: [
+            'HIIT Sessions',
+            'High Intensity Cardio',
+            'Social Workouts',
+          ],
+          diet: [
+            'Rainbow Salads',
+            'Cold Berries',
+            'Anti-inflammatory Crucifers',
+          ],
           nutrients: ['Folate (cell health)', 'Amino Acids', 'Vitamin B'],
         );
       case 'Luteal':
         return (
-          exercise: ['Steady-state Pilates', 'Mindful Resistance', 'Long Stretches'],
+          exercise: [
+            'Steady-state Pilates',
+            'Mindful Resistance',
+            'Long Stretches',
+          ],
           diet: ['Complex Root Veggies', 'Dark Chocolate (70%+)', 'Omega Fats'],
           nutrients: ['Vitamin B6 (mood)', 'Magnesium (sleep)', 'Omega-3'],
         );

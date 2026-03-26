@@ -32,35 +32,34 @@ final predictionServiceProvider = rf.Provider<PredictionService>((ref) {
 // Provider for GoRouter
 final routerProvider = rf.Provider<gr.GoRouter>((ref) {
   final storage = ref.watch(storageServiceProvider);
-  
+
   return gr.GoRouter(
     initialLocation: '/',
     refreshListenable: storage,
     redirect: (context, state) {
       final isLoggedIn = storage.hasCompletedLogin;
       final isOnboarded = storage.hasCompletedOnboarding;
-      
-      final inAuthFlow = state.matchedLocation == '/welcome' || state.matchedLocation == '/login';
-      
+
+      final inAuthFlow =
+          state.matchedLocation == '/welcome' ||
+          state.matchedLocation == '/login';
+
       if (!isLoggedIn) {
         return inAuthFlow ? null : '/welcome';
       }
-      
+
       if (!isOnboarded) {
         return state.matchedLocation == '/onboarding' ? null : '/onboarding';
       }
-      
+
       if (inAuthFlow || state.matchedLocation == '/onboarding') {
         return '/home';
       }
-      
+
       return null;
     },
     routes: [
-      gr.GoRoute(
-        path: '/',
-        builder: (context, state) => const WelcomeScreen(),
-      ),
+      gr.GoRoute(path: '/', builder: (context, state) => const WelcomeScreen()),
       gr.GoRoute(
         path: '/welcome',
         builder: (context, state) => const WelcomeScreen(),

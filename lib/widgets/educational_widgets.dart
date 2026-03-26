@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
 
-
 void showPeriodColorGuide(BuildContext context) {
   showDialog(
     context: context,
@@ -20,11 +19,18 @@ void showPeriodColorGuide(BuildContext context) {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.broken_image_rounded, color: AppTheme.accentPink, size: 48),
+                const Icon(
+                  Icons.broken_image_rounded,
+                  color: AppTheme.accentPink,
+                  size: 48,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'Please save your uploaded image as\nassets/images/period_colour.jpg',
-                  style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.inter(
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],

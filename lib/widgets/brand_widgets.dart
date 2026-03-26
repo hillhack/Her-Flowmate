@@ -6,11 +6,7 @@ class BrandName extends StatelessWidget {
   final double fontSize;
   final bool shouldAnimate;
 
-  const BrandName({
-    super.key,
-    this.fontSize = 28,
-    this.shouldAnimate = true,
-  });
+  const BrandName({super.key, this.fontSize = 28, this.shouldAnimate = true});
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +38,7 @@ class BrandLogo extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          'assets/icons/app_icon.png',
-          width: size,
-          height: size,
-        ),
+        Image.asset('assets/icons/app_icon.png', width: size, height: size),
         if (showName) ...[
           const SizedBox(height: 12),
           const BrandName(fontSize: 32),

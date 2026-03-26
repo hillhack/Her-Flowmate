@@ -26,7 +26,9 @@ class FakeStorageService extends StorageService {
 }
 
 void main() {
-  testWidgets('LoginScreen renders and correctly accepts input smoke test', (WidgetTester tester) async {
+  testWidgets('LoginScreen renders and correctly accepts input smoke test', (
+    WidgetTester tester,
+  ) async {
     final fakeStorage = FakeStorageService();
 
     await tester.pumpWidget(
@@ -37,16 +39,14 @@ void main() {
             update: (_, storage, __) => PredictionService(storage),
           ),
         ],
-        child: const MaterialApp(
-          home: LoginScreen(),
-        ),
+        child: const MaterialApp(home: LoginScreen()),
       ),
     );
 
     // Verify initial render state texts
     expect(find.textContaining('HerFlowmate'), findsOneWidget);
     expect(find.text('Guest Mode Privacy'), findsOneWidget);
-    
+
     // Check for the login and guest buttons
     expect(find.text('Continue with Google'), findsOneWidget);
     expect(find.text('Continue as Guest'), findsOneWidget);

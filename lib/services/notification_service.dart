@@ -8,11 +8,12 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notifications =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
     if (kIsWeb) return;
-    
+
     // Initialize timezone data
     tz.initializeTimeZones();
 
@@ -21,15 +22,16 @@ class NotificationService {
 
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsDarwin,
-    );
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsDarwin,
+        );
 
     await _notifications.initialize(
       settings: initializationSettings,
@@ -41,8 +43,10 @@ class NotificationService {
     // Request permissions for Android 13+
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-          _notifications.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+          _notifications
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
       await androidImplementation?.requestNotificationsPermission();
     }
   }
@@ -58,7 +62,8 @@ class NotificationService {
       reminderDate.year,
       reminderDate.month,
       reminderDate.day,
-      9, 0, // 9:00 AM
+      9,
+      0, // 9:00 AM
     );
 
     if (scheduledTime.isBefore(DateTime.now())) return;
@@ -66,7 +71,8 @@ class NotificationService {
     await _notifications.zonedSchedule(
       id: 0,
       title: 'Period Reminder ✨',
-      body: 'Your period is predicted to start tomorrow. Don\'t forget to stay hydrated!',
+      body:
+          'Your period is predicted to start tomorrow. Don\'t forget to stay hydrated!',
       scheduledDate: tz.TZDateTime.from(scheduledTime, tz.local),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(

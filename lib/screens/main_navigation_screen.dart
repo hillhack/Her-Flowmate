@@ -46,10 +46,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       drawer: _buildDrawer(context, storage),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
-        child: IndexedStack(
-          index: _selectedIndex,
-          children: _screens,
-        ),
+        child: IndexedStack(index: _selectedIndex, children: _screens),
       ),
       bottomNavigationBar: _buildBottomBar(),
     );
@@ -58,9 +55,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget _buildBottomBar() {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-      ),
+      decoration: const BoxDecoration(color: Colors.transparent),
       child: NeuContainer(
         height: 72,
         radius: 36,
@@ -93,7 +88,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         height: 48,
         radius: 24,
         style: NeuStyle.convex,
-        child: const Icon(Icons.add_rounded, size: 28, color: AppTheme.accentPink),
+        child: const Icon(
+          Icons.add_rounded,
+          size: 28,
+          color: AppTheme.accentPink,
+        ),
       ),
     );
   }
@@ -105,18 +104,20 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: isSelected ? BoxDecoration(
-          color: AppTheme.accentPink.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(20),
-        ) : null,
+        decoration: isSelected
+            ? BoxDecoration(
+                color: AppTheme.accentPink.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              )
+            : null,
         child: Row(
           children: [
             Icon(
-              icon, 
+              icon,
               color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
               size: 24,
             ),
-            if (isSelected) 
+            if (isSelected)
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
@@ -175,7 +176,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     const SizedBox(width: 16),
                     Text(
                       'Log Period',
-                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textDark,
+                      ),
                     ),
                   ],
                 ),
@@ -201,7 +206,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     const SizedBox(width: 16),
                     Text(
                       'Daily Check-in',
-                      style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textDark,
+                      ),
                     ),
                   ],
                 ),
@@ -214,7 +223,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   Widget _buildDrawer(BuildContext context, StorageService storage) {
-    final initial = storage.userName.isNotEmpty ? storage.userName[0].toUpperCase() : 'U';
+    final initial = storage.userName.isNotEmpty
+        ? storage.userName[0].toUpperCase()
+        : 'U';
 
     return Drawer(
       backgroundColor: AppTheme.frameColor,
@@ -225,36 +236,53 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           children: [
             const SizedBox(height: 32),
             NeuContainer(
-              width: 80, height: 80,
+              width: 80,
+              height: 80,
               radius: 40,
               child: Center(
                 child: Text(
                   initial,
-                  style: GoogleFonts.poppins(color: AppTheme.accentPink, fontWeight: FontWeight.bold, fontSize: 32),
+                  style: GoogleFonts.poppins(
+                    color: AppTheme.accentPink,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
             Text(
               storage.userName.isNotEmpty ? storage.userName : 'Guest',
-              style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textDark,
+              ),
             ),
             const SizedBox(height: 48),
-            
+
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: [
                   _actionDrawerItem(
-                    icon: Icons.history_rounded, 
-                    title: 'History', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen()))
+                    icon: Icons.history_rounded,
+                    title: 'History',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HistoryScreen()),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
                     icon: Icons.menu_book_rounded,
                     title: 'Cycle Guide',
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EducationHubScreen())),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const EducationHubScreen(),
+                      ),
+                    ),
                   ),
 
                   const SizedBox(height: 12),
@@ -262,8 +290,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     icon: Icons.favorite_rounded,
                     title: 'Partner Sync',
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const PartnerSyncScreen()));
-                    }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PartnerSyncScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
@@ -271,23 +304,27 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     title: 'Period Health',
                     onTap: () {
                       _showPeriodHealthModal(context);
-                    }
+                    },
                   ),
 
-                  
                   const SizedBox(height: 24),
                   Divider(color: AppTheme.shadowDark.withOpacity(0.3)),
                   const SizedBox(height: 24),
 
                   _actionDrawerItem(
-                    icon: Icons.settings_rounded, 
-                    title: 'Settings', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ModeSettingsScreen()))
+                    icon: Icons.settings_rounded,
+                    title: 'Settings',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ModeSettingsScreen(),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
-                    icon: Icons.help_outline_rounded, 
-                    title: 'Help', 
+                    icon: Icons.help_outline_rounded,
+                    title: 'Help',
                     onTap: () => showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
@@ -297,42 +334,56 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                           TextSpan(
                             children: [
                               const WidgetSpan(child: BrandName(fontSize: 16)),
-                              const TextSpan(text: ' is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.'),
+                              const TextSpan(
+                                text:
+                                    ' is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.',
+                              ),
                             ],
                           ),
                         ),
-                        actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Got it'))],
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Got it'),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
-                    icon: Icons.contact_support_rounded, 
-                    title: 'Contact Support', 
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FeedbackScreen()))
+                    icon: Icons.contact_support_rounded,
+                    title: 'Contact Support',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const FeedbackScreen()),
+                    ),
                   ),
                 ],
               ),
             ),
-            
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8,
+              ),
               child: _actionDrawerItem(
-                icon: Icons.logout_rounded, 
-                title: 'Logout', 
+                icon: Icons.logout_rounded,
+                title: 'Logout',
                 onTap: () async {
                   await storage.logout();
                   if (context.mounted) {
                     Navigator.pushAndRemoveUntil(
-                      context, 
+                      context,
                       MaterialPageRoute(builder: (_) => const LoginScreen()),
                       (route) => false,
                     );
                   }
-                }
+                },
               ),
             ),
-            
+
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
               child: Row(
@@ -341,7 +392,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   const BrandName(fontSize: 14),
                   Text(
                     ' v1.2.0',
-                    style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary, fontWeight: FontWeight.w500),
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
@@ -361,7 +416,11 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 
-  Widget _actionDrawerItem({required IconData icon, required String title, required VoidCallback onTap}) {
+  Widget _actionDrawerItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
     return NeuContainer(
       margin: const EdgeInsets.only(bottom: 8),
       radius: 20,
@@ -371,7 +430,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       },
       child: ListTile(
         leading: Icon(icon, color: AppTheme.accentPink, size: 24),
-        title: Text(title, style: GoogleFonts.inter(color: AppTheme.textDark, fontSize: 16, fontWeight: FontWeight.w700)),
+        title: Text(
+          title,
+          style: GoogleFonts.inter(
+            color: AppTheme.textDark,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }

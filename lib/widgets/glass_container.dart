@@ -34,25 +34,27 @@ class GlassContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     // 1. Common Decoration for Glass effect
     // BackdropFilter is notoriously slow on Flutter Web when layered.
-    // By conditionally disabling it on Web, we get a 10x performance boost 
+    // By conditionally disabling it on Web, we get a 10x performance boost
     // while keeping the translucent "glass" aesthetic.
     final glassBg = Positioned.fill(
-      child: kIsWeb 
-        ? Container(
-            decoration: BoxDecoration(
-              color: (borderColor ?? Colors.white).withOpacity(opacity * 1.5), // Slightly more opaque to compenstate
-              borderRadius: BorderRadius.circular(radius),
-            ),
-          )
-        : BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-            child: Container(
+      child: kIsWeb
+          ? Container(
               decoration: BoxDecoration(
-                color: (borderColor ?? Colors.white).withOpacity(opacity),
+                color: (borderColor ?? Colors.white).withOpacity(
+                  opacity * 1.5,
+                ), // Slightly more opaque to compenstate
                 borderRadius: BorderRadius.circular(radius),
               ),
+            )
+          : BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: (borderColor ?? Colors.white).withOpacity(opacity),
+                  borderRadius: BorderRadius.circular(radius),
+                ),
+              ),
             ),
-          ),
     );
 
     // 2. Common Decoration for Border
@@ -94,11 +96,7 @@ class GlassContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius),
         child: Stack(
           fit: StackFit.loose,
-          children: [
-            glassBg,
-            glassBorder,
-            content,
-          ],
+          children: [glassBg, glassBorder, content],
         ),
       ),
     );

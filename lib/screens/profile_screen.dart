@@ -40,44 +40,58 @@ class ProfileScreen extends StatelessWidget {
             children: [
               // ── Avatar ───────────────────────────────────────────────────
               Center(
-                child: Stack(
-                  children: [
-                    NeuContainer(
-                      padding: const EdgeInsets.all(4),
-                      radius: 50,
-                      child: CircleAvatar(
-                        radius: 46,
-                        backgroundColor: AppTheme.frameColor,
-                        backgroundImage: storage.userImagePath != null ? NetworkImage(storage.userImagePath!) : null,
-                        child: storage.userImagePath == null 
-                          ? const Icon(Icons.person_rounded, size: 52, color: AppTheme.accentPink)
-                          : null,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: () => _pickImage(context, storage),
-                        child: NeuContainer(
-                          padding: const EdgeInsets.all(8),
-                          radius: 12,
-                          style: NeuStyle.convex,
-                          child: const Icon(Icons.camera_alt_rounded, size: 18, color: AppTheme.accentPink),
+                    child: Stack(
+                      children: [
+                        NeuContainer(
+                          padding: const EdgeInsets.all(4),
+                          radius: 50,
+                          child: CircleAvatar(
+                            radius: 46,
+                            backgroundColor: AppTheme.frameColor,
+                            backgroundImage: storage.userImagePath != null
+                                ? NetworkImage(storage.userImagePath!)
+                                : null,
+                            child: storage.userImagePath == null
+                                ? const Icon(
+                                    Icons.person_rounded,
+                                    size: 52,
+                                    color: AppTheme.accentPink,
+                                  )
+                                : null,
+                          ),
                         ),
-                      ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () => _pickImage(context, storage),
+                            child: NeuContainer(
+                              padding: const EdgeInsets.all(8),
+                              radius: 12,
+                              style: NeuStyle.convex,
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                size: 18,
+                                color: AppTheme.accentPink,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ).animate().fadeIn(duration: 600.ms).scale(curve: Curves.easeOutBack),
+                  )
+                  .animate()
+                  .fadeIn(duration: 600.ms)
+                  .scale(curve: Curves.easeOutBack),
 
               const SizedBox(height: 24),
               Text(
                 storage.userName.isNotEmpty ? storage.userName : 'Guest',
                 style: GoogleFonts.poppins(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.textDark),
+                  fontSize: 26,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
               ).animate().fadeIn(delay: 200.ms),
 
               const SizedBox(height: 40),
@@ -88,11 +102,30 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
-                    _buildSettingsTile(Icons.edit_rounded, 'Name', storage.userName, () => _editName(context, storage)),
+                    _buildSettingsTile(
+                      Icons.edit_rounded,
+                      'Name',
+                      storage.userName,
+                      () => _editName(context, storage),
+                    ),
                     _buildDivider(),
-                    _buildSettingsTile(Icons.cake_rounded, 'Age', storage.userAge?.toString() ?? 'Set Age', () => _editAge(context, storage)),
+                    _buildSettingsTile(
+                      Icons.cake_rounded,
+                      'Age',
+                      storage.userAge?.toString() ?? 'Set Age',
+                      () => _editAge(context, storage),
+                    ),
                     _buildDivider(),
-                    _buildSettingsTile(Icons.track_changes_rounded, 'Goal', storage.userGoal == 'pregnant' ? 'Track Pregnancy' : (storage.userGoal == 'conceive' ? 'Conceive' : 'Track Cycle'), null),
+                    _buildSettingsTile(
+                      Icons.track_changes_rounded,
+                      'Goal',
+                      storage.userGoal == 'pregnant'
+                          ? 'Track Pregnancy'
+                          : (storage.userGoal == 'conceive'
+                                ? 'Conceive'
+                                : 'Track Cycle'),
+                      null,
+                    ),
                   ],
                 ),
               ).animate().fadeIn(delay: 200.ms),
@@ -105,19 +138,39 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
-                    _buildSettingsTile(Icons.notifications_active_rounded, 'Notifications', 'Enabled', () {}),
+                    _buildSettingsTile(
+                      Icons.notifications_active_rounded,
+                      'Notifications',
+                      'Enabled',
+                      () {},
+                    ),
                     _buildDivider(),
-                    _buildSettingsTile(Icons.security_rounded, 'Privacy & Security', 'PIN Locked', () {}),
+                    _buildSettingsTile(
+                      Icons.security_rounded,
+                      'Privacy & Security',
+                      'PIN Locked',
+                      () {},
+                    ),
                     _buildDivider(),
-                    _buildSettingsTile(Icons.cloud_upload_rounded, 'Export Data', 'CSV/PDF', () async {
-                      final json = await storage.exportLogsToJson();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Data exported to console! (Demo mode)'), backgroundColor: AppTheme.accentPink),
-                        );
-                        debugPrint('Exported Data: $json');
-                      }
-                    }),
+                    _buildSettingsTile(
+                      Icons.cloud_upload_rounded,
+                      'Export Data',
+                      'CSV/PDF',
+                      () async {
+                        final json = await storage.exportLogsToJson();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Data exported to console! (Demo mode)',
+                              ),
+                              backgroundColor: AppTheme.accentPink,
+                            ),
+                          );
+                          debugPrint('Exported Data: $json');
+                        }
+                      },
+                    ),
                   ],
                 ),
               ).animate().fadeIn(delay: 400.ms),
@@ -130,9 +183,19 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
-                    _buildSettingsTile(Icons.info_outline_rounded, 'Version', '1.2.0 (Premium Neumorphic)', null),
+                    _buildSettingsTile(
+                      Icons.info_outline_rounded,
+                      'Version',
+                      '1.2.0 (Premium Neumorphic)',
+                      null,
+                    ),
                     _buildDivider(),
-                    _buildSettingsTile(Icons.delete_sweep_rounded, 'Clear All Data', 'Permanently erase logs', () => _confirmDelete(context, storage)),
+                    _buildSettingsTile(
+                      Icons.delete_sweep_rounded,
+                      'Clear All Data',
+                      'Permanently erase logs',
+                      () => _confirmDelete(context, storage),
+                    ),
                   ],
                 ),
               ).animate().fadeIn(delay: 500.ms),
@@ -151,13 +214,21 @@ class ProfileScreen extends StatelessWidget {
         child: Text(
           title,
           style: GoogleFonts.poppins(
-              fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.textSecondary),
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textSecondary,
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildSettingsTile(IconData icon, String title, String value, VoidCallback? onTap) {
+  Widget _buildSettingsTile(
+    IconData icon,
+    String title,
+    String value,
+    VoidCallback? onTap,
+  ) {
     return Material(
       color: Colors.transparent,
       child: ListTile(
@@ -167,20 +238,32 @@ class ProfileScreen extends StatelessWidget {
           style: NeuStyle.convex,
           child: Icon(icon, color: AppTheme.accentPink, size: 20),
         ),
-        title: Text(title,
-            style: GoogleFonts.inter(
-                fontSize: 16, fontWeight: FontWeight.w600, color: AppTheme.textDark)),
+        title: Text(
+          title,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textDark,
+          ),
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(value,
-                style: GoogleFonts.inter(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.textSecondary)),
+            Text(
+              value,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textSecondary,
+              ),
+            ),
             if (onTap != null) ...[
               const SizedBox(width: 8),
-              const Icon(Icons.chevron_right_rounded, color: AppTheme.textSecondary, size: 20),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppTheme.textSecondary,
+                size: 20,
+              ),
             ],
           ],
         ),
@@ -200,13 +283,21 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _editAge(BuildContext context, StorageService storage) {
-    final controller = TextEditingController(text: storage.userAge?.toString() ?? '');
+    final controller = TextEditingController(
+      text: storage.userAge?.toString() ?? '',
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.frameColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        title: Text('Edit Age', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: AppTheme.textDark)),
+        title: Text(
+          'Edit Age',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textDark,
+          ),
+        ),
         content: NeuContainer(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           radius: 16,
@@ -214,13 +305,25 @@ class ProfileScreen extends StatelessWidget {
           child: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(border: InputBorder.none, hintText: 'Enter your age'),
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              hintText: 'Enter your age',
+            ),
             style: GoogleFonts.inter(fontWeight: FontWeight.w600),
             autofocus: true,
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w700))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
               final age = int.tryParse(controller.text.trim());
@@ -231,10 +334,18 @@ class ProfileScreen extends StatelessWidget {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.accentPink,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 0,
             ),
-            child: Text('Save', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w800)),
+            child: Text(
+              'Save',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),
@@ -248,11 +359,23 @@ class ProfileScreen extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.frameColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        title: Text('Profile Image', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: AppTheme.textDark)),
+        title: Text(
+          'Profile Image',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textDark,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Enter an image URL for your profile picture.', style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+            Text(
+              'Enter an image URL for your profile picture.',
+              style: GoogleFonts.inter(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             const SizedBox(height: 16),
             NeuContainer(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -260,7 +383,10 @@ class ProfileScreen extends StatelessWidget {
               style: NeuStyle.concave,
               child: TextField(
                 controller: controller,
-                decoration: const InputDecoration(border: InputBorder.none, hintText: 'https://example.com/image.jpg'),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'https://example.com/image.jpg',
+                ),
                 style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                 autofocus: true,
               ),
@@ -273,9 +399,24 @@ class ProfileScreen extends StatelessWidget {
               storage.updateUserImagePath(null);
               Navigator.pop(context);
             },
-            child: Text('Clear', style: GoogleFonts.inter(color: Colors.redAccent, fontWeight: FontWeight.w700)),
+            child: Text(
+              'Clear',
+              style: GoogleFonts.inter(
+                color: Colors.redAccent,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w700))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
               if (controller.text.trim().isNotEmpty) {
@@ -285,10 +426,18 @@ class ProfileScreen extends StatelessWidget {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.accentPink,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 0,
             ),
-            child: Text('Save', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w800)),
+            child: Text(
+              'Save',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),
@@ -302,20 +451,38 @@ class ProfileScreen extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.frameColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        title: Text('Edit Name', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: AppTheme.textDark)),
+        title: Text(
+          'Edit Name',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textDark,
+          ),
+        ),
         content: NeuContainer(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           radius: 16,
           style: NeuStyle.concave,
           child: TextField(
             controller: controller,
-            decoration: const InputDecoration(border: InputBorder.none, hintText: 'Enter your name'),
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              hintText: 'Enter your name',
+            ),
             style: GoogleFonts.inter(fontWeight: FontWeight.w600),
             autofocus: true,
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w700))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
               if (controller.text.trim().isNotEmpty) {
@@ -325,10 +492,18 @@ class ProfileScreen extends StatelessWidget {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.accentPink,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 0,
             ),
-            child: Text('Save', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w800)),
+            child: Text(
+              'Save',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),
@@ -341,25 +516,56 @@ class ProfileScreen extends StatelessWidget {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.frameColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-        title: Text('Erase All Data?', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: AppTheme.textDark)),
-        content: Text('This action is permanent and cannot be undone. All logs will be erased.', 
-          style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w600)),
+        title: Text(
+          'Erase All Data?',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textDark,
+          ),
+        ),
+        content: Text(
+          'This action is permanent and cannot be undone. All logs will be erased.',
+          style: GoogleFonts.inter(
+            color: AppTheme.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.textSecondary, fontWeight: FontWeight.w700))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(
+                color: AppTheme.textSecondary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
           ElevatedButton(
             onPressed: () {
               storage.clearAllData();
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('All data erased.'), backgroundColor: Colors.redAccent),
+                const SnackBar(
+                  content: Text('All data erased.'),
+                  backgroundColor: Colors.redAccent,
+                ),
               );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               elevation: 0,
             ),
-            child: Text('Erase', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w800)),
+            child: Text(
+              'Erase',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ],
       ),

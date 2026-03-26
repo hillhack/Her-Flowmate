@@ -11,7 +11,7 @@ import 'screens/welcome_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // ── Global Error Handling ────────────────────────────────────────────────
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
@@ -87,9 +87,19 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline_rounded, color: AppTheme.accentPink, size: 64),
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    color: AppTheme.accentPink,
+                    size: 64,
+                  ),
                   const SizedBox(height: 24),
-                  Text('Startup Error', style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Startup Error',
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     'We encountered an issue while starting HerFlowmate. This can happen if browser storage is blocked.',
@@ -124,7 +134,9 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
     // Success: Wrap the app in providers
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: StorageService.instance), // Already singleton-like via init
+        ChangeNotifierProvider.value(
+          value: StorageService.instance,
+        ), // Already singleton-like via init
         ProxyProvider<StorageService, PredictionService>(
           update: (_, storage, __) => PredictionService(storage),
         ),
@@ -150,9 +162,19 @@ class MaterialAppearanceErrorScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.bug_report_rounded, color: AppTheme.accentPink, size: 64),
+                const Icon(
+                  Icons.bug_report_rounded,
+                  color: AppTheme.accentPink,
+                  size: 64,
+                ),
                 const SizedBox(height: 24),
-                Text('Something went wrong', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold)),
+                Text(
+                  'Something went wrong',
+                  style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 Text(
                   'A rendering error occurred. Tapping below might fix it by resetting temporary state.',
@@ -196,15 +218,15 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final storage = context.watch<StorageService>();
-    
+
     if (!storage.hasCompletedLogin) {
       return const WelcomeScreen();
     }
-    
+
     if (!storage.hasCompletedOnboarding) {
       return const OnboardingScreen();
     }
-    
+
     return const MainNavigationScreen();
   }
 }

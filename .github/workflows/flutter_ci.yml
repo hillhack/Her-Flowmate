@@ -1,0 +1,54 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup Flutter SDK
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Cache pub dependencies
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      # Check Flutter version
+      - name: Flutter version
+        run: flutter --version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Enforce formatting (strict)
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      # Analyze (non-blocking for warnings/infos)
+      - name: Analyze project
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      # Run tests
+      - name: Run tests
+        run: flutter test

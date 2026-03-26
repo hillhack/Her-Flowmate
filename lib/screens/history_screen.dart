@@ -7,6 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -16,244 +17,291 @@ class HistoryScreen extends StatelessWidget {
     final storage = context.watch<StorageService>();
     final logs = storage.getLogs();
 
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 10),
-            child: Text(
-              'Cycle History',
-              style: GoogleFonts.poppins(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: AppTheme.textDark,
-              ),
-              textAlign: TextAlign.center,
-            ).animate().fadeIn(),
-          ),
-
-          // ── Trend Chart ──────────────────────────────────────────────
-          if (logs.length > 1)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: GlassContainer(
-                radius: 28,
-                child: Padding(
-                  padding: const EdgeInsets.all(22),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Cycle Duration Trend',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textDark.withOpacity(0.6),
-                        ),
+    return Stack(
+      children: [
+        Container(decoration: const BoxDecoration(gradient: AppTheme.bgGradient)),
+        _buildDreamyBackground(),
+        SafeArea(
+          bottom: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ── Static Top Bar ──────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  top: 24,
+                  bottom: 16,
+                ),
+                child: Row(
+                  children: [
+                    NeuContainer(
+                      padding: const EdgeInsets.all(12),
+                      radius: 16,
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back_rounded,
+                        color: AppTheme.accentPink,
+                        size: 26,
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: 200,
-                        child: LineChart(
-                          LineChartData(
-                            gridData: const FlGridData(show: false),
-                            titlesData: const FlTitlesData(show: false),
-                            borderData: FlBorderData(show: false),
-                            lineBarsData: [
-                              LineChartBarData(
-                                spots: logs
-                                    .asMap()
-                                    .entries
-                                    .map(
-                                      (e) => FlSpot(
-                                        e.key.toDouble(),
-                                        e.value.duration.toDouble(),
-                                      ),
-                                    )
-                                    .toList(),
-                                isCurved: true,
-                                color: AppTheme.accentPink,
-                                barWidth: 4,
-                                isStrokeCapRound: true,
-                                dotData: const FlDotData(show: true),
-                                belowBarData: BarAreaData(
-                                  show: true,
-                                  color: AppTheme.accentPink.withOpacity(0.15),
-                                ),
-                              ),
-                            ],
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'Cycle History',
+                          style: GoogleFonts.poppins(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.midnightPlum,
+                            letterSpacing: -0.5,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
-
-          // ── Log List ─────────────────────────────────────────────────
-          if (logs.isEmpty)
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GlassContainer(
-                      padding: const EdgeInsets.all(24),
-                      radius: 40,
-                      child: const Icon(
-                        Icons.history_toggle_off_rounded,
-                        color: AppTheme.accentPink,
-                        size: 56,
-                      ),
                     ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'No data recorded yet.',
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textDark.withOpacity(0.5),
-                      ),
-                    ),
+                    const SizedBox(width: 48), // Balance for back button
                   ],
                 ),
               ),
-            )
-          else
-            Expanded(
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
-                itemCount: logs.length,
-                itemBuilder: (ctx, i) {
-                  final log = logs[logs.length - 1 - i]; // Latest first
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: GlassContainer(
-                      radius: 24,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: AppTheme.accentPink.withOpacity(0.1),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.water_drop_rounded,
-                                  color: AppTheme.accentPink,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 18),
-                            Expanded(
+
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      // ── Trend Chart ──────────────────────────────────────────
+                      if (logs.length > 1)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          child: GlassContainer(
+                            radius: 32,
+                            child: Padding(
+                              padding: const EdgeInsets.all(28),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    DateFormat(
-                                      'MMM d, yyyy',
-                                    ).format(log.startDate),
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color: AppTheme.textDark,
+                                    'Cycle Duration Trend',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.textSecondary,
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '${log.duration} days long',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 13,
-                                          color: AppTheme.textDark.withOpacity(
-                                            0.6,
-                                          ),
-                                        ),
-                                      ),
-                                      if (log.mood != null) ...[
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          '•',
-                                          style: TextStyle(
-                                            color: AppTheme.textDark
-                                                .withOpacity(0.3),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          log.mood!,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppTheme.accentPink,
-                                          ),
-                                        ),
-                                      ],
-                                    ],
-                                  ),
-                                  if (log.symptoms != null &&
-                                      log.symptoms!.isNotEmpty) ...[
-                                    const SizedBox(height: 8),
-                                    Wrap(
-                                      spacing: 4,
-                                      runSpacing: 4,
-                                      children: log.symptoms!
-                                          .map(
-                                            (s) => Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 4,
+                                  const SizedBox(height: 16),
+                                  SizedBox(
+                                    height: 200,
+                                    child: LineChart(
+                                      LineChartData(
+                                        gridData: const FlGridData(show: false),
+                                        titlesData:
+                                            const FlTitlesData(show: false),
+                                        borderData: FlBorderData(show: false),
+                                        lineBarsData: [
+                                          LineChartBarData(
+                                            spots: logs
+                                                .asMap()
+                                                .entries
+                                                .map(
+                                                  (e) => FlSpot(
+                                                    e.key.toDouble(),
+                                                    e.value.duration.toDouble(),
                                                   ),
-                                              decoration: BoxDecoration(
-                                                color: AppTheme.accentPink
-                                                    .withOpacity(0.05),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color: AppTheme.accentPink
-                                                      .withOpacity(0.1),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                s,
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 10,
-                                                  color: AppTheme.accentPink,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
+                                                )
+                                                .toList(),
+                                            isCurved: true,
+                                            color: AppTheme.accentPink,
+                                            barWidth: 4,
+                                            isStrokeCapRound: true,
+                                            dotData:
+                                                const FlDotData(show: true),
+                                            belowBarData: BarAreaData(
+                                              show: true,
+                                              color: AppTheme.accentPink
+                                                  .withOpacity(0.1),
                                             ),
-                                          )
-                                          .toList(),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
+                                  ),
                                 ],
                               ),
                             ),
-                            const Icon(
-                              Icons.chevron_right_rounded,
-                              color: AppTheme.textDark,
-                              size: 22,
-                            ),
-                          ],
+                          ),
+                        ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+
+                      // ── Log List ─────────────────────────────────────────────────
+                      if (logs.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(48),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GlassContainer(
+                                padding: const EdgeInsets.all(32),
+                                radius: 48,
+                                child: const Icon(
+                                  Icons.history_toggle_off_rounded,
+                                  color: AppTheme.accentPink,
+                                  size: 64,
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+                              Text(
+                                'No data recorded yet.',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
+                          itemCount: logs.length,
+                          itemBuilder: (ctx, i) {
+                            final log = logs[logs.length - 1 - i]; // Latest first
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: GlassContainer(
+                                radius: 28,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 56,
+                                        height: 56,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.accentPink
+                                              .withOpacity(0.1),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.water_drop_rounded,
+                                            color: AppTheme.accentPink,
+                                            size: 28,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              DateFormat(
+                                                'MMM d, yyyy',
+                                              ).format(log.startDate),
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w700,
+                                                color: AppTheme.midnightPlum,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '${log.duration} days',
+                                                  style: GoogleFonts.inter(
+                                                    fontSize: 14,
+                                                    color:
+                                                        AppTheme.textSecondary,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                if (log.mood != null) ...[
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    '•',
+                                                    style: TextStyle(
+                                                      color: AppTheme
+                                                          .textSecondary
+                                                          .withOpacity(0.5),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    log.mood!,
+                                                    style: GoogleFonts.inter(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color:
+                                                          AppTheme.accentPink,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: AppTheme.textSecondary,
+                                        size: 28,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ).animate().fadeIn(
+                              delay: Duration(milliseconds: 100 * i),
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: Duration(milliseconds: 100 * i));
-                },
+                    ],
+                  ),
+                ),
               ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDreamyBackground() {
+    return Stack(
+      children: [
+        Positioned(
+          top: -100,
+          right: -100,
+          child: Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.accentPink.withOpacity(0.05),
             ),
-        ],
-      ),
+          ),
+        ),
+        Positioned(
+          bottom: 100,
+          left: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.accentPurple.withOpacity(0.03),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

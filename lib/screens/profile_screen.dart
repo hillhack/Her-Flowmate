@@ -5,7 +5,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/neu_container.dart';
-import '../widgets/brand_widgets.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

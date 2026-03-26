@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../utils/app_theme.dart';
 import '../widgets/glass_container.dart';
+import '../widgets/neu_container.dart';
 
 class EducationHubScreen extends StatelessWidget {
   const EducationHubScreen({super.key});
@@ -47,108 +48,164 @@ class EducationHubScreen extends StatelessWidget {
       },
     ];
 
-    return Scaffold(
-      backgroundColor: AppTheme.frameColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: AppTheme.textDark,
-          ),
-          onPressed: () => Navigator.pop(context),
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         ),
-        title: Text(
-          'Knowledge Base',
-          style: GoogleFonts.poppins(
-            color: AppTheme.textDark,
-            fontWeight: FontWeight.w800,
-            fontSize: 20,
+        _buildDreamyBackground(),
+        SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              // ── Static Top Bar ──────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 24,
+                  right: 24,
+                  top: 24,
+                  bottom: 16,
+                ),
+                child: Row(
+                  children: [
+                    NeuContainer(
+                      padding: const EdgeInsets.all(12),
+                      radius: 16,
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back_rounded,
+                        color: AppTheme.accentPink,
+                        size: 26,
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'Knowledge Base',
+                          style: GoogleFonts.poppins(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.midnightPlum,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 48), // Balance for back button
+                  ],
+                ),
+              ),
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(24),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.85,
+                  ),
+                  itemCount: articles.length,
+                  itemBuilder: (context, index) {
+                    final a = articles[index];
+                    final color = Color(int.parse(a['color']!, radix: 16));
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => _ArticleDetailScreen(
+                              title: a['title']!,
+                              content: a['content']!,
+                              icon: a['icon']!,
+                              themeColor: color,
+                            ),
+                          ),
+                        );
+                      },
+                      child: GlassContainer(
+                        radius: 24,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: color.withOpacity(0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                a['icon']!,
+                                style: const TextStyle(fontSize: 24),
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              a['title']!,
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.midnightPlum,
+                                height: 1.2,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              a['subtitle']!,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                color: AppTheme.textSecondary,
+                                height: 1.3,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ).animate().scale(
+                            delay: (100 * index).ms,
+                            duration: 400.ms,
+                            curve: Curves.easeOutBack,
+                          ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
-        child: SafeArea(
-          child: GridView.builder(
-            padding: const EdgeInsets.all(24),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.85,
+      ],
+    );
+  }
+
+  Widget _buildDreamyBackground() {
+    return Stack(
+      children: [
+        Positioned(
+          top: -100,
+          right: -100,
+          child: Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.accentPink.withOpacity(0.05),
             ),
-            itemCount: articles.length,
-            itemBuilder: (context, index) {
-              final a = articles[index];
-              final color = Color(int.parse(a['color']!, radix: 16));
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => _ArticleDetailScreen(
-                        title: a['title']!,
-                        content: a['content']!,
-                        icon: a['icon']!,
-                        themeColor: color,
-                      ),
-                    ),
-                  );
-                },
-                child:
-                    GlassContainer(
-                      radius: 24,
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: color.withOpacity(0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Text(
-                              a['icon']!,
-                              style: const TextStyle(fontSize: 24),
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            a['title']!,
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.textDark,
-                              height: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            a['subtitle']!,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: AppTheme.textSecondary,
-                              height: 1.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ).animate().scale(
-                      delay: (100 * index).ms,
-                      duration: 400.ms,
-                      curve: Curves.easeOutBack,
-                    ),
-              );
-            },
           ),
         ),
-      ),
+        Positioned(
+          bottom: 100,
+          left: -50,
+          child: Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppTheme.accentPurple.withOpacity(0.03),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -213,7 +270,7 @@ class _ArticleDetailScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
-                    color: AppTheme.textDark,
+                    color: AppTheme.midnightPlum,
                     height: 1.2,
                   ),
                 ).animate().fadeIn(delay: 200.ms),

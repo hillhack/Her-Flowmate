@@ -50,6 +50,7 @@ dependencies:
   go_router: ^14.8.0
   flutter_inset_shadow: ^2.0.3
   confetti: ^0.8.0
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:

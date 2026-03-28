@@ -62,7 +62,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             decoration: AppTheme.glassDecoration(
               radius: 32,
               opacity: 0.1,
-              borderColor: Colors.white,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -97,8 +96,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         );
       },
       child: Container(
-        width: 56,
-        height: 56,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           gradient: AppTheme.brandGradient,
           shape: BoxShape.circle,

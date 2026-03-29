@@ -57,10 +57,11 @@ class BrandName extends StatelessWidget {
                   ),
               child: Text(
                 'FlowMate',
-                style: GoogleFonts.quicksand(
+                style: AppTheme.playfair(
                   fontSize: fontSize * 0.95,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
+                ).copyWith(
                   letterSpacing: 0.5,
                   shadows: [
                     Shadow(

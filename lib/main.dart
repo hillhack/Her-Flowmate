@@ -8,16 +8,17 @@ import 'services/notification_service.dart';
 import 'utils/app_theme.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'services/google_auth_services.dart';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   // ── Global Error Handling ────────────────────────────────────────────────
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    Sentry.captureException(details.exception, stackTrace: details.stack);
+    if (Sentry.isEnabled) {
+      Sentry.captureException(details.exception, stackTrace: details.stack);
+    }
     debugPrint('FLUTTER ERROR: ${details.exception}');
   };
 
@@ -26,10 +27,25 @@ Future<void> main() async {
     return MaterialAppearanceErrorScreen(details: details);
   };
 
-  await SentryFlutter.init((options) {
-    options.dsn = 'YOUR_SENTRY_DSN_HERE';
-    options.tracesSampleRate = 1.0;
-  }, appRunner: () => runApp(const BootstrapScreen()));
+  const sentryDsn = 'YOUR_SENTRY_DSN_HERE';
+
+  if (sentryDsn == 'YOUR_SENTRY_DSN_HERE') {
+    debugPrint('Sentry DSN is placeholder. Running without Sentry.');
+    WidgetsFlutterBinding.ensureInitialized();
+    runApp(const BootstrapScreen());
+    return;
+  }
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = sentryDsn;
+      options.tracesSampleRate = 1.0;
+    },
+    appRunner: () {
+      WidgetsFlutterBinding.ensureInitialized();
+      runApp(const BootstrapScreen());
+    },
+  );
 }
 
 /// A robust startup screen that handles initialization of services.
@@ -61,6 +77,9 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
 
       final storageService = StorageService.instance;
       await storageService.init();
+
+      // NEW: Initialize Google Auth for Web/Mobile
+      await GoogleAuthService.init();
 
       final notificationService = NotificationService();
       await notificationService.init();

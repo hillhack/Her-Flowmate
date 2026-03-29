@@ -4,12 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
 import '../services/storage_service.dart';
+import '../services/google_auth_services.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/delight_widgets.dart';
 import '../widgets/neu_container.dart';
 import 'onboarding_screen.dart';
 import 'main_navigation_screen.dart';
 import '../widgets/brand_widgets.dart';
+import '../widgets/google_auth_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -52,123 +54,130 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   children: [
                     Expanded(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(height: 60),
-                            const Center(
-                                  child: BrandLogo(
-                                    size: 120,
-                                    imagePath:
-                                        'assets/images/feature_graphic.png',
-                                    showName: true,
-                                    nameFontSize: 36,
-                                  ),
-                                )
-                                .animate()
-                                .fadeIn(duration: 800.ms)
-                                .scale(
-                                  begin: const Offset(0.8, 0.8),
-                                  curve: Curves.easeOutBack,
-                                ),
-
-                            const SizedBox(height: 16),
-
-                            Text(
-                                  'Empowering Your Cycle Journey',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppTheme.textSecondary.withValues(
-                                      alpha: 0.8,
+                      child: Center(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 24),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 48,
+                            ),
+                            decoration: AppTheme.premiumGlassDecoration(),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const BrandLogo(
+                                      size: 100,
+                                      imagePath:
+                                          'assets/images/feature_graphic.png',
+                                      showName: true,
+                                      nameFontSize: 32,
+                                    )
+                                    .animate()
+                                    .fadeIn(duration: 800.ms)
+                                    .scale(
+                                      begin: const Offset(0.9, 0.9),
+                                      curve: Curves.easeOutBack,
                                     ),
-                                    letterSpacing: 1.2,
-                                  ),
-                                )
-                                .animate()
-                                .fadeIn(delay: 400.ms)
-                                .slideY(begin: 0.2),
 
-                            const SizedBox(height: 64),
+                                const SizedBox(height: 12),
 
-                            // Auth Buttons with better layout
-                            _AuthButton(
-                                  label: 'Continue with Google',
-                                  icon: Icons.g_mobiledata_rounded,
-                                  isPrimary: true,
-                                  onTap: () => _handleLogin(context, true),
-                                )
-                                .animate()
-                                .fadeIn(delay: 200.ms)
-                                .slideY(begin: 0.2),
+                                Text(
+                                      'Your Personal Health Sanctuary',
+                                      style: AppTheme.outfit(
+                                        fontSize: 14,
+                                        color: AppTheme.textSecondary
+                                            .withValues(alpha: 0.7),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    )
+                                    .animate()
+                                    .fadeIn(delay: 400.ms)
+                                    .slideY(begin: 0.2),
 
-                            const SizedBox(height: 20),
+                                const SizedBox(height: 48),
 
-                            _AuthButton(
-                                  label: 'Continue as Guest',
-                                  icon: Icons.person_outline_rounded,
-                                  isPrimary: false,
-                                  onTap: () => _handleLogin(context, false),
-                                )
-                                .animate()
-                                .fadeIn(delay: 400.ms)
-                                .slideY(begin: 0.2),
+                                // Auth Buttons
+                                GoogleAuthButton(
+                                      onTap: () => _handleLogin(context, true),
+                                      onNameFetched: (name) {
+                                        if (context.mounted) {
+                                          final storage =
+                                              context.read<StorageService>();
+                                          _navigateToPostLogin(
+                                            context,
+                                            storage,
+                                            name,
+                                          );
+                                        }
+                                      },
+                                    )
+                                    .animate()
+                                    .fadeIn(delay: 600.ms)
+                                    .slideY(begin: 0.1),
 
-                            const SizedBox(height: 48),
+                                const SizedBox(height: 16),
 
-                            // Privacy Section with better text
-                            Container(
-                                  padding: const EdgeInsets.all(24),
-                                  decoration: AppTheme.glassDecoration(
-                                    radius: 28,
-                                    opacity: 0.08,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                _AuthButton(
+                                      label: 'Continue as Guest',
+                                      icon: Icons.person_outline_rounded,
+                                      isPrimary: false,
+                                      onTap: () => _handleLogin(context, false),
+                                    )
+                                    .animate()
+                                    .fadeIn(delay: 750.ms)
+                                    .slideY(begin: 0.1),
+
+                                const SizedBox(height: 40),
+
+                                // Privacy Section
+                                Container(
+                                      padding: const EdgeInsets.all(20),
+                                      decoration: AppTheme.glassDecoration(
+                                        radius: 20,
+                                        opacity: 0.05,
+                                      ),
+                                      child: Column(
                                         children: [
-                                          const Icon(
-                                            Icons.shield_moon_rounded,
-                                            size: 20,
-                                            color: AppTheme.accentPink,
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.shield_moon_rounded,
+                                                size: 18,
+                                                color: AppTheme.accentPink,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Privacy Assured',
+                                                style: AppTheme.outfit(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(width: 10),
+                                          const SizedBox(height: 8),
                                           Text(
-                                            'Privacy First',
-                                            style: GoogleFonts.outfit(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppTheme.textDark,
+                                            'Your data is private, encrypted, and stays with you.',
+                                            style: AppTheme.outfit(
+                                              fontSize: 12,
+                                              color: AppTheme.textSecondary
+                                                  .withValues(alpha: 0.8),
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 12),
-                                      Text(
-                                        'Your health data is encrypted and stays on your device. We never sell your personal information.',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 13,
-                                          color: AppTheme.textSecondary
-                                              .withValues(alpha: 0.8),
-                                          height: 1.5,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                                .animate()
-                                .fadeIn(delay: 600.ms)
-                                .scale(begin: const Offset(0.9, 0.9)),
-
-                            const SizedBox(height: 40),
-                          ],
+                                    )
+                                    .animate()
+                                    .fadeIn(delay: 900.ms)
+                                    .scale(begin: const Offset(0.95, 0.95)),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -199,10 +208,45 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin(BuildContext context, bool isGoogle) async {
     final storage = context.read<StorageService>();
-    await storage.completeLogin(isGoogle);
+    String? fetchedName;
+
+    if (isGoogle) {
+      final token = await GoogleAuthService.signInAndGetToken();
+
+      if (token == null) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Google Sign-In failed or was canceled.'),
+            ),
+          );
+        }
+        return;
+      }
+
+      final userData = await GoogleAuthService.authenticateWithBackend(token);
+      if (userData != null && userData['name'] != null) {
+        fetchedName = userData['name'] as String;
+      } else if (userData != null && userData['given_name'] != null) {
+        // Fallback for different Google field naming
+        fetchedName = userData['given_name'] as String;
+      }
+    }
 
     if (!context.mounted) return;
 
+    await storage.completeLogin(isGoogle, fetchedName ?? '');
+
+    if (!context.mounted) return;
+
+    _navigateToPostLogin(context, storage, fetchedName);
+  }
+
+  void _navigateToPostLogin(
+    BuildContext context,
+    StorageService storage,
+    String? fetchedName,
+  ) {
     if (storage.hasCompletedOnboarding) {
       Navigator.pushAndRemoveUntil(
         context,
@@ -212,7 +256,13 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        MaterialPageRoute(
+          builder:
+              (_) => OnboardingScreen(
+                isEmailUser: true,
+                prefillName: fetchedName ?? '',
+              ),
+        ),
       );
     }
   }
@@ -262,12 +312,10 @@ class _AuthButton extends StatelessWidget {
               const SizedBox(width: 16),
               Text(
                 label,
-                style: GoogleFonts.outfit(
+                style: AppTheme.outfit(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.textDark,
-                  letterSpacing: 0.3,
-                ),
+                ).copyWith(letterSpacing: 0.3),
               ),
             ],
           ),

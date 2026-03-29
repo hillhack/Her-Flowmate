@@ -25,10 +25,6 @@ abstract final class AppTheme {
   static const Color shadowLight = neuLightShadow;
   static const Color shadowDark = neuDarkShadow;
 
-  // Glass Design System
-  static const double glassOpacity = 0.1;
-  static const double glassBlur = 12.0;
-
   // Background Gradient (Sophisticated Trio)
   static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -109,18 +105,69 @@ abstract final class AppTheme {
     ];
   }
 
+  // Glass Design System
+  static const double glassOpacity = 0.08;
+  static const double glassBlur = 16.0;
+
   static BoxDecoration glassDecoration({
     double radius = 24,
-    double opacity = 0.1,
+    double opacity = 0.08,
     Color? borderColor,
   }) {
     return BoxDecoration(
-      color: (borderColor ?? Colors.pink).withValues(alpha: opacity),
+      color: Colors.white.withValues(alpha: opacity),
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
-        color: (borderColor ?? Colors.pink).withValues(alpha: 0.2),
+        color: Colors.white.withValues(alpha: 0.2),
         width: 1.5,
       ),
+    );
+  }
+
+  static BoxDecoration premiumGlassDecoration({
+    double radius = 32,
+    double opacity = 0.1,
+  }) {
+    return BoxDecoration(
+      color: Colors.white.withValues(alpha: opacity),
+      borderRadius: BorderRadius.circular(radius),
+      border: Border.all(
+        color: Colors.white.withValues(alpha: 0.3),
+        width: 1.0,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.05),
+          blurRadius: 20,
+          spreadRadius: 0,
+          offset: const Offset(0, 10),
+        ),
+      ],
+    );
+  }
+
+  // Typography - Premium Fonts
+  static TextStyle playfair({
+    double fontSize = 32,
+    FontWeight fontWeight = FontWeight.w700,
+    Color? color,
+  }) {
+    return GoogleFonts.playfairDisplay(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color ?? textDark,
+    );
+  }
+
+  static TextStyle outfit({
+    double fontSize = 16,
+    FontWeight fontWeight = FontWeight.w500,
+    Color? color,
+  }) {
+    return GoogleFonts.outfit(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color ?? textDark,
     );
   }
 

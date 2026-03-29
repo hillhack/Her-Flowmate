@@ -216,21 +216,42 @@ class AnimatedGlowBackground extends StatelessWidget {
             ),
           ),
         ),
-        // Animated Blobs (Positioned must be direct child of Stack)
+        // Animated Blobs
         const Positioned(
-          top: -100,
-          left: -100,
-          child: _GlowBlob(color: Color(0xFFFFD1DC), size: 400),
+          top: -150,
+          left: -150,
+          child: _GlowBlob(
+            color: Color(0xFFFFD1DC),
+            size: 500,
+            durationOffset: 0,
+          ),
         ),
         const Positioned(
-          bottom: -50,
-          right: -50,
-          child: _GlowBlob(color: Color(0xFFE6E6FA), size: 350),
+          bottom: -100,
+          right: -100,
+          child: _GlowBlob(
+            color: Color(0xFFE6E6FA),
+            size: 450,
+            durationOffset: 2,
+          ),
         ),
         const Positioned(
           top: 200,
-          right: -100,
-          child: _GlowBlob(color: Color(0xFFF0F8FF), size: 300),
+          right: -150,
+          child: _GlowBlob(
+            color: Color(0xFFF0F8FF),
+            size: 400,
+            durationOffset: 4,
+          ),
+        ),
+        const Positioned(
+          bottom: 300,
+          left: -100,
+          child: _GlowBlob(
+            color: Color(0xFFFFFAD1),
+            size: 300,
+            durationOffset: 6,
+          ),
         ),
 
         // Content
@@ -243,8 +264,13 @@ class AnimatedGlowBackground extends StatelessWidget {
 class _GlowBlob extends StatelessWidget {
   final Color color;
   final double size;
+  final int durationOffset;
 
-  const _GlowBlob({required this.color, required this.size});
+  const _GlowBlob({
+    required this.color,
+    required this.size,
+    required this.durationOffset,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -256,9 +282,9 @@ class _GlowBlob extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.4),
-                  blurRadius: 100,
-                  spreadRadius: 50,
+                  color: color.withValues(alpha: 0.3),
+                  blurRadius: 120,
+                  spreadRadius: 60,
                 ),
               ],
             ),
@@ -266,10 +292,10 @@ class _GlowBlob extends StatelessWidget {
         )
         .animate(onPlay: (c) => c.repeat(reverse: true))
         .move(
-          begin: const Offset(-20, -20),
-          end: const Offset(20, 20),
-          duration: (8 + Random().nextInt(4)).seconds,
-          curve: Curves.easeInOut,
+          begin: const Offset(-30, -30),
+          end: const Offset(30, 30),
+          duration: (10 + durationOffset).seconds,
+          curve: Curves.easeInOutSine,
         );
   }
 }

@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart'
-    hide BoxShadow, BoxDecoration;
+import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
 import 'package:flutter_inset_shadow/flutter_inset_shadow.dart';
 import '../utils/app_theme.dart';
 
@@ -38,71 +37,54 @@ class NeuContainer extends StatefulWidget {
   });
 
   @override
-  State<NeuContainer> createState() =>
-      _NeuContainerState();
+  State<NeuContainer> createState() => _NeuContainerState();
 }
 
-class _NeuContainerState
-    extends State<NeuContainer> {
+class _NeuContainerState extends State<NeuContainer> {
   bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
     // Specifically follow the design guide's shadow rules
-    final bool isConcave =
-        widget.style == NeuStyle.concave ||
-            _isPressed;
+    final bool isConcave = widget.style == NeuStyle.concave || _isPressed;
 
     // Design guide spec:
     // Outset: 8x8x16 #e3c7d6, -8x-8x16 #ffffff
     // Inset: 6x6x12 #e3c7d6, -6x-6x12 #ffffff
 
-    final double currentOffset =
-        isConcave ? 6.0 : widget.offset;
-    final double currentBlur =
-        isConcave ? 12.0 : widget.blur;
+    final double currentOffset = isConcave ? 6.0 : widget.offset;
+    final double currentBlur = isConcave ? 12.0 : widget.blur;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTapDown: (_) =>
-          setState(() => _isPressed = true),
-      onTapUp: (_) =>
-          setState(() => _isPressed = false),
-      onTapCancel: () =>
-          setState(() => _isPressed = false),
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
       onTap: widget.onTap,
       child: AnimatedContainer(
-        duration:
-            const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutCubic,
         width: widget.width,
         height: widget.height,
         padding: widget.padding,
         margin: widget.margin,
         decoration: BoxDecoration(
-          color: widget.gradient == null
-              ? widget.color
-              : null,
+          color: widget.gradient == null ? widget.color : null,
           gradient: widget.gradient,
-          borderRadius: BorderRadius.circular(
-              widget.radius),
+          borderRadius: BorderRadius.circular(widget.radius),
           border: Border.all(
-              color: widget.borderColor ??
-                  Colors.pink
-                      .withValues(alpha: 0.2),
+              color: widget.borderColor ?? Colors.pink.withValues(alpha: 0.2),
               width: 1.5),
           boxShadow: [
             BoxShadow(
               color: AppTheme.shadowLight,
-              offset: Offset(
-                  -currentOffset, -currentOffset),
+              offset: Offset(-currentOffset, -currentOffset),
               blurRadius: currentBlur,
               inset: isConcave,
             ),
             BoxShadow(
               color: AppTheme.shadowDark,
-              offset: Offset(
-                  currentOffset, currentOffset),
+              offset: Offset(currentOffset, currentOffset),
               blurRadius: currentBlur,
               inset: isConcave,
             ),

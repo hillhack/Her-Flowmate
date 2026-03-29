@@ -115,12 +115,10 @@ abstract final class AppTheme {
     Color? borderColor,
   }) {
     return BoxDecoration(
-      color: (borderColor ?? Colors.pink)
-          .withValues(alpha: opacity),
+      color: (borderColor ?? Colors.pink).withValues(alpha: opacity),
       borderRadius: BorderRadius.circular(radius),
       border: Border.all(
-        color: (borderColor ?? Colors.pink)
-            .withValues(alpha: 0.2),
+        color: (borderColor ?? Colors.pink).withValues(alpha: 0.2),
         width: 1.5,
       ),
     );

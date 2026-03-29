@@ -60,13 +60,17 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             const SizedBox(height: 60),
                             const Center(
-                              child: BrandLogo(
-                                size: 120,
-                                imagePath: 'assets/images/feature_graphic.png',
-                                showName: true,
-                                nameFontSize: 36,
-                              ),
-                            ).animate().fadeIn(duration: 800.ms).scale(
+                                  child: BrandLogo(
+                                    size: 120,
+                                    imagePath:
+                                        'assets/images/feature_graphic.png',
+                                    showName: true,
+                                    nameFontSize: 36,
+                                  ),
+                                )
+                                .animate()
+                                .fadeIn(duration: 800.ms)
+                                .scale(
                                   begin: const Offset(0.8, 0.8),
                                   curve: Curves.easeOutBack,
                                 ),
@@ -74,15 +78,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 16),
 
                             Text(
-                              'Empowering Your Cycle Journey',
-                              style: GoogleFonts.outfit(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: AppTheme.textSecondary
-                                    .withValues(alpha: 0.8),
-                                letterSpacing: 1.2,
-                              ),
-                            )
+                                  'Empowering Your Cycle Journey',
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppTheme.textSecondary.withValues(
+                                      alpha: 0.8,
+                                    ),
+                                    letterSpacing: 1.2,
+                                  ),
+                                )
                                 .animate()
                                 .fadeIn(delay: 400.ms)
                                 .slideY(begin: 0.2),
@@ -91,11 +96,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             // Auth Buttons with better layout
                             _AuthButton(
-                              label: 'Continue with Google',
-                              icon: Icons.g_mobiledata_rounded,
-                              isPrimary: true,
-                              onTap: () => _handleLogin(context, true),
-                            )
+                                  label: 'Continue with Google',
+                                  icon: Icons.g_mobiledata_rounded,
+                                  isPrimary: true,
+                                  onTap: () => _handleLogin(context, true),
+                                )
                                 .animate()
                                 .fadeIn(delay: 200.ms)
                                 .slideY(begin: 0.2),
@@ -103,11 +108,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 20),
 
                             _AuthButton(
-                              label: 'Continue as Guest',
-                              icon: Icons.person_outline_rounded,
-                              isPrimary: false,
-                              onTap: () => _handleLogin(context, false),
-                            )
+                                  label: 'Continue as Guest',
+                                  icon: Icons.person_outline_rounded,
+                                  isPrimary: false,
+                                  onTap: () => _handleLogin(context, false),
+                                )
                                 .animate()
                                 .fadeIn(delay: 400.ms)
                                 .slideY(begin: 0.2),
@@ -116,47 +121,48 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             // Privacy Section with better text
                             Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: AppTheme.glassDecoration(
-                                radius: 28,
-                                opacity: 0.08,
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: AppTheme.glassDecoration(
+                                    radius: 28,
+                                    opacity: 0.08,
+                                  ),
+                                  child: Column(
                                     children: [
-                                      const Icon(
-                                        Icons.shield_moon_rounded,
-                                        size: 20,
-                                        color: AppTheme.accentPink,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.shield_moon_rounded,
+                                            size: 20,
+                                            color: AppTheme.accentPink,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            'Privacy First',
+                                            style: GoogleFonts.outfit(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              color: AppTheme.textDark,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 10),
+                                      const SizedBox(height: 12),
                                       Text(
-                                        'Privacy First',
-                                        style: GoogleFonts.outfit(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppTheme.textDark,
+                                        'Your health data is encrypted and stays on your device. We never sell your personal information.',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13,
+                                          color: AppTheme.textSecondary
+                                              .withValues(alpha: 0.8),
+                                          height: 1.5,
+                                          fontWeight: FontWeight.w500,
                                         ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    'Your health data is encrypted and stays on your device. We never sell your personal information.',
-                                    style: GoogleFonts.inter(
-                                      fontSize: 13,
-                                      color: AppTheme.textSecondary
-                                          .withValues(alpha: 0.8),
-                                      height: 1.5,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            )
+                                )
                                 .animate()
                                 .fadeIn(delay: 600.ms)
                                 .scale(begin: const Offset(0.9, 0.9)),
@@ -232,23 +238,27 @@ class _AuthButton extends StatelessWidget {
       radius: 24,
       child: NeuContainer(
         radius: 24,
-        gradient: isPrimary
-            ? LinearGradient(
-                colors: AppTheme.brandGradient.colors
-                    .map((c) => c.withValues(alpha: 0.1))
-                    .toList(),
-                begin: AppTheme.brandGradient.begin,
-                end: AppTheme.brandGradient.end,
-              )
-            : null,
+        gradient:
+            isPrimary
+                ? LinearGradient(
+                  colors:
+                      AppTheme.brandGradient.colors
+                          .map((c) => c.withValues(alpha: 0.1))
+                          .toList(),
+                  begin: AppTheme.brandGradient.begin,
+                  end: AppTheme.brandGradient.end,
+                )
+                : null,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon,
-                  color: isPrimary ? AppTheme.deepRose : AppTheme.accentPink,
-                  size: 26),
+              Icon(
+                icon,
+                color: isPrimary ? AppTheme.deepRose : AppTheme.accentPink,
+                size: 26,
+              ),
               const SizedBox(width: 16),
               Text(
                 label,

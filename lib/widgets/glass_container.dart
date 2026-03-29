@@ -37,26 +37,27 @@ class GlassContainer extends StatelessWidget {
     // By conditionally disabling it on Web, we get a 10x performance boost
     // while keeping the translucent "glass" aesthetic.
     final glassBg = Positioned.fill(
-      child: kIsWeb
-          ? Container(
-              decoration: BoxDecoration(
-                color: (borderColor ?? Colors.white).withValues(
-                  alpha: opacity * 1.5,
-                ), // Slightly more opaque to compensate
-                borderRadius: BorderRadius.circular(radius),
-              ),
-            )
-          : BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-              child: Container(
+      child:
+          kIsWeb
+              ? Container(
                 decoration: BoxDecoration(
                   color: (borderColor ?? Colors.white).withValues(
-                    alpha: opacity,
-                  ),
+                    alpha: opacity * 1.5,
+                  ), // Slightly more opaque to compensate
                   borderRadius: BorderRadius.circular(radius),
                 ),
+              )
+              : BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: (borderColor ?? Colors.white).withValues(
+                      alpha: opacity,
+                    ),
+                    borderRadius: BorderRadius.circular(radius),
+                  ),
+                ),
               ),
-            ),
     );
 
     // 2. Common Decoration for Border & Reflection

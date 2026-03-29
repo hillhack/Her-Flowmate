@@ -36,7 +36,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<StorageService>.value(value: fakeStorage),
           ProxyProvider<StorageService, PredictionService>(
-            update: (_, storage, __) => PredictionService(storage),
+            update: (context, storage, previous) => PredictionService(storage),
           ),
         ],
         child: const MaterialApp(home: LoginScreen()),

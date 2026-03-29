@@ -117,7 +117,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Morning sickness',
       'Breast tenderness',
       'Bloating',
-      'Mood swings'
+      'Mood swings',
     ],
     weeklyTip: 'Eat small, frequent meals to help manage morning sickness.',
     nutritionFocus: 'Ginger for nausea, Vitamin B6',
@@ -150,7 +150,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Morning sickness',
       'Heightened sense of smell',
       'Headaches',
-      'Constipation'
+      'Constipation',
     ],
     weeklyTip:
         'Avoid strong smells that trigger nausea — your sense of smell is at its peak.',
@@ -171,7 +171,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Nausea',
       'Fatigue',
       'Round ligament discomfort',
-      'Emotional sensitivity'
+      'Emotional sensitivity',
     ],
     weeklyTip: 'Light walks or prenatal yoga can boost energy and mood.',
     nutritionFocus: 'Iron-rich foods to fight fatigue',
@@ -188,7 +188,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Nausea may peak this week',
       'Visible veins on breasts',
-      'Bloating'
+      'Bloating',
     ],
     weeklyTip:
         'Consider telling close family — risk of miscarriage drops significantly now.',
@@ -208,7 +208,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Nausea starting to ease',
       'Increased energy',
-      'Mild heartburn'
+      'Mild heartburn',
     ],
     weeklyTip:
         'Begin gentle stretching to ease round ligament pain as uterus grows.',
@@ -227,7 +227,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Morning sickness often eases',
       'Increased appetite returning',
-      'Visible bump starting'
+      'Visible bump starting',
     ],
     weeklyTip:
         'End of 1st trimester — celebrate! Share the news if you haven\'t already.',
@@ -249,7 +249,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Energy boost',
       'Reduced nausea',
       'Visible veins on abdomen',
-      'Mild back pain'
+      'Mild back pain',
     ],
     weeklyTip:
         'Welcome to the 2nd trimester! Stay active with walking or swimming.',
@@ -268,7 +268,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Increased appetite',
       'Skin changes (glow!)',
       'Reduced fatigue',
-      'Slight weight gain'
+      'Slight weight gain',
     ],
     weeklyTip: 'Moisturize your belly to stay comfortable as skin stretches.',
     nutritionFocus:
@@ -287,7 +287,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Round ligament pain',
       'Nasal congestion',
-      'Increased sex drive possible'
+      'Increased sex drive possible',
     ],
     weeklyTip: 'Sleep on your side — left side is best for blood flow to baby.',
     nutritionFocus: 'Calcium and Vitamin D for skeleton hardening',
@@ -307,7 +307,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Growing bump',
       'Back pain',
       'Possible constipation',
-      'Skin darkening (linea nigra)'
+      'Skin darkening (linea nigra)',
     ],
     weeklyTip: 'Talk and sing to your baby — they can hear you now!',
     nutritionFocus:
@@ -324,7 +324,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Stretch marks may appear',
       'Increased appetite',
-      'Itchy skin on belly'
+      'Itchy skin on belly',
     ],
     weeklyTip:
         'Apply cocoa butter or stretch mark cream on belly, breasts and thighs.',
@@ -343,7 +343,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Baby flutters (quickening) may begin',
       'Lower back pain',
-      'Mild swelling in ankles'
+      'Mild swelling in ankles',
     ],
     weeklyTip:
         'Start sleeping with a pregnancy pillow to support hips and back.',
@@ -361,7 +361,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Baby kicks & flutters!',
       'Growing appetite',
-      'Dizziness when standing quickly'
+      'Dizziness when standing quickly',
     ],
     weeklyTip:
         'Start a kick-counting journal — note patterns of baby movement.',
@@ -384,7 +384,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Braxton Hicks contractions starting',
       'Heartburn',
       'Swollen feet',
-      'Hip pain'
+      'Hip pain',
     ],
     weeklyTip:
         'Celebrate the halfway point! Take a bump photo to remember this milestone.',
@@ -403,7 +403,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Visible kicks from outside!',
       'Increased backache',
       'Stretch marks',
-      'Leg cramps'
+      'Leg cramps',
     ],
     weeklyTip:
         'Eat a variety of flavors — baby is tasting them all, expanding their palate!',
@@ -421,7 +421,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Linea nigra darkening',
       'Innie belly button becoming an outie',
-      'Heartburn'
+      'Heartburn',
     ],
     weeklyTip:
         'Practice relaxation techniques — breathing exercises prepare you for labor.',
@@ -440,7 +440,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Braxton Hicks contractions',
       'Swelling (edema)',
-      'Increased pigmentation'
+      'Increased pigmentation',
     ],
     weeklyTip:
         'Elevate your feet when resting to reduce ankle and foot swelling.',
@@ -460,7 +460,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Shortness of breath',
       'Backache',
       'Swollen feet and ankles',
-      'Carpal tunnel tingling'
+      'Carpal tunnel tingling',
     ],
     weeklyTip:
         'Sleep with your head elevated slightly to ease shortness of breath.',
@@ -478,7 +478,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Sciatica (shooting pain down leg)',
       'Swelling',
-      'Hemorrhoids may appear'
+      'Hemorrhoids may appear',
     ],
     weeklyTip: 'A warm bath before bed eases sciatica and helps you sleep.',
     nutritionFocus:
@@ -498,7 +498,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Insomnia',
       'Painful Braxton Hicks',
       'Frequent urination returns',
-      'Vivid dreams'
+      'Vivid dreams',
     ],
     weeklyTip:
         'Start researching hospitals and birth centers — it\'s time to make your plan.',
@@ -518,7 +518,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Heartburn',
       'Hemorrhoids',
       'Leg cramps at night',
-      'Lower back pain'
+      'Lower back pain',
     ],
     weeklyTip:
         'Celebrate — final week of your 2nd trimester! You\'re almost in the home stretch.',
@@ -538,7 +538,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Shortness of breath',
       'Vivid dreams',
       'Discomfort sleeping',
-      'Pelvic pressure'
+      'Pelvic pressure',
     ],
     weeklyTip:
         'Welcome to the 3rd trimester! Prenatal appointments now every 2 weeks.',
@@ -560,7 +560,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Frequent urination',
       'Pelvic girdle pain',
       'Backache',
-      'Constipation'
+      'Constipation',
     ],
     weeklyTip:
         'Start kick counting daily — 10 kicks within 2 hours after meals is healthy.',
@@ -580,7 +580,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Heartburn',
       'Nesting urge beginning',
-      'Swollen hands and face possible'
+      'Swollen hands and face possible',
     ],
     weeklyTip:
         'Look into cord blood banking if interested — decisions needed before birth.',
@@ -600,7 +600,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Leaky colostrum from nipples',
       'Breathlessness',
-      'More frequent Braxton Hicks'
+      'More frequent Braxton Hicks',
     ],
     weeklyTip:
         'Start assembling your hospital bag — include items for you, baby, and your support person.',
@@ -620,7 +620,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Nesting instinct strong',
       'Pelvic pressure',
       'Diastasis recti',
-      'Trouble sleeping'
+      'Trouble sleeping',
     ],
     weeklyTip:
         'Write your birth plan — include your preferences for pain relief, atmosphere and visitors.',
@@ -642,7 +642,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Difficulty breathing',
       'Insomnia',
       'Swollen face and hands',
-      'Lightning crotch pains'
+      'Lightning crotch pains',
     ],
     weeklyTip:
         'Take a baby care class or breastfeeding workshop — reduces post-birth anxiety.',
@@ -662,7 +662,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Pelvic pressure intensifies',
       'Frequent urination',
       'Back pain',
-      'Fatigue returns'
+      'Fatigue returns',
     ],
     weeklyTip: 'Rest as much as possible — your body is doing enormous work.',
     nutritionFocus:
@@ -683,7 +683,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Braxton Hicks more intense',
       'Difficulty walking',
-      'Pelvic lightening pain'
+      'Pelvic lightening pain',
     ],
     weeklyTip: 'Hospital bag should be packed and ready from now.',
     nutritionFocus: 'Small, frequent meals — baby is taking up stomach space',
@@ -702,7 +702,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
     momSymptoms: [
       'Easier breathing after baby drops',
       'Increased pelvic pressure',
-      'More frequent urination'
+      'More frequent urination',
     ],
     weeklyTip:
         'Rest, rest, rest. You\'re in the final countdown — just 4 weeks to go!',
@@ -724,7 +724,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Strong Braxton Hicks',
       'Cervical changes',
       'Mucus plug may pass',
-      'Nesting peaks'
+      'Nesting peaks',
     ],
     weeklyTip:
         'Know the signs of labor: water breaking, contractions every 5 min, bloody show.',
@@ -745,7 +745,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Intense pelvic pressure',
       'Back labor pain',
       'Diarrhea (sign of labor approaching)',
-      'Difficulty sleeping'
+      'Difficulty sleeping',
     ],
     weeklyTip: 'Have a clear route to hospital planned. Install car seat now!',
     nutritionFocus: 'Stay hydrated; light snacks to keep energy up for labor',
@@ -764,7 +764,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Contractions (true or Braxton Hicks)',
       'Extreme fatigue',
       'Emotional nesting',
-      'Mucus plug loss'
+      'Mucus plug loss',
     ],
     weeklyTip:
         'Any contraction lasting 60+ seconds every 5 min for 1 hour — head to hospital!',
@@ -786,7 +786,7 @@ const Map<int, PregnancyWeekData> _weekDataMap = {
       'Strong contractions',
       'Water may break',
       'Extreme pelvic pressure',
-      'Eagerness to meet baby!'
+      'Eagerness to meet baby!',
     ],
     weeklyTip:
         'Trust your body and your team. You are ready. You\'ve got this! 💕',

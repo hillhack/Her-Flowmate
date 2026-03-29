@@ -63,20 +63,21 @@ class CycleTimeline extends StatelessWidget {
               return Container(
                 margin: const EdgeInsets.only(right: 8),
                 padding: const EdgeInsets.all(2),
-                decoration: isToday
-                    ? BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: color, width: 2),
-                      )
-                    : null,
+                decoration:
+                    isToday
+                        ? BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: color, width: 2),
+                        )
+                        : null,
                 child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: isToday ? 1.0 : 0.4),
-                    shape: BoxShape.circle,
-                  ),
-                )
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: isToday ? 1.0 : 0.4),
+                        shape: BoxShape.circle,
+                      ),
+                    )
                     .animate(
                       target: isToday ? 1 : 0,
                       onPlay: (c) => c.repeat(reverse: true),
@@ -178,8 +179,8 @@ class _HormoneGraphState extends State<HormoneGraph> {
               LineChartData(
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (_) =>
-                        AppTheme.bgColor.withValues(alpha: 0.9),
+                    getTooltipColor:
+                        (_) => AppTheme.bgColor.withValues(alpha: 0.9),
                     maxContentWidth: 200,
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((spot) {
@@ -299,27 +300,31 @@ class _HormoneGraphState extends State<HormoneGraph> {
     return Wrap(
       spacing: 16,
       runSpacing: 8,
-      children: AppTheme.hormoneColors.entries.map((e) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(color: e.value, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              e.key,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                color: AppTheme.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        );
-      }).toList(),
+      children:
+          AppTheme.hormoneColors.entries.map((e) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: e.value,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  e.key,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppTheme.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 }
@@ -340,50 +345,50 @@ class HormoneFocusWidget extends StatelessWidget {
       if (highest == null || lowest == null) return const SizedBox.shrink();
 
       return NeuContainer(
-        padding: const EdgeInsets.all(28),
-        radius: 36,
-        style: NeuStyle.convex,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+            padding: const EdgeInsets.all(28),
+            radius: 36,
+            style: NeuStyle.convex,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'DAILY FOCUS',
-                  style: GoogleFonts.inter(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w900,
-                    color: AppTheme.textSecondary,
-                    letterSpacing: 1.5,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      'DAILY FOCUS',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.textSecondary,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.lightbulb_rounded,
+                      color: AppTheme.accentPink.withValues(alpha: 0.4),
+                      size: 20,
+                    ),
+                  ],
                 ),
-                const Spacer(),
-                Icon(
-                  Icons.lightbulb_rounded,
-                  color: AppTheme.accentPink.withValues(alpha: 0.4),
-                  size: 20,
+                const SizedBox(height: 24),
+                _focusRow(
+                  'Highest',
+                  highest['name'],
+                  highest['desc'],
+                  AppTheme.hormoneColors[highest['name']]!,
+                  Icons.trending_up_rounded,
+                ),
+                const SizedBox(height: 20),
+                _focusRow(
+                  'Lowest',
+                  lowest['name'],
+                  lowest['desc'],
+                  AppTheme.hormoneColors[lowest['name']] ?? AppTheme.accentPink,
+                  Icons.trending_down_rounded,
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-            _focusRow(
-              'Highest',
-              highest['name'],
-              highest['desc'],
-              AppTheme.hormoneColors[highest['name']]!,
-              Icons.trending_up_rounded,
-            ),
-            const SizedBox(height: 20),
-            _focusRow(
-              'Lowest',
-              lowest['name'],
-              lowest['desc'],
-              AppTheme.hormoneColors[lowest['name']] ?? AppTheme.accentPink,
-              Icons.trending_down_rounded,
-            ),
-          ],
-        ),
-      )
+          )
           .animate(key: ValueKey(targetDay))
           .fadeIn()
           .slideX(begin: 0.1, curve: Curves.easeOutCubic);
@@ -548,31 +553,32 @@ class PhaseHealthTipsWidget extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: items
-              .map(
-                (item) => Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.accentPink.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppTheme.accentPink.withValues(alpha: 0.15),
+          children:
+              items
+                  .map(
+                    (item) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.accentPink.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppTheme.accentPink.withValues(alpha: 0.15),
+                        ),
+                      ),
+                      child: Text(
+                        item,
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    item,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.textDark,
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
+                  )
+                  .toList(),
         ),
       ],
     );

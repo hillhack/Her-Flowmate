@@ -36,10 +36,7 @@ class InsightsScreen extends StatelessWidget {
             child: const NeuContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppTheme.textDark,
-              ),
+              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
         ),
@@ -63,11 +60,11 @@ class InsightsScreen extends StatelessWidget {
             children: [
               // Large Phase Wheel
               CyclePhaseWheel(
-                currentCycleDay: cycleDay,
-                cycleLength: cycleLen,
-                currentPhase: phaseName,
-                daysUntilNextPeriod: daysToNext,
-              )
+                    currentCycleDay: cycleDay,
+                    cycleLength: cycleLen,
+                    currentPhase: phaseName,
+                    daysUntilNextPeriod: daysToNext,
+                  )
                   .animate()
                   .fadeIn(duration: 800.ms)
                   .scale(curve: Curves.easeOutBack),
@@ -78,24 +75,24 @@ class InsightsScreen extends StatelessWidget {
 
               // Scores Row
               Row(
-                children: [
-                  Expanded(
-                    child: _buildScoreCard(
-                      'Avg Cycle',
-                      '${pred.averageCycleLength}d',
-                      Icons.sync_rounded,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildScoreCard(
-                      'Avg Period',
-                      '${_getAveragePeriodLength(logs)}d',
-                      Icons.water_drop_rounded,
-                    ),
-                  ),
-                ],
-              )
+                    children: [
+                      Expanded(
+                        child: _buildScoreCard(
+                          'Avg Cycle',
+                          '${pred.averageCycleLength}d',
+                          Icons.sync_rounded,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildScoreCard(
+                          'Avg Period',
+                          '${_getAveragePeriodLength(logs)}d',
+                          Icons.water_drop_rounded,
+                        ),
+                      ),
+                    ],
+                  )
                   .animate()
                   .fadeIn(delay: 500.ms, duration: 600.ms)
                   .slideY(begin: 0.1),
@@ -285,107 +282,116 @@ class InsightsScreen extends StatelessWidget {
           const SizedBox(height: 32),
           SizedBox(
             height: 200,
-            child: cycleLengths.isEmpty
-                ? Center(
-                    child: Text(
-                      'Log more periods to see chart',
-                      style: GoogleFonts.inter(color: AppTheme.textSecondary),
-                    ),
-                  )
-                : LayoutBuilder(
-                    builder: (context, constraints) {
-                      return BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceEvenly,
-                          maxY: 40,
-                          minY: 0,
-                          groupsSpace: 12,
-                          barTouchData: BarTouchData(
-                            touchTooltipData: BarTouchTooltipData(
-                              getTooltipColor: (_) => AppTheme.textDark,
-                              getTooltipItem:
-                                  (group, groupIndex, rod, rodIndex) {
-                                return BarTooltipItem(
-                                  '${rod.toY.toInt()} days',
-                                  GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          titlesData: FlTitlesData(
-                            show: true,
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, meta) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Text(
-                                      'C${value.toInt() + 1}',
-                                      style: GoogleFonts.inter(
-                                        color: AppTheme.textSecondary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+            child:
+                cycleLengths.isEmpty
+                    ? Center(
+                      child: Text(
+                        'Log more periods to see chart',
+                        style: GoogleFonts.inter(color: AppTheme.textSecondary),
+                      ),
+                    )
+                    : LayoutBuilder(
+                      builder: (context, constraints) {
+                        return BarChart(
+                          BarChartData(
+                            alignment: BarChartAlignment.spaceEvenly,
+                            maxY: 40,
+                            minY: 0,
+                            groupsSpace: 12,
+                            barTouchData: BarTouchData(
+                              touchTooltipData: BarTouchTooltipData(
+                                getTooltipColor: (_) => AppTheme.textDark,
+                                getTooltipItem: (
+                                  group,
+                                  groupIndex,
+                                  rod,
+                                  rodIndex,
+                                ) {
+                                  return BarTooltipItem(
+                                    '${rod.toY.toInt()} days',
+                                    GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   );
                                 },
                               ),
                             ),
-                            leftTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
+                            titlesData: FlTitlesData(
+                              show: true,
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  getTitlesWidget: (value, meta) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'C${value.toInt() + 1}',
+                                        style: GoogleFonts.inter(
+                                          color: AppTheme.textSecondary,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              leftTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              topTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              rightTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
                             ),
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                          ),
-                          gridData: FlGridData(
-                            show: true,
-                            drawVerticalLine: false,
-                            horizontalInterval: 10,
-                            getDrawingHorizontalLine: (value) => FlLine(
-                              color: AppTheme.shadowDark.withValues(alpha: 0.2),
-                              strokeWidth: 1,
-                              dashArray: [4, 4],
-                            ),
-                          ),
-                          borderData: FlBorderData(show: false),
-                          barGroups: List.generate(cycleLengths.length, (i) {
-                            final val = cycleLengths[i].toDouble();
-                            return BarChartGroupData(
-                              x: i,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: val,
-                                  width: constraints.maxWidth /
-                                      (cycleLengths.length * 2),
-                                  gradient: AppTheme.brandGradient,
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(6),
-                                  ),
-                                  backDrawRodData: BackgroundBarChartRodData(
-                                    show: true,
-                                    toY: 40,
+                            gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: false,
+                              horizontalInterval: 10,
+                              getDrawingHorizontalLine:
+                                  (value) => FlLine(
                                     color: AppTheme.shadowDark.withValues(
-                                      alpha: 0.3,
+                                      alpha: 0.2,
+                                    ),
+                                    strokeWidth: 1,
+                                    dashArray: [4, 4],
+                                  ),
+                            ),
+                            borderData: FlBorderData(show: false),
+                            barGroups: List.generate(cycleLengths.length, (i) {
+                              final val = cycleLengths[i].toDouble();
+                              return BarChartGroupData(
+                                x: i,
+                                barRods: [
+                                  BarChartRodData(
+                                    toY: val,
+                                    width:
+                                        constraints.maxWidth /
+                                        (cycleLengths.length * 2),
+                                    gradient: AppTheme.brandGradient,
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(6),
+                                    ),
+                                    backDrawRodData: BackgroundBarChartRodData(
+                                      show: true,
+                                      toY: 40,
+                                      color: AppTheme.shadowDark.withValues(
+                                        alpha: 0.3,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          }),
-                        ),
-                        duration: 800.ms,
-                        curve: Curves.easeOutCubic,
-                      );
-                    },
-                  ),
+                                ],
+                              );
+                            }),
+                          ),
+                          duration: 800.ms,
+                          curve: Curves.easeOutCubic,
+                        );
+                      },
+                    ),
           ),
         ],
       ),
@@ -418,64 +424,65 @@ class InsightsScreen extends StatelessWidget {
       );
     }
 
-    var entries = counts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    var entries =
+        counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     int total = counts.values.fold(0, (sum, val) => sum + val);
 
     return NeuContainer(
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
-        children: entries.take(5).map((entry) {
-          final pct = entry.value / total;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    entry.key,
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      color: AppTheme.textDark,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: AppTheme.shadowDark.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: FractionallySizedBox(
-                      alignment: Alignment.centerLeft,
-                      widthFactor: pct,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.accentPink,
-                          borderRadius: BorderRadius.circular(4),
+        children:
+            entries.take(5).map((entry) {
+              final pct = entry.value / total;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        entry.key,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: AppTheme.textDark,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: AppTheme.shadowDark.withValues(alpha: 0.3),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: pct,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppTheme.accentPink,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      '${(pct * 100).round()}%',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  '${(pct * 100).round()}%',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }

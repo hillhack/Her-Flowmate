@@ -124,17 +124,18 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                         initialDate: DateTime.now(),
                         firstDate: DateTime(2020),
                         lastDate: DateTime.now(),
-                        builder: (ctx, child) => Theme(
-                          data: ThemeData.light().copyWith(
-                            colorScheme: const ColorScheme.light(
-                              primary: AppTheme.accentPink,
-                              onPrimary: Colors.white,
-                              surface: AppTheme.frameColor,
-                              onSurface: AppTheme.textDark,
+                        builder:
+                            (ctx, child) => Theme(
+                              data: ThemeData.light().copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: AppTheme.accentPink,
+                                  onPrimary: Colors.white,
+                                  surface: AppTheme.frameColor,
+                                  onSurface: AppTheme.textDark,
+                                ),
+                              ),
+                              child: child!,
                             ),
-                          ),
-                          child: child!,
-                        ),
                       );
                       if (date != null) setState(() => _selectedDate = date);
                     },
@@ -152,13 +153,14 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                             _selectedDate == null
                                 ? 'Select Date'
                                 : DateFormat(
-                                    'EEEE, MMM d, yyyy',
-                                  ).format(_selectedDate!),
+                                  'EEEE, MMM d, yyyy',
+                                ).format(_selectedDate!),
                             style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: _selectedDate == null
-                                  ? AppTheme.textSecondary
-                                  : AppTheme.textDark,
+                              color:
+                                  _selectedDate == null
+                                      ? AppTheme.textSecondary
+                                      : AppTheme.textDark,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -241,43 +243,50 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: ['Light', 'Medium', 'Heavy'].map((flow) {
-                      final isSelected = _flowIntensity == flow;
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                          child: GestureDetector(
-                            onTap: () => setState(() => _flowIntensity = flow),
-                            child: GlassContainer(
-                              radius: 16,
-                              opacity: isSelected ? 0.2 : 0.05,
-                              borderColor: isSelected
-                                  ? AppTheme.accentPink
-                                  : Colors.transparent,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    flow,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: isSelected
-                                          ? FontWeight.w800
-                                          : FontWeight.w700,
-                                      color: isSelected
+                    children:
+                        ['Light', 'Medium', 'Heavy'].map((flow) {
+                          final isSelected = _flowIntensity == flow;
+                          return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                              ),
+                              child: GestureDetector(
+                                onTap:
+                                    () => setState(() => _flowIntensity = flow),
+                                child: GlassContainer(
+                                  radius: 16,
+                                  opacity: isSelected ? 0.2 : 0.05,
+                                  borderColor:
+                                      isSelected
                                           ? AppTheme.accentPink
-                                          : AppTheme.textDark,
+                                          : Colors.transparent,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        flow,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 13,
+                                          fontWeight:
+                                              isSelected
+                                                  ? FontWeight.w800
+                                                  : FontWeight.w700,
+                                          color:
+                                              isSelected
+                                                  ? AppTheme.accentPink
+                                                  : AppTheme.textDark,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                          );
+                        }).toList(),
                   ).animate().fadeIn(delay: 400.ms),
 
                   const SizedBox(height: 32),
@@ -288,45 +297,51 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   Wrap(
                     spacing: 10,
                     runSpacing: 10,
-                    children: _allSymptoms.map((symptom) {
-                      final isSelected = _selectedSymptoms.contains(symptom);
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (isSelected) {
-                              _selectedSymptoms.remove(symptom);
-                            } else {
-                              _selectedSymptoms.add(symptom);
-                            }
-                          });
-                        },
-                        child: GlassContainer(
-                          radius: 12,
-                          opacity: isSelected ? 0.2 : 0.05,
-                          borderColor: isSelected
-                              ? AppTheme.accentPink
-                              : Colors.transparent,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 10,
-                            ),
-                            child: Text(
-                              symptom,
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                color: isSelected
-                                    ? AppTheme.accentPink
-                                    : AppTheme.textDark,
-                                fontWeight: isSelected
-                                    ? FontWeight.w800
-                                    : FontWeight.w700,
+                    children:
+                        _allSymptoms.map((symptom) {
+                          final isSelected = _selectedSymptoms.contains(
+                            symptom,
+                          );
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedSymptoms.remove(symptom);
+                                } else {
+                                  _selectedSymptoms.add(symptom);
+                                }
+                              });
+                            },
+                            child: GlassContainer(
+                              radius: 12,
+                              opacity: isSelected ? 0.2 : 0.05,
+                              borderColor:
+                                  isSelected
+                                      ? AppTheme.accentPink
+                                      : Colors.transparent,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
+                                child: Text(
+                                  symptom,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color:
+                                        isSelected
+                                            ? AppTheme.accentPink
+                                            : AppTheme.textDark,
+                                    fontWeight:
+                                        isSelected
+                                            ? FontWeight.w800
+                                            : FontWeight.w700,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                          );
+                        }).toList(),
                   ).animate().fadeIn(delay: 500.ms),
 
                   const SizedBox(height: 32),
@@ -339,42 +354,46 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
-                      children: _allMoods.entries.map((entry) {
-                        final isSelected = _selectedMood == entry.key;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: GestureDetector(
-                            onTap: () =>
-                                setState(() => _selectedMood = entry.key),
-                            child: GlassContainer(
-                              radius: 20,
-                              width: 64,
-                              opacity: isSelected ? 0.2 : 0.05,
-                              borderColor: isSelected
-                                  ? AppTheme.accentPink
-                                  : Colors.transparent,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    entry.value,
-                                    style: const TextStyle(fontSize: 26),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    entry.key,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 10,
-                                      color: AppTheme.textDark,
-                                      fontWeight: FontWeight.w700,
+                      children:
+                          _allMoods.entries.map((entry) {
+                            final isSelected = _selectedMood == entry.key;
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: GestureDetector(
+                                onTap:
+                                    () => setState(
+                                      () => _selectedMood = entry.key,
                                     ),
+                                child: GlassContainer(
+                                  radius: 20,
+                                  width: 64,
+                                  opacity: isSelected ? 0.2 : 0.05,
+                                  borderColor:
+                                      isSelected
+                                          ? AppTheme.accentPink
+                                          : Colors.transparent,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        entry.value,
+                                        style: const TextStyle(fontSize: 26),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        entry.key,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 10,
+                                          color: AppTheme.textDark,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                            );
+                          }).toList(),
                     ),
                   ).animate().fadeIn(delay: 600.ms),
 
@@ -384,54 +403,57 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   GlassContainer(
                     radius: 24,
                     padding: EdgeInsets.zero,
-                    borderColor: _selectedDate == null
-                        ? Colors.transparent
-                        : AppTheme.accentPink.withValues(alpha: 0.4),
-                    onTap: _selectedDate == null
-                        ? () {}
-                        : () async {
-                            final dateWithTime = DateTime(
-                              _selectedDate!.year,
-                              _selectedDate!.month,
-                              _selectedDate!.day,
-                              _isAM ? 8 : 20,
-                            );
-                            final duration = int.tryParse(
-                                  _durationController.text.trim(),
-                                ) ??
-                                5;
-                            final log = PeriodLog(
-                              startDate: dateWithTime,
-                              duration: duration,
-                              flowIntensity: _flowIntensity,
-                              symptoms: _selectedSymptoms,
-                              mood: _selectedMood,
-                            );
-                            final storage = Provider.of<StorageService>(
-                              context,
-                              listen: false,
-                            );
-                            final predView = Provider.of<PredictionService>(
-                              context,
-                              listen: false,
-                            );
-                            await storage.saveLog(log);
+                    borderColor:
+                        _selectedDate == null
+                            ? Colors.transparent
+                            : AppTheme.accentPink.withValues(alpha: 0.4),
+                    onTap:
+                        _selectedDate == null
+                            ? () {}
+                            : () async {
+                              final dateWithTime = DateTime(
+                                _selectedDate!.year,
+                                _selectedDate!.month,
+                                _selectedDate!.day,
+                                _isAM ? 8 : 20,
+                              );
+                              final duration =
+                                  int.tryParse(
+                                    _durationController.text.trim(),
+                                  ) ??
+                                  5;
+                              final log = PeriodLog(
+                                startDate: dateWithTime,
+                                duration: duration,
+                                flowIntensity: _flowIntensity,
+                                symptoms: _selectedSymptoms,
+                                mood: _selectedMood,
+                              );
+                              final storage = Provider.of<StorageService>(
+                                context,
+                                listen: false,
+                              );
+                              final predView = Provider.of<PredictionService>(
+                                context,
+                                listen: false,
+                              );
+                              await storage.saveLog(log);
 
-                            if (!context.mounted) return;
-                            showPhaseDelight(
-                              context,
-                              predView.phaseDisplayName,
-                            );
-                            Navigator.pop(context);
+                              if (!context.mounted) return;
+                              showPhaseDelight(
+                                context,
+                                predView.phaseDisplayName,
+                              );
+                              Navigator.pop(context);
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Period logged! ✨'),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: AppTheme.accentPink,
-                              ),
-                            );
-                          },
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Period logged! ✨'),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: AppTheme.accentPink,
+                                ),
+                              );
+                            },
                     child: SizedBox(
                       height: 64,
                       child: Row(
@@ -439,9 +461,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                         children: [
                           Icon(
                             Icons.cloud_done_rounded,
-                            color: _selectedDate == null
-                                ? AppTheme.textSecondary
-                                : AppTheme.accentPink,
+                            color:
+                                _selectedDate == null
+                                    ? AppTheme.textSecondary
+                                    : AppTheme.accentPink,
                           ),
                           const SizedBox(width: 12),
                           Text(
@@ -449,9 +472,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                             style: GoogleFonts.inter(
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
-                              color: _selectedDate == null
-                                  ? AppTheme.textSecondary
-                                  : AppTheme.accentPink,
+                              color:
+                                  _selectedDate == null
+                                      ? AppTheme.textSecondary
+                                      : AppTheme.accentPink,
                             ),
                           ),
                         ],
@@ -506,9 +530,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
     return GlassContainer(
       radius: 18,
       opacity: isActive ? 0.15 : 0.05,
-      borderColor: isActive
-          ? AppTheme.accentPink.withValues(alpha: 0.3)
-          : Colors.transparent,
+      borderColor:
+          isActive
+              ? AppTheme.accentPink.withValues(alpha: 0.3)
+              : Colors.transparent,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(12),

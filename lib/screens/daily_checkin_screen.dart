@@ -157,15 +157,16 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                         initialDate: _selectedDate,
                         firstDate: DateTime(2020),
                         lastDate: DateTime.now(),
-                        builder: (ctx, child) => Theme(
-                          data: ThemeData.light().copyWith(
-                            colorScheme: const ColorScheme.light(
-                              primary: AppTheme.accentPink,
-                              surface: AppTheme.frameColor,
+                        builder:
+                            (ctx, child) => Theme(
+                              data: ThemeData.light().copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: AppTheme.accentPink,
+                                  surface: AppTheme.frameColor,
+                                ),
+                              ),
+                              child: child!,
                             ),
-                          ),
-                          child: child!,
-                        ),
                       );
                       if (date != null) {
                         setState(() {
@@ -178,8 +179,9 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                           _selectedActivities.clear();
                         });
                         if (!context.mounted) return;
-                        final existing =
-                            context.read<StorageService>().getDailyLog(date);
+                        final existing = context
+                            .read<StorageService>()
+                            .getDailyLog(date);
                         if (existing != null) {
                           setState(() {
                             if (existing.moods?.isNotEmpty == true) {
@@ -235,57 +237,62 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   Wrap(
                     spacing: 12,
                     runSpacing: 12,
-                    children: _allMoods.entries.map((e) {
-                      final isSel = _selectedMood == e.key;
-                      return GestureDetector(
-                        onTap: () => setState(() => _selectedMood = e.key),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSel
-                                ? AppTheme.accentPink
-                                : Colors.white.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: isSel
-                                ? [
-                                    BoxShadow(
-                                      color: AppTheme.accentPink.withValues(
-                                        alpha: 0.3,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
+                    children:
+                        _allMoods.entries.map((e) {
+                          final isSel = _selectedMood == e.key;
+                          return GestureDetector(
+                            onTap: () => setState(() => _selectedMood = e.key),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isSel
+                                        ? AppTheme.accentPink
+                                        : Colors.white.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow:
+                                    isSel
+                                        ? [
+                                          BoxShadow(
+                                            color: AppTheme.accentPink
+                                                .withValues(alpha: 0.3),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ]
+                                        : [],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    e.value,
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    e.key,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight:
+                                          isSel
+                                              ? FontWeight.bold
+                                              : FontWeight.w600,
+                                      color:
+                                          isSel
+                                              ? Colors.white
+                                              : AppTheme.textSecondary,
                                     ),
-                                  ]
-                                : [],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                e.value,
-                                style: const TextStyle(fontSize: 18),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                e.key,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight:
-                                      isSel ? FontWeight.bold : FontWeight.w600,
-                                  color: isSel
-                                      ? Colors.white
-                                      : AppTheme.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                            ),
+                          );
+                        }).toList(),
                   ).animate().fadeIn(delay: 300.ms),
 
                   const SizedBox(height: 32),
@@ -302,53 +309,61 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                       return Wrap(
                         spacing: 10,
                         runSpacing: 10,
-                        children: symptoms.map((sym) {
-                          final isSel = _selectedSymptoms.contains(sym);
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isSel
-                                    ? _selectedSymptoms.remove(sym)
-                                    : _selectedSymptoms.add(sym);
-                              });
-                            },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isSel
-                                    ? const Color(0xFFBA68C8)
-                                    : Colors.white.withValues(alpha: 0.5),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: isSel
-                                    ? [
-                                        BoxShadow(
-                                          color: const Color(
-                                            0xFFBA68C8,
-                                          ).withValues(alpha: 0.3),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ]
-                                    : [],
-                              ),
-                              child: Text(
-                                sym,
-                                style: GoogleFonts.inter(
-                                  fontSize: 13,
-                                  fontWeight:
-                                      isSel ? FontWeight.bold : FontWeight.w600,
-                                  color: isSel
-                                      ? Colors.white
-                                      : AppTheme.textSecondary,
+                        children:
+                            symptoms.map((sym) {
+                              final isSel = _selectedSymptoms.contains(sym);
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSel
+                                        ? _selectedSymptoms.remove(sym)
+                                        : _selectedSymptoms.add(sym);
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isSel
+                                            ? const Color(0xFFBA68C8)
+                                            : Colors.white.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow:
+                                        isSel
+                                            ? [
+                                              BoxShadow(
+                                                color: const Color(
+                                                  0xFFBA68C8,
+                                                ).withValues(alpha: 0.3),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ]
+                                            : [],
+                                  ),
+                                  child: Text(
+                                    sym,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 13,
+                                      fontWeight:
+                                          isSel
+                                              ? FontWeight.bold
+                                              : FontWeight.w600,
+                                      color:
+                                          isSel
+                                              ? Colors.white
+                                              : AppTheme.textSecondary,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                              );
+                            }).toList(),
                       );
                     },
                   ).animate().fadeIn(delay: 400.ms),
@@ -368,54 +383,74 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                           _stepLabel('🩸', 'Flow Intensity'),
                           const SizedBox(height: 16),
                           Row(
-                            children: _allFlows.map((flowStr) {
-                              final isSel = _selectedFlow == flowStr;
-                              return Expanded(
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      setState(() => _selectedFlow = flowStr),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    margin: EdgeInsets.only(
-                                      right: flowStr == _allFlows.last ? 0 : 12,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
-                                    decoration: BoxDecoration(
-                                      color: isSel
-                                          ? AppTheme.accentPink
-                                          : Colors.white.withValues(alpha: 0.5),
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: isSel
-                                          ? [
-                                              BoxShadow(
-                                                color: AppTheme.accentPink
-                                                    .withValues(
-                                                  alpha: 0.3,
-                                                ),
-                                                blurRadius: 10,
-                                                offset: const Offset(0, 4),
-                                              ),
-                                            ]
-                                          : [],
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      flowStr,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        fontWeight: isSel
-                                            ? FontWeight.bold
-                                            : FontWeight.w600,
-                                        color: isSel
-                                            ? Colors.white
-                                            : AppTheme.textSecondary,
+                            children:
+                                _allFlows.map((flowStr) {
+                                  final isSel = _selectedFlow == flowStr;
+                                  return Expanded(
+                                    child: GestureDetector(
+                                      onTap:
+                                          () => setState(
+                                            () => _selectedFlow = flowStr,
+                                          ),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(
+                                          milliseconds: 300,
+                                        ),
+                                        margin: EdgeInsets.only(
+                                          right:
+                                              flowStr == _allFlows.last
+                                                  ? 0
+                                                  : 12,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              isSel
+                                                  ? AppTheme.accentPink
+                                                  : Colors.white.withValues(
+                                                    alpha: 0.5,
+                                                  ),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          boxShadow:
+                                              isSel
+                                                  ? [
+                                                    BoxShadow(
+                                                      color: AppTheme.accentPink
+                                                          .withValues(
+                                                            alpha: 0.3,
+                                                          ),
+                                                      blurRadius: 10,
+                                                      offset: const Offset(
+                                                        0,
+                                                        4,
+                                                      ),
+                                                    ),
+                                                  ]
+                                                  : [],
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          flowStr,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 14,
+                                            fontWeight:
+                                                isSel
+                                                    ? FontWeight.bold
+                                                    : FontWeight.w600,
+                                            color:
+                                                isSel
+                                                    ? Colors.white
+                                                    : AppTheme.textSecondary,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                                  );
+                                }).toList(),
                           ),
                           const SizedBox(height: 32),
                         ],
@@ -431,52 +466,57 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   Wrap(
                     spacing: 12,
                     runSpacing: 12,
-                    children: _allActivities.map((act) {
-                      final isSel = _selectedActivities.contains(act);
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isSel
-                                ? _selectedActivities.remove(act)
-                                : _selectedActivities.add(act);
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSel
-                                ? const Color(0xFF81C784)
-                                : Colors.white.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: isSel
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF81C784,
-                                      ).withValues(alpha: 0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ]
-                                : [],
-                          ),
-                          child: Text(
-                            act,
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight:
-                                  isSel ? FontWeight.bold : FontWeight.w600,
-                              color:
-                                  isSel ? Colors.white : AppTheme.textSecondary,
+                    children:
+                        _allActivities.map((act) {
+                          final isSel = _selectedActivities.contains(act);
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSel
+                                    ? _selectedActivities.remove(act)
+                                    : _selectedActivities.add(act);
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isSel
+                                        ? const Color(0xFF81C784)
+                                        : Colors.white.withValues(alpha: 0.5),
+                                borderRadius: BorderRadius.circular(24),
+                                boxShadow:
+                                    isSel
+                                        ? [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xFF81C784,
+                                            ).withValues(alpha: 0.3),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ]
+                                        : [],
+                              ),
+                              child: Text(
+                                act,
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight:
+                                      isSel ? FontWeight.bold : FontWeight.w600,
+                                  color:
+                                      isSel
+                                          ? Colors.white
+                                          : AppTheme.textSecondary,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                          );
+                        }).toList(),
                   ).animate().fadeIn(delay: 500.ms),
 
                   const SizedBox(height: 32),
@@ -556,17 +596,20 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                       final log = DailyLog(
                         date: _selectedDate,
                         moods: _selectedMood != null ? [_selectedMood!] : null,
-                        symptoms: _selectedSymptoms.isNotEmpty
-                            ? List.from(_selectedSymptoms)
-                            : null,
+                        symptoms:
+                            _selectedSymptoms.isNotEmpty
+                                ? List.from(_selectedSymptoms)
+                                : null,
                         waterIntake: _waterIntake,
-                        notes: _notesController.text.isNotEmpty
-                            ? _notesController.text
-                            : null,
+                        notes:
+                            _notesController.text.isNotEmpty
+                                ? _notesController.text
+                                : null,
                         flowIntensity: _selectedFlow,
-                        physicalActivity: _selectedActivities.isNotEmpty
-                            ? List.from(_selectedActivities)
-                            : null,
+                        physicalActivity:
+                            _selectedActivities.isNotEmpty
+                                ? List.from(_selectedActivities)
+                                : null,
                       );
 
                       await context.read<StorageService>().saveDailyLog(log);
@@ -575,8 +618,11 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                         SnackBar(
                           content: Row(
                             children: [
-                              const Icon(Icons.check_circle_rounded,
-                                  color: Colors.white, size: 20),
+                              const Icon(
+                                Icons.check_circle_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                               const SizedBox(width: 10),
                               Text(
                                 'Check-in saved! 🌸',
@@ -590,7 +636,8 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                           backgroundColor: const Color(0xFF4CAF50),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           margin: const EdgeInsets.all(16),
                           duration: const Duration(seconds: 2),
                         ),

@@ -63,17 +63,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: Row(
                   children: [
                     Builder(
-                      builder: (context) => NeuContainer(
-                        padding: const EdgeInsets.all(10),
-                        radius: 18,
-                        style: NeuStyle.convex,
-                        onTap: () => Scaffold.of(context).openDrawer(),
-                        child: const Icon(
-                          Icons.menu_rounded,
-                          color: AppTheme.accentPink,
-                          size: 26,
-                        ),
-                      ),
+                      builder:
+                          (context) => NeuContainer(
+                            padding: const EdgeInsets.all(10),
+                            radius: 18,
+                            style: NeuStyle.convex,
+                            onTap: () => Scaffold.of(context).openDrawer(),
+                            child: const Icon(
+                              Icons.menu_rounded,
+                              color: AppTheme.accentPink,
+                              size: 26,
+                            ),
+                          ),
                     ),
                     Expanded(
                       child: Center(
@@ -107,8 +108,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             firstDay: DateTime.utc(2020, 1, 1),
                             lastDay: DateTime.utc(2030, 12, 31),
                             focusedDay: _focusedDay,
-                            selectedDayPredicate: (day) =>
-                                isSameDay(_selectedDay, day),
+                            selectedDayPredicate:
+                                (day) => isSameDay(_selectedDay, day),
                             onDaySelected: (selectedDay, focusedDay) {
                               setState(() {
                                 _selectedDay = selectedDay;
@@ -389,12 +390,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               TextButton(
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PredictionDetailsScreen(),
-                  ),
-                ),
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PredictionDetailsScreen(),
+                      ),
+                    ),
                 child: Text(
                   'Learn More →',
                   style: GoogleFonts.inter(
@@ -480,25 +482,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
         gradient: gradient,
         shape: BoxShape.circle,
         border: border,
-        boxShadow: isOvulation
-            ? [
-                BoxShadow(
-                  color: AppTheme.phaseColors['Ovulation']!.withValues(
-                    alpha: 0.6,
-                  ),
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                ),
-              ]
-            : (isSelected
+        boxShadow:
+            isOvulation
                 ? [
-                    BoxShadow(
-                      color: AppTheme.accentPink.withValues(alpha: 0.4),
-                      blurRadius: 8,
-                      spreadRadius: 1,
+                  BoxShadow(
+                    color: AppTheme.phaseColors['Ovulation']!.withValues(
+                      alpha: 0.6,
                     ),
-                  ]
-                : null),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ]
+                : (isSelected
+                    ? [
+                      BoxShadow(
+                        color: AppTheme.accentPink.withValues(alpha: 0.4),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                    ]
+                    : null),
       ),
       alignment: Alignment.center,
       child: Stack(
@@ -509,9 +512,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
             style: GoogleFonts.inter(
               color:
                   isSelected || isPeriod ? Colors.white : AppTheme.midnightPlum,
-              fontWeight: isSelected || isToday || isPeriod
-                  ? FontWeight.w900
-                  : FontWeight.w600,
+              fontWeight:
+                  isSelected || isToday || isPeriod
+                      ? FontWeight.w900
+                      : FontWeight.w600,
               fontSize: 14,
             ),
           ),
@@ -586,9 +590,10 @@ class _DailyLogSheet extends StatelessWidget {
     final pred = context.watch<PredictionService>();
     final chance = pred.getConceptionChance(date);
     final isHigh = chance >= 25;
-    final statusText = isHigh
-        ? 'High Fertility'
-        : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
+    final statusText =
+        isHigh
+            ? 'High Fertility'
+            : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
 
     final storage = context.watch<StorageService>();
     final dailyLog = storage.getDailyLog(date);
@@ -762,30 +767,33 @@ class _DailyLogSheet extends StatelessWidget {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: dailyLog.symptoms!
-                                .map(
-                                  (s) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.accentPink.withValues(
-                                        alpha: 0.1,
+                            children:
+                                dailyLog.symptoms!
+                                    .map(
+                                      (s) => Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.accentPink.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          s,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 12,
+                                            color: AppTheme.accentPink,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      s,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 12,
-                                        color: AppTheme.accentPink,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
+                                    )
+                                    .toList(),
                           ),
                           const SizedBox(height: 12),
                         ],

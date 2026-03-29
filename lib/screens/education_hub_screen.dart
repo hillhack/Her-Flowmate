@@ -102,11 +102,11 @@ class EducationHubScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(24),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.85,
-                    ),
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.85,
+                        ),
                     itemCount: articles.length,
                     itemBuilder: (context, index) {
                       final a = articles[index];
@@ -116,12 +116,13 @@ class EducationHubScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => _ArticleDetailScreen(
-                                title: a['title']!,
-                                content: a['content']!,
-                                icon: a['icon']!,
-                                themeColor: color,
-                              ),
+                              builder:
+                                  (context) => _ArticleDetailScreen(
+                                    title: a['title']!,
+                                    content: a['content']!,
+                                    icon: a['icon']!,
+                                    themeColor: color,
+                                  ),
                             ),
                           );
                         },
@@ -166,10 +167,10 @@ class EducationHubScreen extends StatelessWidget {
                             ],
                           ),
                         ).animate().scale(
-                              delay: (100 * index).ms,
-                              duration: 400.ms,
-                              curve: Curves.easeOutBack,
-                            ),
+                          delay: (100 * index).ms,
+                          duration: 400.ms,
+                          curve: Curves.easeOutBack,
+                        ),
                       );
                     },
                   ),
@@ -283,17 +284,17 @@ class _ArticleDetailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: GlassContainer(
-                  padding: const EdgeInsets.all(32),
-                  radius: 32,
-                  child: Text(
-                    content.replaceAll('\\n', '\n'),
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: AppTheme.textDark.withValues(alpha: 0.8),
-                      height: 1.8,
-                    ),
-                  ),
-                )
+                      padding: const EdgeInsets.all(32),
+                      radius: 32,
+                      child: Text(
+                        content.replaceAll('\\n', '\n'),
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: AppTheme.textDark.withValues(alpha: 0.8),
+                          height: 1.8,
+                        ),
+                      ),
+                    )
                     .animate()
                     .slideY(begin: 0.1, delay: 300.ms)
                     .fadeIn(delay: 300.ms),

@@ -30,8 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _confettiController =
-        ConfettiController(duration: const Duration(seconds: 3));
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkFirstTimeInfo();
     });
@@ -106,7 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 _buildTTCDashboard(context, storage)
                               else
                                 _buildModernBentoDashboard(
-                                    context, storage, pred),
+                                  context,
+                                  storage,
+                                  pred,
+                                ),
                               const SizedBox(height: 16),
                               _buildInsightCarousel(context),
                               const SizedBox(height: 16),
@@ -153,19 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         // Sidebar Menu Button
         Builder(
-          builder: (context) => NeuContainer(
-            radius: 18,
-            padding: const EdgeInsets.all(10),
-            style: NeuStyle.convex,
-            onTap: () {
-              Scaffold.of(context).openDrawer();
-            },
-            child: const Icon(
-              Icons.menu_rounded,
-              color: AppTheme.textDark,
-              size: 26,
-            ),
-          ),
+          builder:
+              (context) => NeuContainer(
+                radius: 18,
+                padding: const EdgeInsets.all(10),
+                style: NeuStyle.convex,
+                onTap: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                child: const Icon(
+                  Icons.menu_rounded,
+                  color: AppTheme.textDark,
+                  size: 26,
+                ),
+              ),
         ),
 
         // Mode Badge
@@ -277,69 +282,70 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-        decoration: const BoxDecoration(
-          color: AppTheme.bgColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Switch Mode',
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
-                ),
+      builder:
+          (context) => Container(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+            decoration: const BoxDecoration(
+              color: AppTheme.bgColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Switch Mode',
+                    style: GoogleFonts.poppins(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: AppTheme.textDark,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Select your current health goal',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  _modeOption(
+                    context,
+                    storage,
+                    'track_cycle',
+                    'Period Tracking',
+                    'Track your cycle and symptoms',
+                    Icons.calendar_today_rounded,
+                    storage.userGoal == 'track_cycle',
+                  ),
+                  const SizedBox(height: 12),
+                  _modeOption(
+                    context,
+                    storage,
+                    'conceive',
+                    'Conceive',
+                    'Identify your most fertile days',
+                    Icons.favorite_rounded,
+                    storage.userGoal == 'conceive',
+                  ),
+                  const SizedBox(height: 12),
+                  _modeOption(
+                    context,
+                    storage,
+                    'pregnant',
+                    'Pregnancy',
+                    'Track your baby\'s development',
+                    Icons.pregnant_woman_rounded,
+                    storage.userGoal == 'pregnant',
+                  ),
+                  const SizedBox(height: 32),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Select your current health goal',
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  color: AppTheme.textSecondary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 24),
-              _modeOption(
-                context,
-                storage,
-                'track_cycle',
-                'Period Tracking',
-                'Track your cycle and symptoms',
-                Icons.calendar_today_rounded,
-                storage.userGoal == 'track_cycle',
-              ),
-              const SizedBox(height: 12),
-              _modeOption(
-                context,
-                storage,
-                'conceive',
-                'Conceive',
-                'Identify your most fertile days',
-                Icons.favorite_rounded,
-                storage.userGoal == 'conceive',
-              ),
-              const SizedBox(height: 12),
-              _modeOption(
-                context,
-                storage,
-                'pregnant',
-                'Pregnancy',
-                'Track your baby\'s development',
-                Icons.pregnant_woman_rounded,
-                storage.userGoal == 'pregnant',
-              ),
-              const SizedBox(height: 32),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -360,17 +366,19 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {}); // Rebuild home screen with new mode dashboard
       },
       padding: const EdgeInsets.all(16),
-      borderColor: isSelected
-          ? AppTheme.accentPink.withValues(alpha: 0.5)
-          : Colors.white.withValues(alpha: 0.5),
+      borderColor:
+          isSelected
+              ? AppTheme.accentPink.withValues(alpha: 0.5)
+              : Colors.white.withValues(alpha: 0.5),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? AppTheme.accentPink.withValues(alpha: 0.1)
-                  : AppTheme.textSecondary.withValues(alpha: 0.05),
+              color:
+                  isSelected
+                      ? AppTheme.accentPink.withValues(alpha: 0.1)
+                      : AppTheme.textSecondary.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -430,25 +438,22 @@ class _HomeScreenState extends State<HomeScreen> {
             .fadeIn(duration: 400.ms)
             .scale(begin: const Offset(0.9, 0.9)),
         const SizedBox(height: 24),
-        _buildYourBodyTodayCard(context, pred)
-            .animate()
-            .fadeIn(delay: 200.ms, duration: 400.ms)
-            .slideY(begin: 0.1),
+        _buildYourBodyTodayCard(
+          context,
+          pred,
+        ).animate().fadeIn(delay: 200.ms, duration: 400.ms).slideY(begin: 0.1),
         const SizedBox(height: 16),
-        _buildBentoWaterCard(storage)
-            .animate()
-            .fadeIn(delay: 400.ms, duration: 400.ms)
-            .slideY(begin: 0.1),
+        _buildBentoWaterCard(
+          storage,
+        ).animate().fadeIn(delay: 400.ms, duration: 400.ms).slideY(begin: 0.1),
         const SizedBox(height: 20),
-        HormoneGraph(pred: pred)
-            .animate()
-            .fadeIn(delay: 600.ms, duration: 400.ms)
-            .slideY(begin: 0.1),
+        HormoneGraph(
+          pred: pred,
+        ).animate().fadeIn(delay: 600.ms, duration: 400.ms).slideY(begin: 0.1),
         const SizedBox(height: 24),
-        PhaseHealthTipsWidget(pred: pred)
-            .animate()
-            .fadeIn(delay: 800.ms, duration: 400.ms)
-            .slideY(begin: 0.1),
+        PhaseHealthTipsWidget(
+          pred: pred,
+        ).animate().fadeIn(delay: 800.ms, duration: 400.ms).slideY(begin: 0.1),
       ],
     );
   }
@@ -481,8 +486,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.auto_awesome_rounded,
-                      color: AppTheme.accentPurple, size: 18),
+                  const Icon(
+                    Icons.auto_awesome_rounded,
+                    color: AppTheme.accentPurple,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'YOUR BODY TODAY',
@@ -496,8 +504,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: phaseColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
@@ -529,12 +539,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Colors.orangeAccent,
           ),
           const Divider(height: 32, thickness: 0.5),
-          _insightRow(
-            '🧘',
-            'MOOD',
-            biology['mood'] ?? '',
-            AppTheme.accentPink,
-          ),
+          _insightRow('🧘', 'MOOD', biology['mood'] ?? '', AppTheme.accentPink),
         ],
       ),
     );
@@ -678,9 +683,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin: const EdgeInsets.only(right: 2),
                   height: 6,
                   decoration: BoxDecoration(
-                    color: filled
-                        ? Colors.blueAccent
-                        : Colors.blueAccent.withValues(alpha: 0.12),
+                    color:
+                        filled
+                            ? Colors.blueAccent
+                            : Colors.blueAccent.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
@@ -713,62 +719,62 @@ class _HomeScreenState extends State<HomeScreen> {
         {
           'title': 'Rest & Restore',
           'sub': 'Light stretching eases cramps',
-          'icon': '🛌'
+          'icon': '🛌',
         },
         {
           'title': 'Iron Foods',
           'sub': 'Spinach & lentils replenish iron',
-          'icon': '🥬'
+          'icon': '🥬',
         },
         {
           'title': 'Heat Therapy',
           'sub': 'Warm compress relieves pain',
-          'icon': '🌡️'
+          'icon': '🌡️',
         },
         {
           'title': 'Magnesium',
           'sub': 'Dark chocolate reduces cramping',
-          'icon': '🍫'
+          'icon': '🍫',
         },
       ],
       'Follicular': [
         {
           'title': 'Energy Rising',
           'sub': 'Great time for new workouts',
-          'icon': '⚡'
+          'icon': '⚡',
         },
         {
           'title': 'Brain Power',
           'sub': 'Estrogen boosts focus & memory',
-          'icon': '🧠'
+          'icon': '🧠',
         },
         {'title': 'Protein Up', 'sub': 'Fuel your active phase', 'icon': '🥚'},
         {
           'title': 'Social Time',
           'sub': 'You\'re at your most outgoing',
-          'icon': '🌸'
+          'icon': '🌸',
         },
       ],
       'Ovulation': [
         {
           'title': 'Peak Fertility',
           'sub': 'Highest conception window now',
-          'icon': '🌟'
+          'icon': '🌟',
         },
         {
           'title': 'High Energy',
           'sub': 'HIIT and strength training ideal',
-          'icon': '💪'
+          'icon': '💪',
         },
         {
           'title': 'Zinc Rich',
           'sub': 'Seeds & eggs support ovulation',
-          'icon': '🌻'
+          'icon': '🌻',
         },
         {
           'title': 'Stay Hydrated',
           'sub': 'Cervical fluid needs water',
-          'icon': '💧'
+          'icon': '💧',
         },
       ],
       'Luteal': [
@@ -776,37 +782,38 @@ class _HomeScreenState extends State<HomeScreen> {
         {
           'title': 'Slow Down',
           'sub': 'Yoga & walking suit this phase',
-          'icon': '🧘‍♀️'
+          'icon': '🧘‍♀️',
         },
         {
           'title': 'Sleep First',
           'sub': 'Progesterone disrupts sleep',
-          'icon': '🌙'
+          'icon': '🌙',
         },
         {
           'title': 'Cravings OK',
           'sub': 'Magnesium cuts chocolate cravings',
-          'icon': '🍵'
+          'icon': '🍵',
         },
       ],
     };
 
-    final insights = phaseInsights[phase] ??
+    final insights =
+        phaseInsights[phase] ??
         [
           {
             'title': 'Track Your Cycle',
             'sub': 'Log a period to see insights',
-            'icon': '🌸'
+            'icon': '🌸',
           },
           {
             'title': 'Stay Hydrated',
             'sub': 'Drink 8 glasses daily',
-            'icon': '💧'
+            'icon': '💧',
           },
           {
             'title': 'Rest Well',
             'sub': '8h sleep for hormonal balance',
-            'icon': '🌙'
+            'icon': '🌙',
           },
         ];
 
@@ -971,11 +978,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _addWater(StorageService storage) async {
     debugPrint('HomeScreen: _addWater called');
     final now = DateTime.now();
-    final log = storage.getDailyLog(now) ??
-        DailyLog(
-          date: now,
-          waterIntake: 0,
-        );
+    final log = storage.getDailyLog(now) ?? DailyLog(date: now, waterIntake: 0);
     final newWater = ((log.waterIntake ?? 0) + 1).clamp(0, 20);
 
     // Check for celebration milestone
@@ -1054,8 +1057,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.phaseColor(phaseName)
-                          .withValues(alpha: 0.25),
+                      color: AppTheme.phaseColor(
+                        phaseName,
+                      ).withValues(alpha: 0.25),
                       blurRadius: 40,
                       spreadRadius: 8,
                     ),
@@ -1133,53 +1137,63 @@ class _HomeScreenState extends State<HomeScreen> {
     final daysToOvulation = pred.daysUntilOvulation;
     final nextPeriod = pred.nextPeriodDate;
     final avgLen = pred.averageCycleLength;
-    final nextOvulation =
-        pred.currentPeriodStart?.add(Duration(days: avgLen - 14));
+    final nextOvulation = pred.currentPeriodStart?.add(
+      Duration(days: avgLen - 14),
+    );
 
     final chips = <_ChipData>[];
 
-    chips.add(_ChipData(
-      icon: Icons.favorite_rounded,
-      label: 'Conception $chance%',
-      color: AppTheme.accentPink,
-      explanation: 'Your current estimated chance of conception is $chance%.',
-      tip: chance > 20
-          ? 'You are in or approaching your fertile window.'
-          : 'Chances are currently low based on your cycle day.',
-    ));
+    chips.add(
+      _ChipData(
+        icon: Icons.favorite_rounded,
+        label: 'Conception $chance%',
+        color: AppTheme.accentPink,
+        explanation: 'Your current estimated chance of conception is $chance%.',
+        tip:
+            chance > 20
+                ? 'You are in or approaching your fertile window.'
+                : 'Chances are currently low based on your cycle day.',
+      ),
+    );
 
     if (nextOvulation != null) {
-      chips.add(_ChipData(
-        icon: Icons.wb_sunny_rounded,
-        label: 'Ovulation in ${daysToOvulation}d',
-        color: AppTheme.accentPurple,
-        explanation:
-            'Ovulation is estimated to occur in $daysToOvulation days.',
-        tip: 'This is usually your highest phase of energy and fertility.',
-      ));
+      chips.add(
+        _ChipData(
+          icon: Icons.wb_sunny_rounded,
+          label: 'Ovulation in ${daysToOvulation}d',
+          color: AppTheme.accentPurple,
+          explanation:
+              'Ovulation is estimated to occur in $daysToOvulation days.',
+          tip: 'This is usually your highest phase of energy and fertility.',
+        ),
+      );
     }
 
     if (nextPeriod != null) {
-      chips.add(_ChipData(
-        icon: Icons.calendar_today_rounded,
-        label: 'Period in ${daysToPeriod}d',
-        color: AppTheme.textSecondary,
-        explanation:
-            'Your next period is predicted to start in $daysToPeriod days.',
-        tip: 'Log any PMS symptoms to improve future predictions.',
-      ));
+      chips.add(
+        _ChipData(
+          icon: Icons.calendar_today_rounded,
+          label: 'Period in ${daysToPeriod}d',
+          color: AppTheme.textSecondary,
+          explanation:
+              'Your next period is predicted to start in $daysToPeriod days.',
+          tip: 'Log any PMS symptoms to improve future predictions.',
+        ),
+      );
     }
 
     if (daysToOvulation > 0 && daysToOvulation <= 5) {
       final peakIn = (daysToOvulation - 1).clamp(0, 5);
-      chips.add(_ChipData(
-        icon: Icons.auto_awesome_rounded,
-        label: peakIn == 0 ? 'Peak today!' : 'Peak in ${peakIn}d',
-        color: AppTheme.accentPink,
-        explanation: 'Your fertility peak is very close.',
-        tip:
-            'Track your basal body temperature and cervical mucus for higher accuracy.',
-      ));
+      chips.add(
+        _ChipData(
+          icon: Icons.auto_awesome_rounded,
+          label: peakIn == 0 ? 'Peak today!' : 'Peak in ${peakIn}d',
+          color: AppTheme.accentPink,
+          explanation: 'Your fertility peak is very close.',
+          tip:
+              'Track your basal body temperature and cervical mucus for higher accuracy.',
+        ),
+      );
     }
 
     if (chips.isEmpty) {
@@ -1191,16 +1205,17 @@ class _HomeScreenState extends State<HomeScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: chips.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemBuilder: (context, i) {
           final c = chips[i];
           return GestureDetector(
-            onTap: () => showGlassInfoPopup(
-              context,
-              title: c.label,
-              explanation: c.explanation,
-              tip: c.tip,
-            ),
+            onTap:
+                () => showGlassInfoPopup(
+                  context,
+                  title: c.label,
+                  explanation: c.explanation,
+                  tip: c.tip,
+                ),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
@@ -1291,7 +1306,7 @@ class TTCDashboard extends StatelessWidget {
     final pred = context.watch<PredictionService>();
     final nextOvulation =
         pred.nextPeriodDate?.subtract(const Duration(days: 14)) ??
-            DateTime.now();
+        DateTime.now();
 
     return Column(
       children: [
@@ -1421,11 +1436,12 @@ class _CycleRingPainter extends CustomPainter {
     final radius = size.width / 2 - 8;
 
     // 1. Draw Track
-    final trackPaint = Paint()
-      ..color = trackColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 12
-      ..strokeCap = StrokeCap.round;
+    final trackPaint =
+        Paint()
+          ..color = trackColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 12
+          ..strokeCap = StrokeCap.round;
     canvas.drawCircle(center, radius, trackPaint);
 
     if (progress <= 0) return;
@@ -1434,12 +1450,13 @@ class _CycleRingPainter extends CustomPainter {
     final sweepAngle = 2 * 3.14159265359 * progress;
 
     // Outer Glow (More Vibrant)
-    final shadowPaint = Paint()
-      ..color = activeColor.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 22
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+    final shadowPaint =
+        Paint()
+          ..color = activeColor.withValues(alpha: 0.4)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 22
+          ..strokeCap = StrokeCap.round
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -1449,15 +1466,20 @@ class _CycleRingPainter extends CustomPainter {
       shadowPaint,
     );
 
-    final activePaint = Paint()
-      ..shader = SweepGradient(
-        colors: [activeColor.withValues(alpha: 0.4), activeColor, activeColor],
-        stops: const [0.0, 0.5, 1.0],
-        transform: const GradientRotation(-3.14159265359 / 2),
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 16
-      ..strokeCap = StrokeCap.round;
+    final activePaint =
+        Paint()
+          ..shader = SweepGradient(
+            colors: [
+              activeColor.withValues(alpha: 0.4),
+              activeColor,
+              activeColor,
+            ],
+            stops: const [0.0, 0.5, 1.0],
+            transform: const GradientRotation(-3.14159265359 / 2),
+          ).createShader(Rect.fromCircle(center: center, radius: radius))
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 16
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),

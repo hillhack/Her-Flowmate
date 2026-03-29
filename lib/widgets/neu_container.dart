@@ -73,8 +73,9 @@ class _NeuContainerState extends State<NeuContainer> {
           gradient: widget.gradient,
           borderRadius: BorderRadius.circular(widget.radius),
           border: Border.all(
-              color: widget.borderColor ?? Colors.pink.withValues(alpha: 0.2),
-              width: 1.5),
+            color: widget.borderColor ?? Colors.pink.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
           boxShadow: [
             BoxShadow(
               color: AppTheme.shadowLight,

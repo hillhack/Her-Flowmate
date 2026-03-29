@@ -89,8 +89,9 @@ class StorageService extends ChangeNotifier {
       await _prefs.remove('pregnancyWeeks'); // Clear stale weeks
     } else if (weeks != null && weeks > 0) {
       // Convert weeks-elapsed to conception date (LMP) so counter advances daily
-      final derivedConception =
-          DateTime.now().subtract(Duration(days: weeks * 7));
+      final derivedConception = DateTime.now().subtract(
+        Duration(days: weeks * 7),
+      );
       await _prefs.setInt(
         'conceptionDate',
         derivedConception.millisecondsSinceEpoch,
@@ -220,13 +221,16 @@ class StorageService extends ChangeNotifier {
 
   Future<String> exportLogsToJson() async {
     final logs = getLogs();
-    final list = logs
-        .map((l) => {
-              'startDate': l.startDate.toIso8601String(),
-              'endDate': l.endDate?.toIso8601String(),
-              'duration': l.duration,
-            })
-        .toList();
+    final list =
+        logs
+            .map(
+              (l) => {
+                'startDate': l.startDate.toIso8601String(),
+                'endDate': l.endDate?.toIso8601String(),
+                'duration': l.duration,
+              },
+            )
+            .toList();
     // Simple JSON serialisation without external package
     final buffer = StringBuffer('[');
     for (int i = 0; i < list.length; i++) {
@@ -234,7 +238,8 @@ class StorageService extends ChangeNotifier {
       buffer.write('{');
       buffer.write('"startDate":"${m['startDate']}",');
       buffer.write(
-          '"endDate":${m['endDate'] != null ? '"${m['endDate']}"' : 'null'},');
+        '"endDate":${m['endDate'] != null ? '"${m['endDate']}"' : 'null'},',
+      );
       buffer.write('"duration":${m['duration']}');
       buffer.write('}');
       if (i < list.length - 1) buffer.write(',');
@@ -302,8 +307,10 @@ class StorageService extends ChangeNotifier {
   int getStepsToday() {
     // This would normally come from a pedometer service, but we use daily log for now
     final log = getDailyLog(DateTime.now());
-    final activity = log?.physicalActivity
-        ?.firstWhere((a) => a.contains('steps'), orElse: () => '');
+    final activity = log?.physicalActivity?.firstWhere(
+      (a) => a.contains('steps'),
+      orElse: () => '',
+    );
     if (activity != null && activity.isNotEmpty) {
       final match = RegExp(r'\d+').firstMatch(activity);
       if (match != null) return int.parse(match.group(0)!);

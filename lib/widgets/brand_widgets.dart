@@ -11,62 +11,68 @@ class BrandName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        // "Her" - Bold & Vibrant Cursive
-        ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [
-              Color(0xFFFF1493),
-              Color(0xFFFF69B4)
-            ], // Magenta to Hot Pink
-          ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-          child: Text(
-            'Her ',
-            style: GoogleFonts.dancingScript(
-              fontSize: fontSize * 1.35,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-              shadows: [
-                Shadow(
-                  color: const Color(0xFFFF1493).withValues(alpha: 0.5),
-                  blurRadius: 15,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            // "Her" - Bold & Vibrant Cursive
+            ShaderMask(
+              shaderCallback:
+                  (bounds) => const LinearGradient(
+                    colors: [
+                      Color(0xFFFF1493),
+                      Color(0xFFFF69B4),
+                    ], // Magenta to Hot Pink
+                  ).createShader(
+                    Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                  ),
+              child: Text(
+                'Her ',
+                style: GoogleFonts.dancingScript(
+                  fontSize: fontSize * 1.35,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: const Color(0xFFFF1493).withValues(alpha: 0.5),
+                      blurRadius: 15,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
 
-        // "FlowMate" - Modern High-Contrast
-        ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFFF69B4),
-              Color(0xFF9370DB)
-            ], // Pink to Radiant Purple
-          ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-          child: Text(
-            'FlowMate',
-            style: GoogleFonts.quicksand(
-              fontSize: fontSize * 0.95,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-              letterSpacing: 0.5,
-              shadows: [
-                Shadow(
-                  color: const Color(0xFF9370DB).withValues(alpha: 0.5),
-                  blurRadius: 15,
+            // "FlowMate" - Modern High-Contrast
+            ShaderMask(
+              shaderCallback:
+                  (bounds) => const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFFF69B4),
+                      Color(0xFF9370DB),
+                    ], // Pink to Radiant Purple
+                  ).createShader(
+                    Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                  ),
+              child: Text(
+                'FlowMate',
+                style: GoogleFonts.quicksand(
+                  fontSize: fontSize * 0.95,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                  letterSpacing: 0.5,
+                  shadows: [
+                    Shadow(
+                      color: const Color(0xFF9370DB).withValues(alpha: 0.5),
+                      blurRadius: 15,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ],
-    )
+          ],
+        )
         .animate(onPlay: (c) => c.repeat())
         .shimmer(duration: 2.seconds, color: Colors.white24);
   }
@@ -128,28 +134,33 @@ class BrandLogo extends StatelessWidget {
               // Main Logo Mark
               imagePath != null
                   ? Image.asset(
-                      imagePath!,
-                      width: size,
-                      height: size,
-                      fit: BoxFit.contain,
-                      frameBuilder:
-                          (context, child, frame, wasSynchronouslyLoaded) {
-                        if (wasSynchronouslyLoaded || frame != null) {
-                          return child;
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppTheme.accentPink),
+                    imagePath!,
+                    width: size,
+                    height: size,
+                    fit: BoxFit.contain,
+                    frameBuilder: (
+                      context,
+                      child,
+                      frame,
+                      wasSynchronouslyLoaded,
+                    ) {
+                      if (wasSynchronouslyLoaded || frame != null) {
+                        return child;
+                      }
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppTheme.accentPink,
                           ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        debugPrint('Error loading logo: $error');
-                        return _BrandIconMark(size: size);
-                      },
-                    )
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      debugPrint('Error loading logo: $error');
+                      return _BrandIconMark(size: size);
+                    },
+                  )
                   : _BrandIconMark(size: size),
             ],
           ),
@@ -181,9 +192,7 @@ class _BrandIconMark extends StatelessWidget {
       ],
       child: CustomPaint(
         size: Size(size, size),
-        painter: _LogoPainter(
-          gradient: AppTheme.brandGradient,
-        ),
+        painter: _LogoPainter(gradient: AppTheme.brandGradient),
       ),
     );
   }
@@ -195,10 +204,12 @@ class _LogoPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader =
-          gradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..shader = gradient.createShader(
+            Rect.fromLTWH(0, 0, size.width, size.height),
+          )
+          ..style = PaintingStyle.fill;
 
     final path = Path();
     final w = size.width;
@@ -264,14 +275,16 @@ class NeonButterflyState extends State<NeonButterfly> {
       return Animate(
         effects: [
           ScaleEffect(
-              begin: const Offset(1, 1),
-              end: const Offset(1.5, 1.5),
-              duration: 400.ms),
+            begin: const Offset(1, 1),
+            end: const Offset(1.5, 1.5),
+            duration: 400.ms,
+          ),
           MoveEffect(
-              begin: Offset.zero,
-              end: const Offset(0, -100),
-              duration: 800.ms,
-              curve: Curves.easeOutCubic),
+            begin: Offset.zero,
+            end: const Offset(0, -100),
+            duration: 800.ms,
+            curve: Curves.easeOutCubic,
+          ),
           FadeEffect(begin: 1.0, end: 0.0, duration: 800.ms),
         ],
         child: _buildButterflyBody(isGlowing: true),
@@ -302,8 +315,9 @@ class NeonButterflyState extends State<NeonButterfly> {
           // Glow Pulse
           ShimmerEffect(
             duration: const Duration(seconds: 3),
-            color: const Color(0xFFFADADD)
-                .withValues(alpha: 0.6), // Light Pink Glow
+            color: const Color(
+              0xFFFADADD,
+            ).withValues(alpha: 0.6), // Light Pink Glow
           ),
         ],
         child: _buildButterflyBody(),
@@ -336,20 +350,23 @@ class _ButterflyPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..shader = LinearGradient(
-        colors: [color, secondaryColor],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.fill;
+    final paint =
+        Paint()
+          ..shader = LinearGradient(
+            colors: [color, secondaryColor],
+          ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+          ..style = PaintingStyle.fill;
 
     // Enhanced neon glow
     final glowPower = isGlowing ? 2.0 : 1.0;
-    final shadowPaint1 = Paint()
-      ..color = color.withValues(alpha: 0.5 * glowPower)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8 * glowPower);
-    final shadowPaint2 = Paint()
-      ..color = secondaryColor.withValues(alpha: 0.3 * glowPower)
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 16 * glowPower);
+    final shadowPaint1 =
+        Paint()
+          ..color = color.withValues(alpha: 0.5 * glowPower)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 8 * glowPower);
+    final shadowPaint2 =
+        Paint()
+          ..color = secondaryColor.withValues(alpha: 0.3 * glowPower)
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, 16 * glowPower);
 
     final path = Path();
     final w = size.width;
@@ -386,18 +403,20 @@ class _ButterflyPainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     // Subtle wing pattern
-    final detailPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
+    final detailPaint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.4)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.5;
     canvas.drawPath(path, detailPaint);
 
     // Tapered body
     final bodyPaint = Paint()..color = Colors.white;
-    final bodyPath = Path()
-      ..moveTo(cx, cy - h * 0.35)
-      ..quadraticBezierTo(cx + w * 0.06, cy, cx, cy + h * 0.35)
-      ..quadraticBezierTo(cx - w * 0.06, cy, cx, cy - h * 0.35);
+    final bodyPath =
+        Path()
+          ..moveTo(cx, cy - h * 0.35)
+          ..quadraticBezierTo(cx + w * 0.06, cy, cx, cy + h * 0.35)
+          ..quadraticBezierTo(cx - w * 0.06, cy, cx, cy - h * 0.35);
     canvas.drawPath(bodyPath, bodyPaint);
   }
 

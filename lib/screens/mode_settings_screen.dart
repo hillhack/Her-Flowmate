@@ -39,10 +39,7 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
             child: const GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppTheme.textDark,
-              ),
+              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
         ),
@@ -119,10 +116,11 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const OnboardingScreen(
-                                  forceGoal: 'pregnant',
-                                  initialPage: 2,
-                                ),
+                                builder:
+                                    (_) => const OnboardingScreen(
+                                      forceGoal: 'pregnant',
+                                      initialPage: 2,
+                                    ),
                               ),
                             );
                           }
@@ -133,10 +131,11 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => OnboardingScreen(
-                                  forceGoal: _selectedGoal,
-                                  initialPage: 2,
-                                ),
+                                builder:
+                                    (_) => OnboardingScreen(
+                                      forceGoal: _selectedGoal,
+                                      initialPage: 2,
+                                    ),
                               ),
                             );
                           }
@@ -232,28 +231,31 @@ class _ModeCard extends StatelessWidget {
         duration: 250.ms,
         margin: const EdgeInsets.only(bottom: 18),
         padding: const EdgeInsets.all(20),
-        decoration: isSelected
-            ? AppTheme.glassDecoration(
-                radius: 24,
-                opacity: 0.2,
-                borderColor: iconColor,
-              )
-            : AppTheme.glassDecoration(radius: 24, opacity: 0.05),
+        decoration:
+            isSelected
+                ? AppTheme.glassDecoration(
+                  radius: 24,
+                  opacity: 0.2,
+                  borderColor: iconColor,
+                )
+                : AppTheme.glassDecoration(radius: 24, opacity: 0.05),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? iconColor.withValues(alpha: 0.12)
-                    : Colors.transparent,
+                color:
+                    isSelected
+                        ? iconColor.withValues(alpha: 0.12)
+                        : Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 icon,
-                color: isSelected
-                    ? iconColor
-                    : AppTheme.textDark.withValues(alpha: 0.35),
+                color:
+                    isSelected
+                        ? iconColor
+                        : AppTheme.textDark.withValues(alpha: 0.35),
                 size: 30,
               ),
             ),

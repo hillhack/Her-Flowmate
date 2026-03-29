@@ -52,9 +52,10 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
     final storage = context.watch<StorageService>();
     final pred = context.watch<PredictionService>();
     final phase = pred.currentPhase;
-    final name = storage.userName.isNotEmpty
-        ? storage.userName.split(' ').first
-        : 'Your Partner';
+    final name =
+        storage.userName.isNotEmpty
+            ? storage.userName.split(' ').first
+            : 'Your Partner';
 
     String partnerMessage = '';
     switch (phase) {
@@ -123,9 +124,9 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                       size: 64,
                     ),
                   ).animate().scale(
-                        duration: 600.ms,
-                        curve: Curves.easeOutBack,
-                      ),
+                    duration: 600.ms,
+                    curve: Curves.easeOutBack,
+                  ),
                 ),
                 const SizedBox(height: 32),
                 Text(
@@ -221,9 +222,9 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                             ),
                           ),
                         ).animate().scale(
-                              duration: 400.ms,
-                              curve: Curves.easeOutBack,
-                            ),
+                          duration: 400.ms,
+                          curve: Curves.easeOutBack,
+                        ),
                         const SizedBox(height: 20),
                         TextButton.icon(
                           onPressed: _copyCode,

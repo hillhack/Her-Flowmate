@@ -101,25 +101,27 @@ class HistoryScreen extends StatelessWidget {
                                       height: 200,
                                       child: LineChart(
                                         LineChartData(
-                                          gridData:
-                                              const FlGridData(show: false),
+                                          gridData: const FlGridData(
+                                            show: false,
+                                          ),
                                           titlesData: const FlTitlesData(
                                             show: false,
                                           ),
                                           borderData: FlBorderData(show: false),
                                           lineBarsData: [
                                             LineChartBarData(
-                                              spots: logs
-                                                  .asMap()
-                                                  .entries
-                                                  .map(
-                                                    (e) => FlSpot(
-                                                      e.key.toDouble(),
-                                                      e.value.duration
-                                                          .toDouble(),
-                                                    ),
-                                                  )
-                                                  .toList(),
+                                              spots:
+                                                  logs
+                                                      .asMap()
+                                                      .entries
+                                                      .map(
+                                                        (e) => FlSpot(
+                                                          e.key.toDouble(),
+                                                          e.value.duration
+                                                              .toDouble(),
+                                                        ),
+                                                      )
+                                                      .toList(),
                                               isCurved: true,
                                               color: AppTheme.accentPink,
                                               barWidth: 4,
@@ -180,17 +182,21 @@ class HistoryScreen extends StatelessWidget {
                             itemBuilder: (ctx, i) {
                               final log =
                                   logs[logs.length - 1 - i]; // Latest first
-                              final dailyLog =
-                                  storage.getDailyLog(log.startDate);
+                              final dailyLog = storage.getDailyLog(
+                                log.startDate,
+                              );
 
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: GlassContainer(
                                   radius: 28,
-                                  onTap: dailyLog != null
-                                      ? () => _showDailyLogDetails(
-                                          context, dailyLog)
-                                      : null,
+                                  onTap:
+                                      dailyLog != null
+                                          ? () => _showDailyLogDetails(
+                                            context,
+                                            dailyLog,
+                                          )
+                                          : null,
                                   child: Padding(
                                     padding: const EdgeInsets.all(24),
                                     child: Row(
@@ -199,10 +205,8 @@ class HistoryScreen extends StatelessWidget {
                                           width: 56,
                                           height: 56,
                                           decoration: BoxDecoration(
-                                            color:
-                                                AppTheme.accentPink.withValues(
-                                              alpha: 0.1,
-                                            ),
+                                            color: AppTheme.accentPink
+                                                .withValues(alpha: 0.1),
                                             shape: BoxShape.circle,
                                           ),
                                           child: const Center(
@@ -236,19 +240,21 @@ class HistoryScreen extends StatelessWidget {
                                                   if (dailyLog != null) ...[
                                                     const SizedBox(width: 8),
                                                     Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 4,
-                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 8,
+                                                            vertical: 4,
+                                                          ),
                                                       decoration: BoxDecoration(
                                                         color: AppTheme
                                                             .accentPink
                                                             .withValues(
-                                                                alpha: 0.1),
+                                                              alpha: 0.1,
+                                                            ),
                                                         borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
                                                       ),
                                                       child: const Icon(
                                                         Icons
@@ -268,8 +274,9 @@ class HistoryScreen extends StatelessWidget {
                                                     '${log.duration} days',
                                                     style: GoogleFonts.inter(
                                                       fontSize: 14,
-                                                      color: AppTheme
-                                                          .textSecondary,
+                                                      color:
+                                                          AppTheme
+                                                              .textSecondary,
                                                       fontWeight:
                                                           FontWeight.w600,
                                                     ),
@@ -282,8 +289,8 @@ class HistoryScreen extends StatelessWidget {
                                                         color: AppTheme
                                                             .textSecondary
                                                             .withValues(
-                                                          alpha: 0.5,
-                                                        ),
+                                                              alpha: 0.5,
+                                                            ),
                                                       ),
                                                     ),
                                                     const SizedBox(width: 8),
@@ -316,8 +323,8 @@ class HistoryScreen extends StatelessWidget {
                                   ),
                                 ),
                               ).animate().fadeIn(
-                                    delay: Duration(milliseconds: 100 * i),
-                                  );
+                                delay: Duration(milliseconds: 100 * i),
+                              );
                             },
                           ),
                       ],
@@ -337,186 +344,212 @@ class HistoryScreen extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: AppTheme.frameColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-        ),
-        padding: const EdgeInsets.only(top: 16),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 48),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 48,
-                      height: 6,
-                      decoration: const BoxDecoration(
-                        color:
-                            Color(0x339E9E9E), // Approximate textSecondary 0.2
-                        borderRadius: BorderRadius.all(Radius.circular(3)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Row(
+      builder:
+          (context) => Container(
+            decoration: const BoxDecoration(
+              color: AppTheme.frameColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+            ),
+            padding: const EdgeInsets.only(top: 16),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(40),
+              ),
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 48),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const NeuContainer(
-                        padding: EdgeInsets.all(12),
-                        radius: 16,
-                        child: Icon(
-                          Icons.assignment_rounded,
-                          color: AppTheme.accentPink,
-                          size: 24,
+                      Center(
+                        child: Container(
+                          width: 48,
+                          height: 6,
+                          decoration: const BoxDecoration(
+                            color: Color(
+                              0x339E9E9E,
+                            ), // Approximate textSecondary 0.2
+                            borderRadius: BorderRadius.all(Radius.circular(3)),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Daily Check-in',
-                              style: GoogleFonts.poppins(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w800,
-                                color: AppTheme.midnightPlum,
-                              ),
-                            ),
-                            Text(
-                              DateFormat('EEEE, MMM d, yyyy').format(log.date),
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: AppTheme.textSecondary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close_rounded),
-                        color: AppTheme.textSecondary,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-
-                  // ── Mood & Symptoms ───────────────────────────────────────
-                  if ((log.moods?.isNotEmpty ?? false) ||
-                      (log.symptoms?.isNotEmpty ?? false))
-                    _buildSection(
-                      'Feeling',
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(height: 32),
+                      Row(
                         children: [
-                          if (log.moods?.isNotEmpty ?? false)
-                            Wrap(
-                              spacing: 8,
-                              children: log.moods!
-                                  .map<Widget>(
-                                      (m) => _buildChip(m, AppTheme.accentPink))
-                                  .toList(),
+                          const NeuContainer(
+                            padding: EdgeInsets.all(12),
+                            radius: 16,
+                            child: Icon(
+                              Icons.assignment_rounded,
+                              color: AppTheme.accentPink,
+                              size: 24,
                             ),
-                          if (log.symptoms?.isNotEmpty ?? false) ...[
-                            const SizedBox(height: 12),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: log.symptoms!
-                                  .map<Widget>((s) =>
-                                      _buildChip(s, const Color(0xFFBA68C8)))
-                                  .toList(),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-
-                  // ── Flow Intensity ─────────────────────────────────────────
-                  if (log.flowIntensity != null)
-                    _buildSection(
-                      'Flow Intensity',
-                      _buildChip(log.flowIntensity!, AppTheme.accentPink),
-                    ),
-
-                  // ── Water & Activity ───────────────────────────────────────
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (log.waterIntake != null && log.waterIntake! > 0)
-                        Expanded(
-                          child: _buildSection(
-                            'Hydration',
-                            Row(
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.water_drop_rounded,
-                                    color: Colors.blue, size: 20),
-                                const SizedBox(width: 8),
                                 Text(
-                                  '${log.waterIntake} glasses',
+                                  'Daily Check-in',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppTheme.midnightPlum,
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat(
+                                    'EEEE, MMM d, yyyy',
+                                  ).format(log.date),
                                   style: GoogleFonts.inter(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppTheme.textDark,
+                                    fontSize: 14,
+                                    color: AppTheme.textSecondary,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.close_rounded),
+                            color: AppTheme.textSecondary,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
+
+                      // ── Mood & Symptoms ───────────────────────────────────────
+                      if ((log.moods?.isNotEmpty ?? false) ||
+                          (log.symptoms?.isNotEmpty ?? false))
+                        _buildSection(
+                          'Feeling',
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (log.moods?.isNotEmpty ?? false)
+                                Wrap(
+                                  spacing: 8,
+                                  children:
+                                      log.moods!
+                                          .map<Widget>(
+                                            (m) => _buildChip(
+                                              m,
+                                              AppTheme.accentPink,
+                                            ),
+                                          )
+                                          .toList(),
+                                ),
+                              if (log.symptoms?.isNotEmpty ?? false) ...[
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children:
+                                      log.symptoms!
+                                          .map<Widget>(
+                                            (s) => _buildChip(
+                                              s,
+                                              const Color(0xFFBA68C8),
+                                            ),
+                                          )
+                                          .toList(),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
-                      if (log.physicalActivity?.isNotEmpty ?? false)
-                        Expanded(
-                          child: _buildSection(
-                            'Activity',
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: log.physicalActivity!
-                                  .map<Widget>((a) =>
-                                      _buildChip(a, const Color(0xFF81C784)))
-                                  .toList(),
+
+                      // ── Flow Intensity ─────────────────────────────────────────
+                      if (log.flowIntensity != null)
+                        _buildSection(
+                          'Flow Intensity',
+                          _buildChip(log.flowIntensity!, AppTheme.accentPink),
+                        ),
+
+                      // ── Water & Activity ───────────────────────────────────────
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (log.waterIntake != null && log.waterIntake! > 0)
+                            Expanded(
+                              child: _buildSection(
+                                'Hydration',
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.water_drop_rounded,
+                                      color: Colors.blue,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${log.waterIntake} glasses',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppTheme.textDark,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          if (log.physicalActivity?.isNotEmpty ?? false)
+                            Expanded(
+                              child: _buildSection(
+                                'Activity',
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children:
+                                      log.physicalActivity!
+                                          .map<Widget>(
+                                            (a) => _buildChip(
+                                              a,
+                                              const Color(0xFF81C784),
+                                            ),
+                                          )
+                                          .toList(),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+
+                      // ── Notes ─────────────────────────────────────────
+                      if (log.notes?.isNotEmpty ?? false)
+                        _buildSection(
+                          'Notes',
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(20),
+                            decoration: const BoxDecoration(
+                              color: Color(0x80FFFFFF), // Approximate white 0.5
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(24),
+                              ),
+                            ),
+                            child: Text(
+                              log.notes!,
+                              style: GoogleFonts.inter(
+                                fontSize: 15,
+                                color: AppTheme.textDark,
+                                height: 1.5,
+                              ),
                             ),
                           ),
                         ),
+
+                      const SizedBox(height: 24),
                     ],
                   ),
-
-                  // ── Notes ─────────────────────────────────────────
-                  if (log.notes?.isNotEmpty ?? false)
-                    _buildSection(
-                      'Notes',
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: const BoxDecoration(
-                          color: Color(0x80FFFFFF), // Approximate white 0.5
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
-                        ),
-                        child: Text(
-                          log.notes!,
-                          style: GoogleFonts.inter(
-                            fontSize: 15,
-                            color: AppTheme.textDark,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  const SizedBox(height: 24),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 

@@ -141,7 +141,7 @@ abstract final class AppTheme {
 
   // ── Phase Health Support (Refined) ────────────────────────────────────────
   static ({List<String> exercise, List<String> diet, List<String> nutrients})
-      getPhaseHealthTips(String phase) {
+  getPhaseHealthTips(String phase) {
     switch (phase) {
       case 'Menstrual':
         return (

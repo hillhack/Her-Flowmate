@@ -108,20 +108,20 @@ class FloatingSparkles extends StatelessWidget {
             left: MediaQuery.of(context).size.width * x,
             top: MediaQuery.of(context).size.height * y,
             child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.4),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.5),
-                    blurRadius: 8,
-                    spreadRadius: 1,
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.4),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.5),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
+                )
                 .animate(onPlay: (c) => c.repeat(reverse: true))
                 .fadeIn(duration: duration.seconds)
                 .scale(
@@ -176,15 +176,16 @@ class SparkleEffect extends StatelessWidget {
 void showPhaseDelight(BuildContext context, String phase) {
   OverlayEntry? entry;
   entry = OverlayEntry(
-    builder: (context) => PhaseDelightOverlay(
-      phase: phase,
-      onComplete: () {
-        if (entry != null) {
-          entry!.remove();
-          entry = null;
-        }
-      },
-    ),
+    builder:
+        (context) => PhaseDelightOverlay(
+          phase: phase,
+          onComplete: () {
+            if (entry != null) {
+              entry!.remove();
+              entry = null;
+            }
+          },
+        ),
   );
   Overlay.of(context).insert(entry!);
 
@@ -243,29 +244,28 @@ class _GlowBlob extends StatelessWidget {
   final Color color;
   final double size;
 
-  const _GlowBlob({
-    required this.color,
-    required this.size,
-  });
+  const _GlowBlob({required this.color, required this.size});
 
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.4),
-              blurRadius: 100,
-              spreadRadius: 50,
+          child: Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.4),
+                  blurRadius: 100,
+                  spreadRadius: 50,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ).animate(onPlay: (c) => c.repeat(reverse: true)).move(
+          ),
+        )
+        .animate(onPlay: (c) => c.repeat(reverse: true))
+        .move(
           begin: const Offset(-20, -20),
           end: const Offset(20, 20),
           duration: (8 + Random().nextInt(4)).seconds,
@@ -295,7 +295,9 @@ class ShimmerButton extends StatelessWidget {
           IgnorePointer(ignoring: onTap != null, child: child),
           Positioned.fill(
             child: IgnorePointer(
-              child: Container().animate(onPlay: (c) => c.repeat()).shimmer(
+              child: Container()
+                  .animate(onPlay: (c) => c.repeat())
+                  .shimmer(
                     duration: 2.seconds,
                     color: Colors.white.withValues(alpha: 0.2),
                     angle: pi / 4,

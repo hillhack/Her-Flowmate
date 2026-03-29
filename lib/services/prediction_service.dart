@@ -93,9 +93,14 @@ class PredictionService {
         log.startDate.month,
         log.startDate.day,
       );
-      DateTime end = log.endDate != null
-          ? DateTime(log.endDate!.year, log.endDate!.month, log.endDate!.day)
-          : start.add(Duration(days: log.duration - 1));
+      DateTime end =
+          log.endDate != null
+              ? DateTime(
+                log.endDate!.year,
+                log.endDate!.month,
+                log.endDate!.day,
+              )
+              : start.add(Duration(days: log.duration - 1));
 
       if (!normDate.isBefore(start) && !normDate.isAfter(end)) {
         return true;
@@ -126,10 +131,10 @@ class PredictionService {
       CyclePhase.ovulation;
 
   CyclePhase getPhaseForDay(DateTime date) => CycleEngine.getPhaseForDate(
-        date,
-        storageService.getLogs(),
-        averageCycleLength,
-      );
+    date,
+    storageService.getLogs(),
+    averageCycleLength,
+  );
 
   int get daysUntilNextPeriod {
     final next = nextPeriodDate;
@@ -217,18 +222,22 @@ class PredictionService {
     };
 
     final dailyContext = {
-      'Estrogen': (levels['Estrogen'] ?? 0) > 0.8
-          ? 'Peaking now to boost your energy and mood.'
-          : 'Lower today, may lead to quieter energy.',
-      'Progesterone': (levels['Progesterone'] ?? 0) > 0.8
-          ? 'Peaking to support the uterine lining.'
-          : 'Remaining low as your cycle prepares to reset.',
-      'LH': (levels['LH'] ?? 0) > 0.7
-          ? 'Surging now to trigger ovulation within 24-48h.'
-          : 'Stable levels while follicles develop.',
-      'FSH': (levels['FSH'] ?? 0) > 0.4
-          ? 'Active now to mature your eggs for the month.'
-          : 'Resting after its early cycle work is done.',
+      'Estrogen':
+          (levels['Estrogen'] ?? 0) > 0.8
+              ? 'Peaking now to boost your energy and mood.'
+              : 'Lower today, may lead to quieter energy.',
+      'Progesterone':
+          (levels['Progesterone'] ?? 0) > 0.8
+              ? 'Peaking to support the uterine lining.'
+              : 'Remaining low as your cycle prepares to reset.',
+      'LH':
+          (levels['LH'] ?? 0) > 0.7
+              ? 'Surging now to trigger ovulation within 24-48h.'
+              : 'Stable levels while follicles develop.',
+      'FSH':
+          (levels['FSH'] ?? 0) > 0.4
+              ? 'Active now to mature your eggs for the month.'
+              : 'Resting after its early cycle work is done.',
     };
 
     return {

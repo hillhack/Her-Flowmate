@@ -27,10 +27,7 @@ class PhaseDetailsScreen extends StatelessWidget {
             child: const GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppTheme.textDark,
-              ),
+              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
         ),
@@ -73,9 +70,9 @@ class PhaseDetailsScreen extends StatelessWidget {
                             ),
                           ),
                         ).animate().scale(
-                              duration: 600.ms,
-                              curve: Curves.easeOutBack,
-                            ),
+                          duration: 600.ms,
+                          curve: Curves.easeOutBack,
+                        ),
                         const SizedBox(height: 24),
                         Text(
                           phaseName,

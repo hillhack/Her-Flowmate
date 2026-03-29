@@ -39,17 +39,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       // Integrated Brand Identity (Icon + Name)
                       Center(
                         child: const BrandLogo(
-                          size: 150,
-                          imagePath: 'assets/images/feature_graphic.png',
-                          showName: true,
-                          nameFontSize: 42,
-                        )
+                              size: 150,
+                              imagePath: 'assets/images/feature_graphic.png',
+                              showName: true,
+                              nameFontSize: 42,
+                            )
                             .animate(
-                              onPlay: (controller) =>
-                                  controller.repeat(reverse: true),
+                              onPlay:
+                                  (controller) =>
+                                      controller.repeat(reverse: true),
                             )
                             .shimmer(
-                                duration: 3.seconds, color: Colors.white30),
+                              duration: 3.seconds,
+                              color: Colors.white30,
+                            ),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -65,77 +68,80 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       const SizedBox(height: 64),
                       // Bottom area: Main Button with Shimmer & Butterflies
                       Stack(
-                        alignment: Alignment.center,
-                        clipBehavior: Clip.none,
-                        children: [
-                          // Floating butterfly #1 (Interactive)
-                          Positioned(
-                            top: -45,
-                            right: 25,
-                            child: NeonButterfly(
-                              key: _b1Key,
-                              size: 26,
-                              animateOnTap: true,
-                            ),
-                          ),
-                          ShimmerButton(
-                            onTap: () {
-                              // Trigger all butterflies
-                              _b1Key.currentState?.triggerTapAnimation();
-                              _b2Key.currentState?.triggerTapAnimation();
-                              _b3Key.currentState?.triggerTapAnimation();
-
-                              showPhaseDelight(context, 'Follicular');
-                              Future.delayed(1000.ms, () {
-                                if (context.mounted) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginScreen(),
-                                    ),
-                                  );
-                                }
-                              });
-                            },
-                            child: NeuContainer(
-                              radius: 24,
-                              child: Container(
-                                width: double.infinity,
-                                height: 72,
-                                alignment: Alignment.center,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    NeonButterfly(
-                                      key: _b2Key,
-                                      size: 22,
-                                      animateOnTap: true,
-                                    ),
-                                    const SizedBox(width: 14),
-                                    Text(
-                                      'Begin Journey',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w800,
-                                        color: AppTheme.accentPink,
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 14),
-                                    NeonButterfly(
-                                      key: _b3Key,
-                                      size: 28,
-                                      color:
-                                          const Color(0xFFE6A8FF), // Lavender
-                                      animateOnTap: true,
-                                    ),
-                                  ],
+                            alignment: Alignment.center,
+                            clipBehavior: Clip.none,
+                            children: [
+                              // Floating butterfly #1 (Interactive)
+                              Positioned(
+                                top: -45,
+                                right: 25,
+                                child: NeonButterfly(
+                                  key: _b1Key,
+                                  size: 26,
+                                  animateOnTap: true,
                                 ),
                               ),
-                            ),
-                          ),
-                        ],
-                      )
+                              ShimmerButton(
+                                onTap: () {
+                                  // Trigger all butterflies
+                                  _b1Key.currentState?.triggerTapAnimation();
+                                  _b2Key.currentState?.triggerTapAnimation();
+                                  _b3Key.currentState?.triggerTapAnimation();
+
+                                  showPhaseDelight(context, 'Follicular');
+                                  Future.delayed(1000.ms, () {
+                                    if (context.mounted) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => const LoginScreen(),
+                                        ),
+                                      );
+                                    }
+                                  });
+                                },
+                                child: NeuContainer(
+                                  radius: 24,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 72,
+                                    alignment: Alignment.center,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        NeonButterfly(
+                                          key: _b2Key,
+                                          size: 22,
+                                          animateOnTap: true,
+                                        ),
+                                        const SizedBox(width: 14),
+                                        Text(
+                                          'Begin Journey',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppTheme.accentPink,
+                                            letterSpacing: 1.2,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 14),
+                                        NeonButterfly(
+                                          key: _b3Key,
+                                          size: 28,
+                                          color: const Color(
+                                            0xFFE6A8FF,
+                                          ), // Lavender
+                                          animateOnTap: true,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
                           .animate()
                           .fadeIn(delay: 1.seconds, duration: 800.ms)
                           .slideY(begin: 0.5, curve: Curves.easeOutCubic),
@@ -148,8 +154,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           'Reset Experience',
                           style: GoogleFonts.inter(
                             fontSize: 13,
-                            color:
-                                AppTheme.textSecondary.withValues(alpha: 0.4),
+                            color: AppTheme.textSecondary.withValues(
+                              alpha: 0.4,
+                            ),
                             fontWeight: FontWeight.w600,
                           ),
                         ),

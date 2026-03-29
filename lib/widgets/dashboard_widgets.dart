@@ -31,12 +31,13 @@ class PhaseCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 GlassInfoButton(
-                  onTap: () => showGlassInfoPopup(
-                    context,
-                    title: 'Current Phase',
-                    explanation: 'Your cycle consists of four main phases.',
-                    tip: 'Each phase brings unique hormonal shifts.',
-                  ),
+                  onTap:
+                      () => showGlassInfoPopup(
+                        context,
+                        title: 'Current Phase',
+                        explanation: 'Your cycle consists of four main phases.',
+                        tip: 'Each phase brings unique hormonal shifts.',
+                      ),
                 ),
               ],
             ),
@@ -203,10 +204,12 @@ class FertilityCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   borderColor: Colors.white.withValues(alpha: 0.5),
                   child: const Icon(
-                    Icons.favorite_rounded,
-                    color: AppTheme.accentPink,
-                    size: 24,
-                  ).animate(onPlay: (c) => c.repeat()).scale(
+                        Icons.favorite_rounded,
+                        color: AppTheme.accentPink,
+                        size: 24,
+                      )
+                      .animate(onPlay: (c) => c.repeat())
+                      .scale(
                         begin: const Offset(1, 1),
                         end: const Offset(1.2, 1.2),
                         duration: 800.ms,

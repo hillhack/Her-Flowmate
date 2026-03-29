@@ -73,10 +73,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             child: const GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppTheme.textDark,
-              ),
+              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
         ),
@@ -110,9 +107,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       ),
                     ),
                   ).animate().scale(
-                        curve: Curves.easeOutBack,
-                        duration: 600.ms,
-                      ),
+                    curve: Curves.easeOutBack,
+                    duration: 600.ms,
+                  ),
                 ),
                 const SizedBox(height: 40),
 

@@ -5,30 +5,21 @@ class GoogleAuthService {
   // 1. Initialize GoogleSignIn with your WEB CLIENT ID
   // Make sure this is the Web Client ID you generated in the previous step,
   // NOT the Android Client ID.
-  static final GoogleSignIn _googleSignIn = GoogleSignIn(
-    serverClientId:
-        '536054439823-f54c3aanjfp2ilrfr8nkef4e243lcnrj.apps.googleusercontent.com',
-    scopes: [
-      'email',
-      'profile',
-    ],
-  );
+  static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   // 2. The function to trigger the backdrop and get the token
   static Future<String?> signInAndGetToken() async {
     try {
-      // This line is what actually opens the Google Account backdrop
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      await _googleSignIn.initialize(
+        serverClientId:
+            '536054439823-f54c3aanjfp2ilrfr8nkef4e243lcnrj.apps.googleusercontent.com',
+      );
 
-      // If the user clicks outside the backdrop or cancels, it returns null
-      if (googleUser == null) {
-        debugPrint('User canceled the sign-in process.');
-        return null;
-      }
+      // This line is what actually opens the Google Account backdrop
+      final googleUser = await _googleSignIn.authenticate();
 
       // 3. Request the authentication details from Google
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       // 4. Extract the id_token! This is what your FastAPI backend needs.
       final String? idToken = googleAuth.idToken;

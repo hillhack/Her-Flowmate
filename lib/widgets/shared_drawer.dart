@@ -38,22 +38,26 @@ class SharedDrawer extends StatelessWidget {
                     context: context,
                     icon: Icons.history_rounded,
                     title: 'History',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const HistoryScreen()),
-                    ),
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const HistoryScreen(),
+                          ),
+                        ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
                     context: context,
                     icon: Icons.menu_book_rounded,
                     title: 'Cycle Guide',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const EducationHubScreen(),
-                      ),
-                    ),
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const EducationHubScreen(),
+                          ),
+                        ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
@@ -90,52 +94,60 @@ class SharedDrawer extends StatelessWidget {
                     context: context,
                     icon: Icons.settings_rounded,
                     title: 'Settings',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ModeSettingsScreen(),
-                      ),
-                    ),
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ModeSettingsScreen(),
+                          ),
+                        ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
                     context: context,
                     icon: Icons.help_outline_rounded,
                     title: 'Help',
-                    onTap: () => showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        backgroundColor: AppTheme.bgColor,
-                        title: const Text('Help'),
-                        content: const Text.rich(
-                          TextSpan(
-                            children: [
-                              WidgetSpan(child: BrandName(fontSize: 16)),
-                              TextSpan(
-                                text:
-                                    ' is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.',
+                    onTap:
+                        () => showDialog(
+                          context: context,
+                          builder:
+                              (ctx) => AlertDialog(
+                                backgroundColor: AppTheme.bgColor,
+                                title: const Text('Help'),
+                                content: const Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      WidgetSpan(
+                                        child: BrandName(fontSize: 16),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                            ' is your gentle cycle companion. Tap the ⓘ icons to learn more about each section.',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text('Got it'),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Got it'),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(
                     context: context,
                     icon: Icons.contact_support_rounded,
                     title: 'Contact Support',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const FeedbackScreen()),
-                    ),
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const FeedbackScreen(),
+                          ),
+                        ),
                   ),
                   const SizedBox(height: 12),
                   _actionDrawerItem(

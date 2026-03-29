@@ -86,7 +86,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (age == null || age < 10 || age > 100) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Please enter a valid age between 10 and 100.')),
+            content: Text('Please enter a valid age between 10 and 100.'),
+          ),
         );
         return;
       }
@@ -97,21 +98,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             _weeksController.text.trim().isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Please enter how many weeks pregnant you are.')),
+              content: Text('Please enter how many weeks pregnant you are.'),
+            ),
           );
           return;
         }
         if (_pregnancyInputMode == 'date' && _conceptionDate == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Please select your conception date.')),
+              content: Text('Please select your conception date.'),
+            ),
           );
           return;
         }
       } else if (_lastPeriodStart == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text('Please select your last period start date.')),
+            content: Text('Please select your last period start date.'),
+          ),
         );
         return;
       }
@@ -203,7 +207,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 radius: 16,
                 onTap: () {
                   debugPrint(
-                      'Step Back: page=$_currentPage, init=${widget.initialPage}');
+                    'Step Back: page=$_currentPage, init=${widget.initialPage}',
+                  );
                   if (_currentPage > widget.initialPage) {
                     _back();
                   } else {
@@ -233,10 +238,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _ProgressBar(
-                  current: _currentPage,
-                  total: _totalPages,
-                ),
+                _ProgressBar(current: _currentPage, total: _totalPages),
               ],
             ),
           ),
@@ -260,43 +262,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               // ── Continue / Finish button ──────────────────────────
               Padding(
-                padding: const EdgeInsets.fromLTRB(28, 4, 28, 24),
-                child: ShimmerButton(
-                  radius: 20,
-                  onTap: _next,
-                  child: NeuContainer(
-                    radius: 20,
-                    child: Container(
-                      width: double.infinity,
-                      height: 58,
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            _currentPage == _totalPages - 1
-                                ? 'Finish Setup'
-                                : 'Continue',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: AppTheme.accentPink,
-                            ),
+                    padding: const EdgeInsets.fromLTRB(28, 4, 28, 24),
+                    child: ShimmerButton(
+                      radius: 20,
+                      onTap: _next,
+                      child: NeuContainer(
+                        radius: 20,
+                        child: Container(
+                          width: double.infinity,
+                          height: 58,
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _currentPage == _totalPages - 1
+                                    ? 'Finish Setup'
+                                    : 'Continue',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppTheme.accentPink,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                _currentPage == _totalPages - 1
+                                    ? Icons.check_circle_rounded
+                                    : Icons.arrow_forward_rounded,
+                                color: AppTheme.accentPink,
+                                size: 20,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            _currentPage == _totalPages - 1
-                                ? Icons.check_circle_rounded
-                                : Icons.arrow_forward_rounded,
-                            color: AppTheme.accentPink,
-                            size: 20,
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              )
+                  )
                   .animate(
                     target:
                         (_currentPage == 0 && _selectedGoal.isEmpty) ? 0 : 1,
@@ -382,21 +384,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: AnimatedContainer(
           duration: 400.ms,
           padding: const EdgeInsets.all(24),
-          decoration: isSelected
-              ? AppTheme.glassDecoration(
-                  radius: 28,
-                  opacity: 0.6,
-                  borderColor: AppTheme.accentPink,
-                )
-              : AppTheme.glassDecoration(radius: 28, opacity: 0.2),
+          decoration:
+              isSelected
+                  ? AppTheme.glassDecoration(
+                    radius: 28,
+                    opacity: 0.6,
+                    borderColor: AppTheme.accentPink,
+                  )
+                  : AppTheme.glassDecoration(radius: 28, opacity: 0.2),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppTheme.accentPink.withValues(alpha: 0.1)
-                      : Colors.transparent,
+                  color:
+                      isSelected
+                          ? AppTheme.accentPink.withValues(alpha: 0.1)
+                          : Colors.transparent,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -416,9 +420,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: isSelected
-                            ? AppTheme.accentPink
-                            : AppTheme.textDark,
+                        color:
+                            isSelected
+                                ? AppTheme.accentPink
+                                : AppTheme.textDark,
                       ),
                     ),
                     Text(
@@ -602,15 +607,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () =>
-                          setState(() => _pregnancyInputMode = 'weeks'),
+                      onTap:
+                          () => setState(() => _pregnancyInputMode = 'weeks'),
                       child: AnimatedContainer(
                         duration: 300.ms,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: _pregnancyInputMode == 'weeks'
-                              ? AppTheme.accentPink
-                              : Colors.transparent,
+                          color:
+                              _pregnancyInputMode == 'weeks'
+                                  ? AppTheme.accentPink
+                                  : Colors.transparent,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
@@ -618,9 +624,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             'Weeks',
                             style: GoogleFonts.inter(
                               fontWeight: FontWeight.bold,
-                              color: _pregnancyInputMode == 'weeks'
-                                  ? Colors.white
-                                  : AppTheme.textSecondary,
+                              color:
+                                  _pregnancyInputMode == 'weeks'
+                                      ? Colors.white
+                                      : AppTheme.textSecondary,
                             ),
                           ),
                         ),
@@ -634,9 +641,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         duration: 300.ms,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: _pregnancyInputMode == 'date'
-                              ? AppTheme.accentPink
-                              : Colors.transparent,
+                          color:
+                              _pregnancyInputMode == 'date'
+                                  ? AppTheme.accentPink
+                                  : Colors.transparent,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
@@ -644,9 +652,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             'Last Period (LMP)',
                             style: GoogleFonts.inter(
                               fontWeight: FontWeight.bold,
-                              color: _pregnancyInputMode == 'date'
-                                  ? Colors.white
-                                  : AppTheme.textSecondary,
+                              color:
+                                  _pregnancyInputMode == 'date'
+                                      ? Colors.white
+                                      : AppTheme.textSecondary,
                             ),
                           ),
                         ),
@@ -661,54 +670,60 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
             AnimatedSwitcher(
               duration: 400.ms,
-              transitionBuilder: (child, animation) => FadeTransition(
-                opacity: animation,
-                child: SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0.05, 0),
-                    end: Offset.zero,
-                  ).animate(animation),
-                  child: child,
-                ),
-              ),
-              child: _pregnancyInputMode == 'weeks'
-                  ? _setupInput(
-                      "WEEKS PREGNANT",
-                      _weeksController,
-                      "e.g. 8",
-                      isNumeric: true,
-                      isRequired: true,
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      key: const ValueKey('date'),
-                      children: [
-                        Text(
-                          "SELECT LAST PERIOD (LMP) DATE",
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            color: AppTheme.textSecondary,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        NeuContainer(
-                          padding: const EdgeInsets.all(12),
-                          radius: 24,
-                          child: CalendarDatePicker(
-                            initialDate: _conceptionDate ??
-                                DateTime.now()
-                                    .subtract(const Duration(days: 30)),
-                            firstDate: DateTime.now()
-                                .subtract(const Duration(days: 300)),
-                            lastDate: DateTime.now(),
-                            onDateChanged: (date) =>
-                                setState(() => _conceptionDate = date),
-                          ),
-                        ),
-                      ],
+              transitionBuilder:
+                  (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.05, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
                     ),
+                  ),
+              child:
+                  _pregnancyInputMode == 'weeks'
+                      ? _setupInput(
+                        "WEEKS PREGNANT",
+                        _weeksController,
+                        "e.g. 8",
+                        isNumeric: true,
+                        isRequired: true,
+                      )
+                      : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        key: const ValueKey('date'),
+                        children: [
+                          Text(
+                            "SELECT LAST PERIOD (LMP) DATE",
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                              color: AppTheme.textSecondary,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          NeuContainer(
+                            padding: const EdgeInsets.all(12),
+                            radius: 24,
+                            child: CalendarDatePicker(
+                              initialDate:
+                                  _conceptionDate ??
+                                  DateTime.now().subtract(
+                                    const Duration(days: 30),
+                                  ),
+                              firstDate: DateTime.now().subtract(
+                                const Duration(days: 300),
+                              ),
+                              lastDate: DateTime.now(),
+                              onDateChanged:
+                                  (date) =>
+                                      setState(() => _conceptionDate = date),
+                            ),
+                          ),
+                        ],
+                      ),
             ),
           ],
         ),

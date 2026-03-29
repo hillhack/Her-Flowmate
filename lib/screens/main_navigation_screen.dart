@@ -59,10 +59,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
             height: 80,
-            decoration: AppTheme.glassDecoration(
-              radius: 32,
-              opacity: 0.1,
-            ),
+            decoration: AppTheme.glassDecoration(radius: 32, opacity: 0.1),
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,10 +74,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ),
       ),
     ).animate().slideY(
-          begin: 1.0,
-          duration: 800.ms,
-          curve: Curves.easeOutCubic,
-        );
+      begin: 1.0,
+      duration: 800.ms,
+      curve: Curves.easeOutCubic,
+    );
   }
 
   Widget _logButton() {
@@ -125,10 +122,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              icon,
-              color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
-              size: 26,
-            ).animate(target: isSelected ? 1 : 0).scale(
+                  icon,
+                  color:
+                      isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+                  size: 26,
+                )
+                .animate(target: isSelected ? 1 : 0)
+                .scale(
                   begin: const Offset(1, 1),
                   end: const Offset(1.2, 1.2),
                   duration: 300.ms,
@@ -157,8 +157,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white
-              .withValues(alpha: 0.95), // High opacity for stability
+          color: Colors.white.withValues(
+            alpha: 0.95,
+          ), // High opacity for stability
           borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
           border: Border.all(color: Colors.white, width: 1.5),
         ),

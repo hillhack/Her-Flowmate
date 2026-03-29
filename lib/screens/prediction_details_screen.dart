@@ -18,10 +18,7 @@ class PredictionDetailsScreen extends StatelessWidget {
           icon: const GlassContainer(
             padding: EdgeInsets.all(8),
             radius: 12,
-            child: Icon(
-              Icons.arrow_back_rounded,
-              color: AppTheme.textDark,
-            ),
+            child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
           ),
           onPressed: () => Navigator.pop(context),
         ),

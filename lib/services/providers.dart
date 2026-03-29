@@ -19,7 +19,7 @@ final sharedPreferencesProvider = rf.Provider<SharedPreferences>((ref) {
 });
 
 // Provider for StorageService
-final storageServiceProvider = rf.ChangeNotifierProvider<StorageService>((ref) {
+final storageServiceProvider = rf.Provider<StorageService>((ref) {
   throw UnimplementedError('Initialize this in main and override');
 });
 
@@ -40,7 +40,8 @@ final routerProvider = rf.Provider<gr.GoRouter>((ref) {
       final isLoggedIn = storage.hasCompletedLogin;
       final isOnboarded = storage.hasCompletedOnboarding;
 
-      final inAuthFlow = state.matchedLocation == '/welcome' ||
+      final inAuthFlow =
+          state.matchedLocation == '/welcome' ||
           state.matchedLocation == '/login';
 
       if (!isLoggedIn) {
@@ -81,10 +82,11 @@ final routerProvider = rf.Provider<gr.GoRouter>((ref) {
       ),
       gr.GoRoute(
         path: '/log',
-        pageBuilder: (context, state) => const MaterialPage(
-          fullscreenDialog: true,
-          child: LogPeriodScreen(),
-        ),
+        pageBuilder:
+            (context, state) => const MaterialPage(
+              fullscreenDialog: true,
+              child: LogPeriodScreen(),
+            ),
       ),
       gr.GoRoute(
         path: '/settings',

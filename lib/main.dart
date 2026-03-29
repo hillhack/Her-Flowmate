@@ -9,12 +9,15 @@ import 'utils/app_theme.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/welcome_screen.dart';
 
-void main() {
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // ── Global Error Handling ────────────────────────────────────────────────
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
+    Sentry.captureException(details.exception, stackTrace: details.stack);
     debugPrint('FLUTTER ERROR: ${details.exception}');
   };
 
@@ -23,7 +26,10 @@ void main() {
     return MaterialAppearanceErrorScreen(details: details);
   };
 
-  runApp(const BootstrapScreen());
+  await SentryFlutter.init((options) {
+    options.dsn = 'YOUR_SENTRY_DSN_HERE';
+    options.tracesSampleRate = 1.0;
+  }, appRunner: () => runApp(const BootstrapScreen()));
 }
 
 /// A robust startup screen that handles initialization of services.
@@ -138,7 +144,7 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
           value: StorageService.instance,
         ), // Already singleton-like via init
         ProxyProvider<StorageService, PredictionService>(
-          update: (_, storage, __) => PredictionService(storage),
+          update: (context, storage, previous) => PredictionService(storage),
         ),
       ],
       child: const HerFlowmateApp(),

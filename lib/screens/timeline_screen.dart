@@ -27,10 +27,7 @@ class TimelineScreen extends StatelessWidget {
             child: const NeuContainer(
               radius: 12,
               padding: EdgeInsets.zero,
-              child: Icon(
-                Icons.arrow_back_rounded,
-                color: AppTheme.textDark,
-              ),
+              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
             ),
           ),
         ),
@@ -84,11 +81,11 @@ class TimelineScreen extends StatelessWidget {
                     final phaseColor = AppTheme.phaseColor(phase);
 
                     return _TimelineRow(
-                      day: day,
-                      isToday: isToday,
-                      phaseName: phase,
-                      phaseColor: phaseColor,
-                    )
+                          day: day,
+                          isToday: isToday,
+                          phaseName: phase,
+                          phaseColor: phaseColor,
+                        )
                         .animate()
                         .fadeIn(delay: Duration(milliseconds: 30 * index))
                         .slideX(begin: 0.05);
@@ -174,22 +171,24 @@ class _TimelineRow extends StatelessWidget {
                   color: isToday ? phaseColor : AppTheme.frameColor,
                   border: Border.all(color: phaseColor, width: 2),
                   shape: BoxShape.circle,
-                  boxShadow: isToday
-                      ? [
-                          BoxShadow(
-                            color: phaseColor.withValues(alpha: 0.4),
-                            blurRadius: 8,
-                          ),
-                        ]
-                      : null,
+                  boxShadow:
+                      isToday
+                          ? [
+                            BoxShadow(
+                              color: phaseColor.withValues(alpha: 0.4),
+                              blurRadius: 8,
+                            ),
+                          ]
+                          : null,
                 ),
-                child: isToday
-                    ? const Icon(
-                        Icons.star_rounded,
-                        size: 10,
-                        color: Colors.white,
-                      )
-                    : null,
+                child:
+                    isToday
+                        ? const Icon(
+                          Icons.star_rounded,
+                          size: 10,
+                          color: Colors.white,
+                        )
+                        : null,
               ),
               Expanded(
                 child: Container(
@@ -206,27 +205,28 @@ class _TimelineRow extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(bottom: 24),
-              child: isToday
-                  ? NeuContainer(
-                      radius: 20,
-                      onTap: () {},
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
+              child:
+                  isToday
+                      ? NeuContainer(
+                        radius: 20,
+                        onTap: () {},
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        child: _rowContent(),
+                      )
+                      : Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        decoration: BoxDecoration(
+                          color: phaseColor.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: _rowContent(),
                       ),
-                      child: _rowContent(),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        color: phaseColor.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: _rowContent(),
-                    ),
             ),
           ),
         ],

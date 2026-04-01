@@ -87,7 +87,7 @@ class EducationHubScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
-                              color: AppTheme.midnightPlum,
+                              color: AppTheme.textDark,
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -149,7 +149,7 @@ class EducationHubScreen extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.midnightPlum,
+                                  color: AppTheme.textDark,
                                   height: 1.2,
                                 ),
                               ),
@@ -275,7 +275,7 @@ class _ArticleDetailScreen extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
-                    color: AppTheme.midnightPlum,
+                    color: AppTheme.textDark,
                     height: 1.2,
                   ),
                 ).animate().fadeIn(delay: 200.ms),

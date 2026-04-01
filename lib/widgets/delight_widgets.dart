@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../utils/app_theme.dart';
 
 class PhaseDelightOverlay extends StatelessWidget {
   final String phase;
@@ -197,47 +198,43 @@ void showPhaseDelight(BuildContext context, String phase) {
 class AnimatedGlowBackground extends StatelessWidget {
   final Widget child;
   const AnimatedGlowBackground({super.key, required this.child});
-
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Stack(
       children: [
         // Background Gradient
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFFFFF0F5), Color(0xFFFDEEF4), Color(0xFFF5F5FA)],
-            ),
-          ),
-        ),
+        Container(decoration: AppTheme.getBackgroundDecoration(context)),
         // Animated Blobs - Optimized (3 blobs, smaller size, less blur)
-        const Positioned(
+        // Animated Blobs
+        Positioned(
           top: -100,
           left: -100,
           child: _GlowBlob(
-            color: Color(0xFFFFD1DC),
+            color: isDark ? AppTheme.accentPink : const Color(0xFFFFD1DC),
             size: 350,
             durationOffset: 0,
+            opacity: isDark ? 0.12 : 0.25,
           ),
         ),
-        const Positioned(
+        Positioned(
           bottom: -50,
           right: -50,
           child: _GlowBlob(
-            color: Color(0xFFE6E6FA),
+            color: isDark ? AppTheme.accentPurple : const Color(0xFFE6E6FA),
             size: 300,
             durationOffset: 4,
+            opacity: isDark ? 0.1 : 0.25,
           ),
         ),
-        const Positioned(
+        Positioned(
           top: 300,
           right: -100,
           child: _GlowBlob(
-            color: Color(0xFFF0F8FF),
+            color: isDark ? Colors.blueAccent : const Color(0xFFF0F8FF),
             size: 250,
             durationOffset: 8,
+            opacity: isDark ? 0.08 : 0.25,
           ),
         ),
 
@@ -252,11 +249,13 @@ class _GlowBlob extends StatelessWidget {
   final Color color;
   final double size;
   final int durationOffset;
+  final double opacity;
 
   const _GlowBlob({
     required this.color,
     required this.size,
     required this.durationOffset,
+    this.opacity = 0.25,
   });
 
   @override
@@ -269,9 +268,9 @@ class _GlowBlob extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: color.withValues(alpha: 0.25),
-                  blurRadius: 80,
-                  spreadRadius: 40,
+                  color: color.withValues(alpha: opacity),
+                  blurRadius: 100,
+                  spreadRadius: 50,
                 ),
               ],
             ),

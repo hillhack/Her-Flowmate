@@ -8,7 +8,7 @@ import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/neu_container.dart';
 import '../widgets/brand_widgets.dart';
-import '../widgets/delight_widgets.dart';
+import 'package:intl/intl.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final bool isEmailUser;
@@ -165,7 +165,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _isAM ? 9 : 21,
       );
       final duration = int.tryParse(_durationController.text.trim()) ?? 5;
-      await storage.saveLog(PeriodLog(startDate: logDate, duration: duration));
+
+      // FIX: Save period log correctly for track_cycle or conceive goals
+      final periodLog = PeriodLog(
+        startDate: logDate,
+        duration: duration,
+        endDate: logDate.add(Duration(days: duration - 1)),
+        isAM: _isAM,
+      );
+      await storage.saveLog(periodLog);
     }
 
     if (mounted) {
@@ -176,391 +184,506 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
+  bool _isPageValid() {
+    switch (_currentPage) {
+      case 0:
+        return _selectedGoal.isNotEmpty;
+      case 1:
+        final age = int.tryParse(_ageController.text.trim());
+        return _nameController.text.trim().isNotEmpty &&
+            age != null &&
+            age >= 10 &&
+            age <= 100;
+      case 2:
+        if (_selectedGoal == 'pregnant') {
+          if (_pregnancyInputMode == 'weeks') {
+            final w = int.tryParse(_weeksController.text.trim());
+            return w != null && w > 0 && w <= 42;
+          }
+          return _conceptionDate != null;
+        }
+        return _lastPeriodStart != null;
+      default:
+        return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppTheme.accentPink.withValues(alpha: 0.05),
-            AppTheme.accentPurple.withValues(alpha: 0.05),
-            Colors.white,
-          ],
+          colors:
+              isDark
+                  ? [
+                    AppTheme.darkBg,
+                    AppTheme.darkSurface.withValues(alpha: 0.9),
+                  ]
+                  : [
+                    AppTheme.accentPink.withValues(alpha: 0.1),
+                    AppTheme.accentPurple.withValues(alpha: 0.05),
+                    Colors.white,
+                  ],
         ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,
-        body: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final bool isSmall = constraints.maxWidth < 360;
-              final double horizontalPadding =
-                  isSmall ? AppTheme.spacingMedium : AppTheme.spacingXlarge;
+        body: Stack(
+          children: [
+            if (isDark) ...[
+              Positioned(
+                top: -80,
+                right: -60,
+                child: Container(
+                  width: 350,
+                  height: 350,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppTheme.accentPink.withValues(alpha: 0.15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.accentPink.withValues(alpha: 0.12),
+                        blurRadius: 120,
+                        spreadRadius: 40,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 50,
+                left: -120,
+                child: Container(
+                  width: 450,
+                  height: 450,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppTheme.accentPurple.withValues(alpha: 0.12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.accentPurple.withValues(alpha: 0.08),
+                        blurRadius: 150,
+                        spreadRadius: 50,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final bool isSmall = constraints.maxWidth < 360;
+                  final double horizontalPadding = isSmall ? 18.0 : 28.0;
+                  final bool isValid = _isPageValid();
 
-              return Column(
-                children: [
-                  // Custom App Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 12),
-                        NeuContainer(
-                          padding: const EdgeInsets.all(12),
-                          radius: 16,
-                          onTap: () {
-                            if (_currentPage > widget.initialPage) {
-                              _back();
-                            } else {
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: AppTheme.textDark,
-                            size: 18,
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'STEP ${_currentPage + 1} OF $_totalPages',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppTheme.textDark.withValues(
-                                    alpha: 0.5,
+                  return Column(
+                    children: [
+                      // Custom App Bar
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            NeuContainer(
+                              padding: const EdgeInsets.all(12),
+                              radius: 16,
+                              onTap: () {
+                                if (_currentPage > widget.initialPage) {
+                                  _back();
+                                } else {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              child: Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                color: Theme.of(context).colorScheme.onSurface,
+                                size: 18,
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Step ${_currentPage + 1} • ${_getStepName(_currentPage)}',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.5),
+                                      letterSpacing: 0.5,
+                                    ),
                                   ),
-                                  letterSpacing: 1.2,
-                                ),
+                                  const SizedBox(height: 12),
+                                  _ProgressBar(
+                                    current: _currentPage,
+                                    total: _totalPages,
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 12),
-                              _ProgressBar(
-                                current: _currentPage,
-                                total: _totalPages,
-                              ),
+                            ),
+                            const SizedBox(
+                              width: 80,
+                            ), // Balance the leading button
+                          ],
+                        ),
+                      ),
+                      // Pages
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => FocusScope.of(context).unfocus(),
+                          child: PageView(
+                            controller: _pageController,
+                            physics: const NeverScrollableScrollPhysics(),
+                            onPageChanged:
+                                (i) => setState(() => _currentPage = i),
+                            children: [
+                              _GoalPage(
+                                selectedGoal: _selectedGoal,
+                                onGoalSelected:
+                                    (goal) =>
+                                        setState(() => _selectedGoal = goal),
+                                isSmall: isSmall,
+                                horizontalPadding: horizontalPadding,
+                              ).animate().fadeIn(duration: 400.ms),
+                              _InfoPage(
+                                nameController: _nameController,
+                                ageController: _ageController,
+                                onChanged: () => setState(() {}),
+                                isSmall: isSmall,
+                                horizontalPadding: horizontalPadding,
+                              ).animate().fadeIn(duration: 400.ms),
+                              _PeriodPage(
+                                selectedGoal: _selectedGoal,
+                                weeksController: _weeksController,
+                                durationController: _durationController,
+                                lastPeriodStart: _lastPeriodStart,
+                                conceptionDate: _conceptionDate,
+                                isAM: _isAM,
+                                pregnancyInputMode: _pregnancyInputMode,
+                                onWeeksChanged: () => setState(() {}),
+                                onDurationChanged: () => setState(() {}),
+                                onDateChanged:
+                                    (d) => setState(() => _lastPeriodStart = d),
+                                onConceptionDateChanged:
+                                    (d) => setState(() => _conceptionDate = d),
+                                onAMPMChanged:
+                                    (val) => setState(() => _isAM = val),
+                                onInputModeChanged:
+                                    (mode) => setState(
+                                      () => _pregnancyInputMode = mode,
+                                    ),
+                                isSmall: isSmall,
+                                horizontalPadding: horizontalPadding,
+                              ).animate().fadeIn(duration: 400.ms),
                             ],
                           ),
                         ),
-                        const SizedBox(width: 80), // Balance the leading button
-                      ],
-                    ),
-                  ),
-                  // Pages
-                  Expanded(
-                    child: PageView(
-                      controller: _pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      onPageChanged: (i) => setState(() => _currentPage = i),
-                      children: [
-                        _goalPage(
-                          isSmall,
-                          horizontalPadding,
-                        ).animate().fadeIn(duration: 400.ms),
-                        _infoPage(
-                          isSmall,
-                          horizontalPadding,
-                        ).animate().fadeIn(duration: 400.ms),
-                        _periodPage(
-                          isSmall,
-                          horizontalPadding,
-                        ).animate().fadeIn(duration: 400.ms),
-                      ],
-                    ),
-                  ),
-                  // Continue Button
-                  Padding(
+                      ),
+                      // Continue Button
+                      Padding(
                         padding: EdgeInsets.fromLTRB(
                           horizontalPadding,
                           4,
                           horizontalPadding,
                           24,
                         ),
-                        child: ShimmerButton(
-                          radius: 20,
-                          onTap: _next,
-                          child: NeuContainer(
-                            radius: 20,
+                        child: Opacity(
+                          opacity: isValid ? 1.0 : 0.5,
+                          child: GestureDetector(
+                            onTap: isValid ? _next : null,
                             child: Container(
                               width: double.infinity,
                               height: 58,
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _currentPage == _totalPages - 1
-                                        ? 'Finish Setup'
-                                        : 'Continue',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: isSmall ? 16 : 18,
-                                      fontWeight: FontWeight.w800,
-                                      color: AppTheme.accentPink,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFF5C8A),
+                                    Color(0xFF9F6BFF),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  if (isValid)
+                                    BoxShadow(
+                                      color: Colors.pink.withValues(alpha: 0.3),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 6),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Icon(
-                                    _currentPage == _totalPages - 1
-                                        ? Icons.check_circle_rounded
-                                        : Icons.arrow_forward_rounded,
-                                    color: AppTheme.accentPink,
-                                    size: 20,
-                                  ),
                                 ],
+                              ),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      _currentPage == _totalPages - 1
+                                          ? "Finish Setup"
+                                          : "Continue",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Icon(
+                                      _currentPage == _totalPages - 1
+                                          ? Icons.check_circle_rounded
+                                          : Icons.arrow_forward_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      )
-                      .animate(
-                        target:
-                            (_currentPage == 0 && _selectedGoal.isEmpty)
-                                ? 0
-                                : 1,
-                      )
-                      .fadeIn()
-                      .slideY(begin: 0.2, end: 0, curve: Curves.easeOutBack),
-                ],
-              );
-            },
-          ),
+                      ).animate().fadeIn().slideY(
+                        begin: 0.2,
+                        end: 0,
+                        curve: Curves.easeOutBack,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
 
-  // ── Page 1: Goal Selection ──────────────────────────────────────────────
-  Widget _goalPage(bool isSmall, double horizontalPadding) {
+class _GoalPage extends StatelessWidget {
+  final String selectedGoal;
+  final Function(String) onGoalSelected;
+  final bool isSmall;
+  final double horizontalPadding;
+
+  const _GoalPage({
+    required this.selectedGoal,
+    required this.onGoalSelected,
+    required this.isSmall,
+    required this.horizontalPadding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: AppTheme.spacingLarge,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 12),
           Text.rich(
             TextSpan(
               children: [
                 TextSpan(
                   text: "How would you like to use ",
-                  style: GoogleFonts.poppins(
-                    fontSize: AppTheme.adaptiveFontSize(context, 28),
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.textDark,
-                    height: 1.2,
-                  ),
+                  style: textTheme.headlineLarge,
                 ),
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
-                  child: BrandName(
-                    fontSize: AppTheme.adaptiveFontSize(context, 28),
-                  ),
+                  child: BrandName(fontSize: AppTheme.h1(context)),
                 ),
-                TextSpan(
-                  text: "?",
-                  style: GoogleFonts.poppins(
-                    fontSize: AppTheme.adaptiveFontSize(context, 28),
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.textDark,
-                    height: 1.2,
-                  ),
-                ),
+                TextSpan(text: "?", style: textTheme.headlineLarge),
               ],
             ),
-          ).animate().fadeIn().slideY(begin: 0.1),
-          SizedBox(
-            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
-          ),
-          _modePanel(
-            'Track my cycle',
-            'Period tracking & phase predictions',
-            Icons.refresh_rounded,
+          ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+          const SizedBox(height: 8),
+          Text(
+            "Select your primary goal to personalize your journey.",
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ).animate().fadeIn(delay: 400.ms),
+          const SizedBox(height: 32),
+          _goalCard(
+            context,
             'track_cycle',
-            isSmall,
-          ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1),
-          const SizedBox(height: AppTheme.spacingMedium),
-          _modePanel(
-            'Trying to conceive',
-            'Fertile window & ovulation tracking',
-            Icons.favorite_rounded,
+            'Track my cycle',
+            'Log periods, symptoms and get predictions.',
+            Icons.calendar_today_rounded,
+          ),
+          const SizedBox(height: 16),
+          _goalCard(
+            context,
             'conceive',
-            isSmall,
-          ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.1),
-          const SizedBox(height: AppTheme.spacingMedium),
-          _modePanel(
-            'Already pregnant',
-            'Pregnancy week & baby development',
-            Icons.child_care_rounded,
+            'Get pregnant',
+            'Pinpoint ovulation and maximize your chances.',
+            Icons.favorite_rounded,
+          ),
+          const SizedBox(height: 16),
+          _goalCard(
+            context,
             'pregnant',
-            isSmall,
-          ).animate().fadeIn(delay: 600.ms).slideX(begin: 0.1),
+            'I am pregnant',
+            'Track your pregnancy journey and milestones.',
+            Icons.child_care_rounded,
+          ),
         ],
       ),
     );
   }
 
-  Widget _modePanel(
+  Widget _goalCard(
+    BuildContext context,
+    String id,
     String title,
     String subtitle,
     IconData icon,
-    String goal,
-    bool isSmall,
   ) {
-    final isSelected = _selectedGoal == goal;
+    final bool isSelected = selectedGoal == id;
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return GestureDetector(
-      onTap: () => setState(() => _selectedGoal = goal),
+      onTap: () => onGoalSelected(id),
       child: AnimatedScale(
-        duration: 400.ms,
+        scale: isSelected ? 1.04 : 1.0,
+        duration: 300.ms,
         curve: Curves.easeOutBack,
-        scale: isSelected ? 1.02 : 1.0,
-        child: AnimatedContainer(
-          duration: 400.ms,
-          padding: EdgeInsets.all(
-            isSmall ? AppTheme.spacingMedium : AppTheme.spacingLarge,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color:
+                isSelected
+                    ? AppTheme.accentPink.withValues(alpha: 0.08)
+                    : Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: isSelected ? AppTheme.accentPink : Colors.transparent,
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isSelected ? 0.08 : 0.04),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          decoration:
-              isSelected
-                  ? AppTheme.glassDecoration(
-                    radius: 28,
-                    opacity: 0.6,
-                    borderColor: AppTheme.accentPink,
-                  )
-                  : AppTheme.glassDecoration(radius: 28, opacity: 0.2),
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(isSmall ? 10 : AppTheme.spacingMedium),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color:
                       isSelected
-                          ? AppTheme.accentPink.withValues(alpha: 0.1)
-                          : Colors.transparent,
+                          ? AppTheme.accentPink
+                          : colorScheme.onSurface.withValues(alpha: 0.05),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
-                  color:
-                      isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
-                  size: isSmall ? 24 : 32,
+                  color: isSelected ? Colors.white : AppTheme.accentPink,
+                  size: 24,
                 ),
               ),
-              SizedBox(
-                width: isSmall ? AppTheme.spacingMedium : AppTheme.spacingLarge,
-              ),
+              const SizedBox(width: 20),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.poppins(
-                        fontSize: isSmall ? 15 : 18,
-                        fontWeight: FontWeight.w800,
+                      style: textTheme.titleLarge?.copyWith(
                         color:
                             isSelected
                                 ? AppTheme.accentPink
-                                : AppTheme.textDark,
+                                : colorScheme.onSurface,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: GoogleFonts.inter(
-                        fontSize: isSmall ? 12 : 14,
-                        color: AppTheme.textSecondary,
-                        fontWeight:
-                            isSelected ? FontWeight.w600 : FontWeight.w400,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.5),
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
               ),
-              if (isSelected)
-                const Icon(
-                  Icons.check_circle_rounded,
-                  color: AppTheme.accentPink,
-                ).animate().scale(curve: Curves.elasticOut),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  // ── Page 2: Basic Info ──────────────────────────────────────────────────
-  Widget _infoPage(bool isSmall, double horizontalPadding) {
+class _InfoPage extends StatelessWidget {
+  final TextEditingController nameController;
+  final TextEditingController ageController;
+  final VoidCallback onChanged;
+  final bool isSmall;
+  final double horizontalPadding;
+
+  const _InfoPage({
+    required this.nameController,
+    required this.ageController,
+    required this.onChanged,
+    required this.isSmall,
+    required this.horizontalPadding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: AppTheme.spacingMedium,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: AppTheme.spacingLarge),
-          NeuContainer(
-            padding: EdgeInsets.all(isSmall ? AppTheme.spacingMedium : 20),
-            radius: 28,
-            child: Icon(
-              Icons.person_rounded,
-              color: AppTheme.accentPink,
-              size: isSmall ? 36 : 48,
-            ),
-          ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
-          SizedBox(
-            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
-          ),
+          const SizedBox(height: 12),
           Text(
             "Let's get to know you",
-            style: GoogleFonts.poppins(
-              fontSize: AppTheme.adaptiveFontSize(context, 32),
-              fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
-              height: 1.2,
-            ),
+            style: textTheme.headlineLarge,
           ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
-          const SizedBox(height: AppTheme.spacingSmall),
-          Text.rich(
-            TextSpan(
-              children: [
-                const TextSpan(text: "This helps "),
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: BrandName(fontSize: isSmall ? 15 : 18),
-                ),
-                const TextSpan(text: " tailor your experience perfectly."),
-              ],
-              style: GoogleFonts.inter(
-                fontSize: isSmall ? 14 : 16,
-                color: AppTheme.textSecondary,
-                height: 1.5,
-                fontWeight: FontWeight.w500,
-              ),
+          const SizedBox(height: 8),
+          Text(
+            "This helps us tailor your experience perfectly.",
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ).animate().fadeIn(delay: 400.ms),
-          SizedBox(
-            height: isSmall ? AppTheme.spacingXlarge : AppTheme.spacingXXlarge,
-          ),
+          const SizedBox(height: 40),
           _setupInput(
+            context,
             "WHAT'S YOUR NAME?",
-            _nameController,
+            nameController,
             'Enter name...',
+            icon: Icons.person_outline_rounded,
             isRequired: true,
-            isSmall: isSmall,
+            onChanged: (v) => onChanged(),
           ),
-          const SizedBox(height: AppTheme.spacingLarge),
+          const SizedBox(height: 24),
           _setupInput(
+            context,
             "AND YOUR AGE?",
-            _ageController,
+            ageController,
             'Enter age...',
+            icon: Icons.cake_outlined,
             isNumeric: true,
             isRequired: true,
-            isSmall: isSmall,
+            onChanged: (v) => onChanged(),
           ),
         ],
       ),
@@ -568,27 +691,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _setupInput(
+    BuildContext context,
     String label,
     TextEditingController controller,
     String hint, {
+    IconData? icon,
     bool isNumeric = false,
     bool isRequired = false,
-    bool isSmall = false,
+    required Function(String) onChanged,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: isSmall ? 11 : 12,
-                fontWeight: FontWeight.w900,
-                color: AppTheme.textSecondary,
-                letterSpacing: 1.2,
-              ),
-            ),
+            Text(label, style: textTheme.labelSmall),
             if (isRequired)
               const Text(
                 ' *',
@@ -599,27 +719,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
           ],
         ),
-        SizedBox(height: isSmall ? 12 : 16),
-        NeuContainer(
-          radius: 20,
-          padding: EdgeInsets.symmetric(
-            horizontal: isSmall ? 18 : 24,
-            vertical: 8,
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: TextField(
             controller: controller,
             keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-            style: GoogleFonts.poppins(
-              fontSize: isSmall ? 18 : 20,
-              color: AppTheme.textDark,
-              fontWeight: FontWeight.w700,
-            ),
+            onChanged: onChanged,
+            style: textTheme.titleLarge,
             decoration: InputDecoration(
               border: InputBorder.none,
+              prefixIcon:
+                  icon != null
+                      ? Icon(icon, color: AppTheme.accentPink, size: 22)
+                      : null,
               hintText: hint,
-              hintStyle: GoogleFonts.inter(
-                color: AppTheme.textSecondary.withValues(alpha: 0.3),
-                fontWeight: FontWeight.w500,
+              hintStyle: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.2),
               ),
             ),
           ),
@@ -627,255 +754,406 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ],
     );
   }
+}
 
-  // ── Page 3: First Period / Pregnancy ────────────────────────────────────
-  Widget _periodPage(bool isSmall, double horizontalPadding) {
-    if (_selectedGoal == 'pregnant') {
-      return SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontalPadding,
-          vertical: 12,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Congratulations! 🎉",
-              style: GoogleFonts.poppins(
-                fontSize: isSmall ? 24 : 28,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textDark,
-              ),
-            ).animate().fadeIn(),
-            const SizedBox(height: 12),
-            Text(
-              "How far along are you?",
-              style: GoogleFonts.inter(
-                fontSize: isSmall ? 15 : 16,
-                color: AppTheme.textSecondary,
-              ),
-            ).animate().fadeIn(delay: 200.ms),
-            const SizedBox(height: 32),
+class _PeriodPage extends StatelessWidget {
+  final String selectedGoal;
+  final TextEditingController weeksController;
+  final TextEditingController durationController;
+  final DateTime? lastPeriodStart;
+  final DateTime? conceptionDate;
+  final bool isAM;
+  final String pregnancyInputMode;
+  final VoidCallback onWeeksChanged;
+  final VoidCallback onDurationChanged;
+  final Function(DateTime) onDateChanged;
+  final Function(DateTime) onConceptionDateChanged;
+  final Function(bool) onAMPMChanged;
+  final Function(String) onInputModeChanged;
+  final bool isSmall;
+  final double horizontalPadding;
 
-            // Toggle
-            Container(
-              decoration: AppTheme.glassDecoration(radius: 16),
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap:
-                          () => setState(() => _pregnancyInputMode = 'weeks'),
-                      child: AnimatedContainer(
-                        duration: 300.ms,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color:
-                              _pregnancyInputMode == 'weeks'
-                                  ? AppTheme.accentPink
-                                  : Colors.transparent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Weeks',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  _pregnancyInputMode == 'weeks'
-                                      ? Colors.white
-                                      : AppTheme.textSecondary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _pregnancyInputMode = 'date'),
-                      child: AnimatedContainer(
-                        duration: 300.ms,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color:
-                              _pregnancyInputMode == 'date'
-                                  ? AppTheme.accentPink
-                                  : Colors.transparent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Last Period (LMP)',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  _pregnancyInputMode == 'date'
-                                      ? Colors.white
-                                      : AppTheme.textSecondary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+  const _PeriodPage({
+    required this.selectedGoal,
+    required this.weeksController,
+    required this.durationController,
+    required this.lastPeriodStart,
+    required this.conceptionDate,
+    required this.isAM,
+    required this.pregnancyInputMode,
+    required this.onWeeksChanged,
+    required this.onDurationChanged,
+    required this.onDateChanged,
+    required this.onConceptionDateChanged,
+    required this.onAMPMChanged,
+    required this.onInputModeChanged,
+    required this.isSmall,
+    required this.horizontalPadding,
+  });
 
-            const SizedBox(height: 32),
-
-            AnimatedSwitcher(
-              duration: 400.ms,
-              transitionBuilder:
-                  (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0.05, 0),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: child,
-                    ),
-                  ),
-              child:
-                  _pregnancyInputMode == 'weeks'
-                      ? _setupInput(
-                        "WEEKS PREGNANT",
-                        _weeksController,
-                        "e.g. 8",
-                        isNumeric: true,
-                        isRequired: true,
-                        isSmall: isSmall,
-                      )
-                      : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        key: const ValueKey('date'),
-                        children: [
-                          Text(
-                            "SELECT LAST PERIOD (LMP) DATE",
-                            style: GoogleFonts.inter(
-                              fontSize: isSmall ? 11 : 12,
-                              fontWeight: FontWeight.w800,
-                              color: AppTheme.textSecondary,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          const SizedBox(height: AppTheme.spacingMedium),
-                          NeuContainer(
-                            padding: const EdgeInsets.all(12),
-                            radius: 24,
-                            child: CalendarDatePicker(
-                              initialDate:
-                                  _conceptionDate ??
-                                  DateTime.now().subtract(
-                                    const Duration(days: 30),
-                                  ),
-                              firstDate: DateTime.now().subtract(
-                                const Duration(days: 300),
-                              ),
-                              lastDate: DateTime.now(),
-                              onDateChanged:
-                                  (date) =>
-                                      setState(() => _conceptionDate = date),
-                            ),
-                          ),
-                        ],
-                      ),
-            ),
-          ],
-        ),
-      );
+  @override
+  Widget build(BuildContext context) {
+    if (selectedGoal == 'pregnant') {
+      return _pregnancyPage(context);
     }
+    return _trackingPage(context);
+  }
+
+  Widget _pregnancyPage(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: AppTheme.spacingMedium,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 12),
+          Text(
+            "Congratulations! 🎉",
+            style: textTheme.headlineLarge,
+          ).animate().fadeIn(),
+          const SizedBox(height: 8),
+          Text(
+            "How far along are you?",
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ).animate().fadeIn(delay: 200.ms),
+          const SizedBox(height: 32),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              children: [
+                _toggleItem(
+                  context,
+                  'weeks',
+                  'Weeks',
+                  pregnancyInputMode == 'weeks',
+                ),
+                _toggleItem(
+                  context,
+                  'date',
+                  'LMP Date',
+                  pregnancyInputMode == 'date',
+                ),
+              ],
+            ),
+          ).animate().fadeIn(delay: 400.ms),
+          const SizedBox(height: 32),
+          if (pregnancyInputMode == 'weeks')
+            _setupInput(
+              context,
+              "WEEKS PREGNANT",
+              weeksController,
+              "e.g. 8",
+              icon: Icons.calendar_month_outlined,
+              isNumeric: true,
+              isRequired: true,
+              onChanged: (v) => onWeeksChanged(),
+            )
+          else
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("LAST PERIOD (LMP) DATE", style: textTheme.labelSmall),
+                const SizedBox(height: 12),
+                _dateSelectionField(
+                  context,
+                  conceptionDate,
+                  onConceptionDateChanged,
+                  'Select LMP date',
+                  firstDate: DateTime.now().subtract(const Duration(days: 300)),
+                ),
+              ],
+            ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _trackingPage(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 12),
+          Text("Final Step", style: textTheme.headlineLarge).animate().fadeIn(),
+          const SizedBox(height: 8),
           Text(
             "When did your last period start?",
-            style: GoogleFonts.poppins(
-              fontSize: AppTheme.adaptiveFontSize(context, 26),
-              fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
-              height: 1.3,
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
-          ).animate().fadeIn(),
-          const SizedBox(height: AppTheme.spacingLarge),
-          NeuContainer(
-            padding: const EdgeInsets.all(12),
-            radius: 24,
-            child: CalendarDatePicker(
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now().subtract(const Duration(days: 90)),
-              lastDate: DateTime.now(),
-              onDateChanged: (date) => setState(() => _lastPeriodStart = date),
-            ),
+          ).animate().fadeIn(delay: 200.ms),
+          const SizedBox(height: 32),
+          _dateSelectionField(
+            context,
+            lastPeriodStart,
+            onDateChanged,
+            'Select period start date',
+            firstDate: DateTime.now().subtract(const Duration(days: 90)),
           ),
-          SizedBox(
-            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
-          ),
-          _setupInput(
-            "HOW MANY DAYS DID IT LAST?",
-            _durationController,
-            "e.g. 5",
-            isNumeric: true,
-            isSmall: isSmall,
-          ),
-          SizedBox(
-            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
-          ),
+          const SizedBox(height: 24),
+          Text("TIME OF DAY (OPTIONAL)", style: textTheme.labelSmall),
+          const SizedBox(height: 12),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "AM / PM Toggle",
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textDark,
-                  fontSize: isSmall ? 13 : 16,
-                ),
-              ),
-              Row(
-                children: [
-                  _timeToggle('AM', _isAM, () => setState(() => _isAM = true)),
-                  const SizedBox(width: AppTheme.spacingMedium),
-                  _timeToggle(
-                    'PM',
-                    !_isAM,
-                    () => setState(() => _isAM = false),
-                  ),
-                ],
-              ),
+              _ampmToggle(context, true, 'Morning', '9:00 AM'),
+              const SizedBox(width: 12),
+              _ampmToggle(context, false, 'Evening', '9:00 PM'),
             ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Helpful for tracking exact hormone shifts.",
+            style: textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurface.withValues(alpha: 0.4),
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          const SizedBox(height: 32),
+          _setupInput(
+            context,
+            "HOW MANY DAYS DID IT LAST?",
+            durationController,
+            "e.g. 5",
+            icon: Icons.timer_outlined,
+            isNumeric: true,
+            onChanged: (v) => onDurationChanged(),
           ),
         ],
       ),
     );
   }
 
-  Widget _timeToggle(String label, bool isSelected, VoidCallback onTap) {
+  Widget _dateSelectionField(
+    BuildContext context,
+    DateTime? selectedDate,
+    Function(DateTime) onDatePicked,
+    String hint, {
+    DateTime? firstDate,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return GestureDetector(
-      onTap: onTap,
-      child: NeuContainer(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        radius: 12,
-        borderColor: isSelected ? AppTheme.accentPink : Colors.white,
-        child: Center(
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontWeight: FontWeight.w800,
-              color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+      onTap: () async {
+        final d = await showDatePicker(
+          context: context,
+          initialDate: selectedDate ?? DateTime.now(),
+          firstDate:
+              firstDate ?? DateTime.now().subtract(const Duration(days: 90)),
+          lastDate: DateTime.now(),
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: Theme.of(
+                  context,
+                ).colorScheme.copyWith(primary: AppTheme.accentPink),
+              ),
+              child: child!,
+            );
+          },
+        );
+        if (d != null) onDatePicked(d);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.calendar_today_rounded,
+              color: AppTheme.accentPink,
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              selectedDate == null
+                  ? hint
+                  : DateFormat('MMMM dd, yyyy').format(selectedDate),
+              style: textTheme.titleLarge?.copyWith(
+                color:
+                    selectedDate == null
+                        ? colorScheme.onSurface.withValues(alpha: 0.2)
+                        : colorScheme.onSurface,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _toggleItem(
+    BuildContext context,
+    String mode,
+    String label,
+    bool active,
+  ) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => onInputModeChanged(mode),
+        child: AnimatedContainer(
+          duration: 300.ms,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: active ? AppTheme.accentPink : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w700,
+                color: active ? Colors.white : AppTheme.textSecondary,
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _ampmToggle(
+    BuildContext context,
+    bool value,
+    String label,
+    String time,
+  ) {
+    final bool active = isAM == value;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => onAMPMChanged(value),
+        child: AnimatedContainer(
+          duration: 300.ms,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color:
+                active
+                    ? AppTheme.accentPink.withValues(alpha: 0.1)
+                    : Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: active ? AppTheme.accentPink : Colors.transparent,
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  color: active ? AppTheme.accentPink : colorScheme.onSurface,
+                ),
+              ),
+              Text(
+                time,
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  color: (active ? AppTheme.accentPink : colorScheme.onSurface)
+                      .withValues(alpha: 0.5),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _setupInput(
+    BuildContext context,
+    String label,
+    TextEditingController controller,
+    String hint, {
+    IconData? icon,
+    bool isNumeric = false,
+    bool isRequired = false,
+    required Function(String) onChanged,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(label, style: textTheme.labelSmall),
+            if (isRequired)
+              const Text(
+                ' *',
+                style: TextStyle(
+                  color: AppTheme.accentPink,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: TextField(
+            controller: controller,
+            keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+            onChanged: onChanged,
+            style: textTheme.titleLarge,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              prefixIcon:
+                  icon != null
+                      ? Icon(icon, color: AppTheme.accentPink, size: 22)
+                      : null,
+              hintText: hint,
+              hintStyle: textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withValues(alpha: 0.2),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -886,30 +1164,46 @@ class _ProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double factor = (current + 1) / total;
-    return NeuContainer(
-      height: 12,
-      radius: 6,
-      child: Stack(
-        children: [
-          AnimatedContainer(
-            duration: 600.ms,
-            curve: Curves.easeOutCubic,
-            width: MediaQuery.of(context).size.width * 0.6 * factor,
-            decoration: BoxDecoration(
-              color: AppTheme.accentPink,
-              borderRadius: BorderRadius.circular(6),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.accentPink.withValues(alpha: 0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double factor = (current + 1) / total;
+        return Container(
+          height: 10,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(5),
           ),
-        ],
-      ),
+          child: Stack(
+            children: [
+              AnimatedContainer(
+                duration: 600.ms,
+                curve: Curves.easeOutCubic,
+                width: constraints.maxWidth * factor,
+                decoration: BoxDecoration(
+                  color: AppTheme.accentPink,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
+  }
+}
+
+String _getStepName(int page) {
+  switch (page) {
+    case 0:
+      return 'Goal';
+    case 1:
+      return 'About You';
+    case 2:
+      return 'Cycle Setup';
+    default:
+      return '';
   }
 }

@@ -1,0 +1,45 @@
+Analyzing Her-Flowmate...                                       
+
+  error • The method '_buildDreamyBackground' isn't defined for the type 'HistoryScreen' • lib/screens/history_screen.dart:28:11 • undefined_method
+  error • Expected to find ';' • lib/screens/history_screen.dart:362:21 • expected_token
+  error • Too many positional arguments: 0 expected, but 1 found • lib/screens/history_screen.dart:362:21 • extra_positional_arguments_could_be_named
+  error • Undefined name 'mainAxisSize' • lib/screens/history_screen.dart:362:21 • undefined_identifier
+  error • Expected to find ')' • lib/screens/history_screen.dart:362:33 • expected_token
+  error • Expected to find '}' • lib/screens/history_screen.dart:362:33 • expected_token
+warning • Unused import: '../utils/constants.dart' • lib/screens/home_screen.dart:10:8 • unused_import
+warning • The value of the field '_lastConfettiMilestone' isn't used • lib/screens/home_screen.dart:37:8 • unused_field
+   info • 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre • lib/utils/app_theme.dart:340:9 • deprecated_member_use
+   info • 'indicatorColor' is deprecated and shouldn't be used. Use TabBarThemeData.indicatorColor instead. This feature was deprecated after v3.28.0-1.0.pre • lib/utils/app_theme.dart:355:7 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:358:36 • deprecated_member_use
+   info • 'dialogBackgroundColor' is deprecated and shouldn't be used. Use DialogThemeData.backgroundColor instead. This feature was deprecated after v3.27.0-0.1.pre • lib/utils/app_theme.dart:359:7 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:360:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:361:31 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:362:31 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:363:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:364:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:393:38 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:397:18 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:404:38 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:405:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:406:30 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:408:18 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:409:16 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:432:35 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:435:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:436:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:437:24 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:438:30 • prefer_const_constructors
+   info • 'always' is deprecated and shouldn't be used. Use ShowValueIndicator.onDrag. This feature was deprecated after v3.28.0-1.0.pre • lib/utils/app_theme.dart:439:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:444:59 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/utils/app_theme.dart:447:20 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/utils/app_theme.dart:448:23 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:448:61 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:454:59 • deprecated_member_use
+   info • 'height' is deprecated and shouldn't be used. Use TooltipThemeData.constraints instead. This feature was deprecated after v3.30.0-0.1.pre • lib/utils/app_theme.dart:484:9 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:485:18 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:486:17 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:500:20 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:506:27 • prefer_const_constructors
+   info • The import of '../../utils/constants.dart' is unnecessary because all of the used elements are also provided by the import of '../../utils/app_theme.dart' • lib/widgets/home/wellness_stats.dart:5:8 • unnecessary_import
+
+41 issues found. (ran in 1.8s)

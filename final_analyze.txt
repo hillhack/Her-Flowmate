@@ -1,0 +1,36 @@
+Analyzing Her-Flowmate...                                       
+
+   info • 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre • lib/utils/app_theme.dart:339:9 • deprecated_member_use
+   info • 'indicatorColor' is deprecated and shouldn't be used. Use TabBarThemeData.indicatorColor instead. This feature was deprecated after v3.28.0-1.0.pre • lib/utils/app_theme.dart:354:7 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:357:36 • deprecated_member_use
+   info • 'dialogBackgroundColor' is deprecated and shouldn't be used. Use DialogThemeData.backgroundColor instead. This feature was deprecated after v3.27.0-0.1.pre • lib/utils/app_theme.dart:358:7 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:359:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:360:31 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:361:31 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:362:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:363:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:392:38 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:396:18 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:403:38 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:404:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:405:30 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:407:18 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:408:16 • prefer_const_constructors
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:431:35 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:434:21 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:435:23 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:436:24 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:437:30 • prefer_const_constructors
+   info • 'always' is deprecated and shouldn't be used. Use ShowValueIndicator.onDrag. This feature was deprecated after v3.28.0-1.0.pre • lib/utils/app_theme.dart:438:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:443:59 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/utils/app_theme.dart:446:20 • deprecated_member_use
+   info • 'MaterialStateProperty' is deprecated and shouldn't be used. Use WidgetStateProperty instead. Moved to the Widgets layer to make code available outside of Material. This feature was deprecated after v3.19.0-0.3.pre • lib/utils/app_theme.dart:447:23 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:447:61 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/utils/app_theme.dart:453:59 • deprecated_member_use
+   info • 'height' is deprecated and shouldn't be used. Use TooltipThemeData.constraints instead. This feature was deprecated after v3.30.0-0.1.pre • lib/utils/app_theme.dart:483:9 • deprecated_member_use
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:484:18 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:485:17 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:498:20 • prefer_const_constructors
+   info • Use 'const' with the constructor to improve performance • lib/utils/app_theme.dart:504:27 • prefer_const_constructors
+
+32 issues found. (ran in 3.0s)

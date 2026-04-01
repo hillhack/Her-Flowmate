@@ -70,25 +70,32 @@ class CycleTimeline extends StatelessWidget {
                           border: Border.all(color: color, width: 2),
                         )
                         : null,
-                child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: color.withValues(alpha: isToday ? 1.0 : 0.4),
-                        shape: BoxShape.circle,
-                      ),
-                    )
-                    .animate(
-                      target: isToday ? 1 : 0,
-                      onPlay: (c) => c.repeat(reverse: true),
-                    )
-                    .scale(
-                      begin: const Offset(1, 1),
-                      end: const Offset(1.2, 1.2),
-                      duration: 1200.ms,
-                      curve: Curves.easeInOut,
-                    )
-                    .shimmer(color: color.withValues(alpha: 0.3)),
+                child:
+                    isToday
+                        ? Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                              ),
+                            )
+                            .animate(onPlay: (c) => c.repeat(reverse: true))
+                            .scale(
+                              begin: const Offset(1, 1),
+                              end: const Offset(1.2, 1.2),
+                              duration: 1200.ms,
+                              curve: Curves.easeInOut,
+                            )
+                            .shimmer(color: color.withValues(alpha: 0.3))
+                        : Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.4),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
               );
             }),
           ),

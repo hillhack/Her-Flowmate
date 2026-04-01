@@ -580,7 +580,7 @@ class InsightsScreen extends StatelessWidget {
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => AppTheme.midnightPlum,
+                    getTooltipColor: (_) => AppTheme.textDark,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       return BarTooltipItem(
                         '${sorted[groupIndex].key}\n${rod.toY.toInt()} days',

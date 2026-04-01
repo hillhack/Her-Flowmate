@@ -11,25 +11,14 @@ import 'google_auth_button_stub.dart'
     as platform_button;
 
 class GoogleAuthButton extends StatelessWidget {
-  final VoidCallback? onSignInComplete;
-  final Function(String name)? onNameFetched;
-  final VoidCallback? onTap; // Added for Mobile support
+  final VoidCallback? onTap;
 
-  const GoogleAuthButton({
-    super.key,
-    this.onSignInComplete,
-    this.onNameFetched,
-    this.onTap,
-  });
+  const GoogleAuthButton({super.key, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
-      return platform_button.renderWebButton(
-        context,
-        onSignInComplete: onSignInComplete,
-        onNameFetched: onNameFetched,
-      );
+      return platform_button.renderWebButton(context);
     }
 
     // Default Mobile/Desktop Button
@@ -53,7 +42,7 @@ class GoogleAuthButton extends StatelessWidget {
             children: [
               const Icon(
                 Icons.g_mobiledata_rounded,
-                color: AppTheme.deepRose,
+                color: AppTheme.accentPink,
                 size: 26,
               ),
               const SizedBox(width: 16),

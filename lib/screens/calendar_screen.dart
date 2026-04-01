@@ -47,7 +47,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Material(
       color: AppTheme.frameColor,
       child: Container(
-        decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
+        decoration: AppTheme.getBackgroundDecoration(context),
         child: SafeArea(
           bottom: false,
           child: LayoutBuilder(
@@ -92,7 +92,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             child: Text(
                               'Cycle Calendar',
                               style: GoogleFonts.poppins(
-                                color: AppTheme.midnightPlum,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? AppTheme.darkTextPrimary
+                                        : AppTheme.textDark,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 22,
                                 letterSpacing: -0.5,
@@ -138,7 +142,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                       titleTextStyle: GoogleFonts.poppins(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w800,
-                                        color: AppTheme.midnightPlum,
+                                        color: AppTheme.textDark,
                                       ),
                                       leftChevronPadding: const EdgeInsets.all(
                                         12,
@@ -329,7 +333,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.midnightPlum,
+                      color: AppTheme.textDark,
                     ),
                   ),
                   Text(
@@ -456,7 +460,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.midnightPlum,
+                    color: AppTheme.textDark,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -494,21 +498,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
         alignment: WrapAlignment.spaceEvenly,
         children: [
           _buildLegendItem(
+            context,
             'Period',
             AppTheme.phaseColors['Menstrual']!,
             isSmallScreen,
           ),
           _buildLegendItem(
+            context,
             'Follicular',
             AppTheme.phaseColors['Follicular']!,
             isSmallScreen,
           ),
           _buildLegendItem(
+            context,
             'Ovulation',
             AppTheme.phaseColors['Ovulation']!,
             isSmallScreen,
           ),
           _buildLegendItem(
+            context,
             'Luteal',
             AppTheme.phaseColors['Luteal']!,
             isSmallScreen,
@@ -518,7 +526,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildLegendItem(String label, Color color, bool isSmallScreen) {
+  Widget _buildLegendItem(
+    BuildContext context,
+    String label,
+    Color color,
+    bool isSmallScreen,
+  ) {
     return Semantics(
       label: 'Phase $label indicated by color.',
       child: Row(
@@ -533,7 +546,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Text(
             label,
             style: GoogleFonts.inter(
-              color: AppTheme.midnightPlum,
+              color:
+                  Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.darkTextPrimary
+                      : AppTheme.midnightPlum,
               fontSize: isSmallScreen ? 10 : 13,
               fontWeight: FontWeight.w800,
             ),
@@ -625,7 +641,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
             '${day.day}',
             style: GoogleFonts.inter(
               color:
-                  isSelected || isPeriod ? Colors.white : AppTheme.midnightPlum,
+                  isSelected || isPeriod
+                      ? Colors.white
+                      : (Theme.of(context).brightness == Brightness.dark
+                          ? AppTheme.darkTextPrimary
+                          : AppTheme.midnightPlum),
               fontWeight:
                   isSelected || isToday || isPeriod
                       ? FontWeight.w900
@@ -690,9 +710,10 @@ class _DailyLogSheet extends StatelessWidget {
     final storage = context.watch<StorageService>();
     final dailyLog = storage.getDailyLog(date);
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.frameColor,
+      decoration: BoxDecoration(
+        color: isDark ? AppTheme.darkSurface : AppTheme.frameColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
       ),
       padding: const EdgeInsets.only(top: 16),
@@ -725,7 +746,10 @@ class _DailyLogSheet extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
-                            color: AppTheme.midnightPlum,
+                            color:
+                                isDark
+                                    ? AppTheme.darkTextPrimary
+                                    : AppTheme.midnightPlum,
                           ),
                         ),
                         Text(

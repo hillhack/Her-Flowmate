@@ -23,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
+            decoration: AppTheme.getBackgroundDecoration(context),
             child: SafeArea(
               bottom: false,
               child: LayoutBuilder(
@@ -71,7 +71,11 @@ class ProfileScreen extends StatelessWidget {
                             Text(
                               'Profile',
                               style: GoogleFonts.poppins(
-                                color: AppTheme.midnightPlum,
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? AppTheme.darkTextPrimary
+                                        : AppTheme.textDark,
                                 fontWeight: FontWeight.w800,
                                 fontSize: isSmallScreen ? 18 : 22,
                                 letterSpacing: -0.5,
@@ -185,7 +189,11 @@ class ProfileScreen extends StatelessWidget {
                                 style: GoogleFonts.poppins(
                                   fontSize: isSmallScreen ? 22 : 26,
                                   fontWeight: FontWeight.w800,
-                                  color: AppTheme.textDark,
+                                  color:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? AppTheme.darkTextPrimary
+                                          : AppTheme.textDark,
                                 ),
                               ).animate().fadeIn(delay: 200.ms),
 
@@ -204,6 +212,7 @@ class ProfileScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     _buildSettingsTile(
+                                      context,
                                       Icons.edit_rounded,
                                       'Name',
                                       storage.userName,
@@ -212,6 +221,7 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     _buildDivider(),
                                     _buildSettingsTile(
+                                      context,
                                       Icons.cake_rounded,
                                       'Age',
                                       storage.userAge?.toString() ?? 'Set Age',
@@ -220,6 +230,7 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     _buildDivider(),
                                     _buildSettingsTile(
+                                      context,
                                       Icons.track_changes_rounded,
                                       'Goal',
                                       storage.userGoal == 'pregnant'
@@ -250,6 +261,7 @@ class ProfileScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     _buildSettingsTile(
+                                      context,
                                       Icons.notifications_active_rounded,
                                       'Notifications',
                                       'Enabled',
@@ -448,6 +460,7 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     _buildDivider(),
                                     _buildSettingsTile(
+                                      context,
                                       Icons.cloud_upload_rounded,
                                       'Export Data',
                                       'CSV/PDF',
@@ -457,6 +470,7 @@ class ProfileScreen extends StatelessWidget {
                                     ),
                                     _buildDivider(),
                                     _buildSettingsTile(
+                                      context,
                                       Icons.delete_sweep_rounded,
                                       'Clear All Data',
                                       'Permanently erase logs',
@@ -482,6 +496,7 @@ class ProfileScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     _buildSettingsTile(
+                                      context,
                                       Icons.info_outline_rounded,
                                       'Version',
                                       '1.2.0 (Premium)',
@@ -560,6 +575,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildSettingsTile(
+    BuildContext context,
     IconData icon,
     String title,
     String value,
@@ -602,7 +618,10 @@ class ProfileScreen extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.textDark,
+                      color:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? AppTheme.darkTextPrimary
+                              : AppTheme.textDark,
                     ),
                   ),
                 ),

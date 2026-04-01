@@ -114,11 +114,12 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        decoration: const BoxDecoration(
-          color: AppTheme.frameColor,
+        decoration: BoxDecoration(
+          color: isDark ? AppTheme.darkSurface : AppTheme.frameColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
         ),
         padding: const EdgeInsets.only(top: 16),
@@ -151,7 +152,8 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
+                      color:
+                          isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
                     ),
                   ).animate().fadeIn(duration: 400.ms),
                   const SizedBox(height: 8),
@@ -167,7 +169,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 40),
 
                   // ── Date ────────────────────────────────────────────
-                  _stepLabel('📅', 'Date'),
+                  _stepLabel(context, '📅', 'Date'),
                   const SizedBox(height: 16),
                   NeuContainer(
                     radius: 24,
@@ -244,7 +246,10 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                             ).format(_selectedDate),
                             style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: AppTheme.textDark,
+                              color:
+                                  isDark
+                                      ? AppTheme.darkTextPrimary
+                                      : AppTheme.textDark,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -262,7 +267,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Mood ────────────────────────────────────────────
-                  _stepLabel('🎭', 'Mood (pick all that apply)'),
+                  _stepLabel(context, '🎭', 'Mood (pick all that apply)'),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 12,
@@ -287,7 +292,13 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                                 color:
                                     isSel
                                         ? AppTheme.accentPink
-                                        : Colors.white.withValues(alpha: 0.5),
+                                        : (isDark
+                                            ? AppTheme.darkSurface.withValues(
+                                              alpha: 0.5,
+                                            )
+                                            : Colors.white.withValues(
+                                              alpha: 0.5,
+                                            )),
                                 borderRadius: BorderRadius.circular(24),
                                 boxShadow:
                                     isSel
@@ -333,7 +344,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Symptoms ────────────────────────────────────────────
-                  _stepLabel('🤒', 'Symptoms'),
+                  _stepLabel(context, '🤒', 'Symptoms'),
                   const SizedBox(height: 16),
                   Builder(
                     builder: (context) {
@@ -365,9 +376,12 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                                     color:
                                         isSel
                                             ? const Color(0xFFBA68C8)
-                                            : Colors.white.withValues(
-                                              alpha: 0.5,
-                                            ),
+                                            : (isDark
+                                                ? AppTheme.darkSurface
+                                                    .withValues(alpha: 0.5)
+                                                : Colors.white.withValues(
+                                                  alpha: 0.5,
+                                                )),
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow:
                                         isSel
@@ -415,7 +429,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _stepLabel('🩸', 'Flow Intensity'),
+                          _stepLabel(context, '🩸', 'Flow Intensity'),
                           const SizedBox(height: 16),
                           Row(
                             children:
@@ -496,7 +510,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Physical Activity ─────────────────────────────────────────
-                  _stepLabel('🏃‍♀️', 'Physical Activity'),
+                  _stepLabel(context, '🏃‍♀️', 'Physical Activity'),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 12,
@@ -557,7 +571,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Water Intake ─────────────────────────────────────────
-                  _stepLabel('💧', 'Water Intake (Glasses)'),
+                  _stepLabel(context, '💧', 'Water Intake (Glasses)'),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -598,7 +612,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Sleep ─────────────────────────────────────────────────
-                  _stepLabel('🌙', 'Sleep Hours'),
+                  _stepLabel(context, '🌙', 'Sleep Hours'),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -643,7 +657,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Energy Level ──────────────────────────────────────────
-                  _stepLabel('⚡', 'Energy Level'),
+                  _stepLabel(context, '⚡', 'Energy Level'),
                   const SizedBox(height: 4),
                   Text(
                     '1 = Exhausted  ·  5 = Super Energetic',
@@ -662,7 +676,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Stress Level ──────────────────────────────────────────
-                  _stepLabel('🧘', 'Stress Level'),
+                  _stepLabel(context, '🧘', 'Stress Level'),
                   const SizedBox(height: 4),
                   Text(
                     '1 = Very Calm  ·  5 = Very Stressed',
@@ -681,7 +695,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Steps ─────────────────────────────────────────────────
-                  _stepLabel('👟', 'Steps Today'),
+                  _stepLabel(context, '👟', 'Steps Today'),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -717,7 +731,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   const SizedBox(height: 32),
 
                   // ── Notes ─────────────────────────────────────────
-                  _stepLabel('📝', 'Journal'),
+                  _stepLabel(context, '📝', 'Journal'),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -738,7 +752,12 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                           color: AppTheme.textSecondary.withValues(alpha: 0.5),
                         ),
                       ),
-                      style: GoogleFonts.inter(color: AppTheme.textDark),
+                      style: GoogleFonts.inter(
+                        color:
+                            isDark
+                                ? AppTheme.darkTextPrimary
+                                : AppTheme.textDark,
+                      ),
                     ),
                   ).animate().fadeIn(delay: 600.ms),
 
@@ -843,17 +862,18 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
     );
   }
 
-  Widget _stepLabel(String emoji, String title) {
+  Widget _stepLabel(BuildContext context, String emoji, String label) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 20)),
-        const SizedBox(width: 8),
+        Text(emoji, style: const TextStyle(fontSize: 24)),
+        const SizedBox(width: 14),
         Text(
-          title,
+          label,
           style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: AppTheme.textDark,
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+            color: isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
           ),
         ),
       ],

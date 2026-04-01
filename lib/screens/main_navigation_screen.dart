@@ -43,7 +43,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       extendBody: true, // Crucial for floating bar
       drawer: const SharedDrawer(),
       body: Container(
-        decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
+        decoration: AppTheme.getBackgroundDecoration(context),
         child: IndexedStack(index: _selectedIndex, children: _screens),
       ),
       bottomNavigationBar: _buildBottomBar(),
@@ -111,7 +111,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppTheme.roseGold.withValues(alpha: 0.3),
+                color: AppTheme.accentColor.withValues(alpha: 0.3),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -172,15 +172,23 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final storage = context.read<StorageService>();
     final isPregnant = storage.userGoal == 'pregnant';
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withValues(
-            alpha: 0.95,
-          ), // High opacity for stability
+          color:
+              isDark
+                  ? AppTheme.darkSurface.withValues(alpha: 0.9)
+                  : Colors.white.withValues(
+                    alpha: 0.95,
+                  ), // High opacity for stability
           borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
-          border: Border.all(color: Colors.white, width: 1.5),
+          border: Border.all(
+            color: isDark ? Colors.white12 : Colors.white,
+            width: 1.5,
+          ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: SafeArea(
@@ -292,6 +300,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     int idx,
     VoidCallback onTap,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -310,7 +319,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: AppTheme.textDark,
+                      color:
+                          isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
                     ),
                   ),
                   Text(

@@ -47,7 +47,7 @@ class AboutAppScreen extends StatelessWidget {
                         child: Text(
                           'About',
                           style: GoogleFonts.poppins(
-                            color: AppTheme.midnightPlum,
+                            color: AppTheme.textDark,
                             fontWeight: FontWeight.w800,
                             fontSize: 22,
                             letterSpacing: -0.5,

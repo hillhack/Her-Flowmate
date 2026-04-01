@@ -41,7 +41,7 @@ class GlassContainer extends StatelessWidget {
           kIsWeb
               ? Container(
                 decoration: BoxDecoration(
-                  color: (borderColor ?? Colors.white).withValues(
+                  color: (borderColor ?? AppTheme.surfaceColor).withValues(
                     alpha: opacity * 1.5,
                   ), // Slightly more opaque to compensate
                   borderRadius: BorderRadius.circular(radius),
@@ -51,7 +51,7 @@ class GlassContainer extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: (borderColor ?? Colors.white).withValues(
+                    color: (borderColor ?? AppTheme.surfaceColor).withValues(
                       alpha: opacity,
                     ),
                     borderRadius: BorderRadius.circular(radius),
@@ -69,14 +69,16 @@ class GlassContainer extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white.withValues(alpha: 0.4),
-              Colors.white.withValues(alpha: 0.05),
-              Colors.black.withValues(alpha: 0.05),
+              AppTheme.shadowLightColor.withValues(alpha: 0.4),
+              AppTheme.shadowMidColor.withValues(alpha: 0.05),
+              AppTheme.shadowDarkColor.withValues(alpha: 0.05),
             ],
             stops: const [0.0, 0.5, 1.0],
           ),
           border: Border.all(
-            color: (borderColor ?? Colors.white).withValues(alpha: 0.2),
+            color: (borderColor ?? AppTheme.surfaceColor).withValues(
+              alpha: AppTheme.glassBorderOpacity,
+            ),
             width: 1.5,
           ),
         ),

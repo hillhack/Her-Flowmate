@@ -58,7 +58,7 @@ class HistoryScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
-                              color: AppTheme.midnightPlum,
+                              color: AppTheme.textDark,
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -233,8 +233,7 @@ class HistoryScreen extends StatelessWidget {
                                                       fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.w700,
-                                                      color:
-                                                          AppTheme.midnightPlum,
+                                                      color: AppTheme.textDark,
                                                     ),
                                                   ),
                                                   if (dailyLog != null) ...[
@@ -364,186 +363,63 @@ class HistoryScreen extends StatelessWidget {
                     children: [
                       Center(
                         child: Container(
-                          width: 48,
-                          height: 6,
-                          decoration: const BoxDecoration(
-                            color: Color(
-                              0x339E9E9E,
-                            ), // Approximate textSecondary 0.2
-                            borderRadius: BorderRadius.all(Radius.circular(3)),
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: AppTheme.textSecondary.withValues(
+                              alpha: 0.2,
+                            ),
+                            borderRadius: BorderRadius.circular(2),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      Row(
-                        children: [
-                          const NeuContainer(
-                            padding: EdgeInsets.all(12),
-                            radius: 16,
-                            child: Icon(
-                              Icons.assignment_rounded,
-                              color: AppTheme.accentPink,
-                              size: 24,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Daily Check-in',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppTheme.midnightPlum,
-                                  ),
-                                ),
-                                Text(
-                                  DateFormat(
-                                    'EEEE, MMM d, yyyy',
-                                  ).format(log.date),
-                                  style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    color: AppTheme.textSecondary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.close_rounded),
+                      const SizedBox(height: 24),
+                      Text(
+                        'Details for ${DateFormat('MMM d').format(log.date)}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      _buildDetailRow(
+                        'Flow Intensity',
+                        log.flowIntensity ?? 'Normal',
+                      ),
+                      _buildDetailRow('Mood', log.moods?.join(', ') ?? 'Good'),
+                      _buildDetailRow(
+                        'Water Intake',
+                        '${log.waterIntake} cups',
+                      ),
+                      _buildDetailRow('Sleep', '${log.sleepHours} hours'),
+                      if (log.symptoms != null && log.symptoms!.isNotEmpty) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          'Symptoms',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                             color: AppTheme.textSecondary,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-
-                      // ── Mood & Symptoms ───────────────────────────────────────
-                      if ((log.moods?.isNotEmpty ?? false) ||
-                          (log.symptoms?.isNotEmpty ?? false))
-                        _buildSection(
-                          'Feeling',
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (log.moods?.isNotEmpty ?? false)
-                                Wrap(
-                                  spacing: 8,
-                                  children:
-                                      log.moods!
-                                          .map<Widget>(
-                                            (m) => _buildChip(
-                                              m,
-                                              AppTheme.accentPink,
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                              if (log.symptoms?.isNotEmpty ?? false) ...[
-                                const SizedBox(height: 12),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children:
-                                      log.symptoms!
-                                          .map<Widget>(
-                                            (s) => _buildChip(
-                                              s,
-                                              const Color(0xFFBA68C8),
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                              ],
-                            ],
-                          ),
                         ),
-
-                      // ── Flow Intensity ─────────────────────────────────────────
-                      if (log.flowIntensity != null)
-                        _buildSection(
-                          'Flow Intensity',
-                          _buildChip(log.flowIntensity!, AppTheme.accentPink),
-                        ),
-
-                      // ── Water & Activity ───────────────────────────────────────
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (log.waterIntake != null && log.waterIntake! > 0)
-                            Expanded(
-                              child: _buildSection(
-                                'Hydration',
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.water_drop_rounded,
-                                      color: Colors.blue,
-                                      size: 20,
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children:
+                              log.symptoms!
+                                  .map(
+                                    (s) => Chip(
+                                      label: Text(s),
+                                      backgroundColor: AppTheme.accentPink
+                                          .withValues(alpha: 0.1),
+                                      side: BorderSide.none,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '${log.waterIntake} glasses',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.textDark,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          if (log.physicalActivity?.isNotEmpty ?? false)
-                            Expanded(
-                              child: _buildSection(
-                                'Activity',
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
-                                  children:
-                                      log.physicalActivity!
-                                          .map<Widget>(
-                                            (a) => _buildChip(
-                                              a,
-                                              const Color(0xFF81C784),
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-
-                      // ── Notes ─────────────────────────────────────────
-                      if (log.notes?.isNotEmpty ?? false)
-                        _buildSection(
-                          'Notes',
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            decoration: const BoxDecoration(
-                              color: Color(0x80FFFFFF), // Approximate white 0.5
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(24),
-                              ),
-                            ),
-                            child: Text(
-                              log.notes!,
-                              style: GoogleFonts.inter(
-                                fontSize: 15,
-                                color: AppTheme.textDark,
-                                height: 1.5,
-                              ),
-                            ),
-                          ),
+                                  )
+                                  .toList(),
                         ),
-
-                      const SizedBox(height: 24),
+                      ],
                     ],
                   ),
                 ),
@@ -553,43 +429,21 @@ class HistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(String title, Widget content) {
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Text(label, style: GoogleFonts.inter(color: AppTheme.textSecondary)),
           Text(
-            title.toUpperCase(),
+            value,
             style: GoogleFonts.inter(
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              color: AppTheme.textSecondary,
-              letterSpacing: 1.2,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textDark,
             ),
           ),
-          const SizedBox(height: 16),
-          content,
         ],
-      ),
-    );
-  }
-
-  Widget _buildChip(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
       ),
     );
   }

@@ -12,10 +12,11 @@ import 'screens/app_lock_screen.dart';
 import 'services/google_auth_services.dart';
 import 'providers/community_provider.dart';
 import 'domain/use_cases/get_community_feed.dart';
-import 'data/repositories/mock_community_repository.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:flutter_timezone/flutter_timezone.dart';
+import 'data/repositories/mock_community_repository.dart';
 
 /// Application entry point.
 ///
@@ -41,11 +42,16 @@ Future<void> main() async {
   tz.initializeTimeZones();
 
   // Get device timezone
-  try {
-    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
-  } catch (e) {
-    debugPrint('Could not get local timezone, defaulting to UTC: $e');
+  if (!kIsWeb) {
+    try {
+      final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    } catch (e) {
+      debugPrint('Could not get local timezone, defaulting to UTC: $e');
+    }
+  } else {
+    // Web: Default to UTC or browser timezone (handled by tz by default mostly)
+    debugPrint('Web: Timezone initialization simplified.');
   }
 
   // ── Launch the bootstrap sequence ────────────────────────────────────────

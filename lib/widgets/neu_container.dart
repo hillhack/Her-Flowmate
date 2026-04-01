@@ -48,10 +48,12 @@ class _NeuContainerState extends State<NeuContainer> {
     // Specifically follow the design guide's shadow rules
     final bool isConcave = widget.style == NeuStyle.concave || _isPressed;
 
-    // Design guide spec:
+    // Enhanced design guide spec:
     // Outset: 8x8x16 #e3c7d6, -8x-8x16 #ffffff
     // Inset: 6x6x12 #e3c7d6, -6x-6x12 #ffffff
+    // Enhanced: Multiple shadows for depth
 
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final double currentOffset = isConcave ? 6.0 : widget.offset;
     final double currentBlur = isConcave ? 12.0 : widget.blur;
 
@@ -73,23 +75,26 @@ class _NeuContainerState extends State<NeuContainer> {
           gradient: widget.gradient,
           borderRadius: BorderRadius.circular(widget.radius),
           border: Border.all(
-            color: widget.borderColor ?? Colors.pink.withValues(alpha: 0.2),
-            width: 1.5,
+            color: (widget.borderColor ?? AppTheme.borderColor).withValues(
+              alpha: isDark ? 0.1 : 0.3,
+            ),
+            width: 1.0,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.shadowLight,
-              offset: Offset(-currentOffset, -currentOffset),
-              blurRadius: currentBlur,
-              inset: isConcave,
-            ),
-            BoxShadow(
-              color: AppTheme.shadowDark,
-              offset: Offset(currentOffset, currentOffset),
-              blurRadius: currentBlur,
-              inset: isConcave,
-            ),
-          ],
+          boxShadow:
+              AppTheme.neuShadows(
+                    isDark: isDark,
+                    offset: currentOffset,
+                    blur: currentBlur,
+                  )
+                  .map(
+                    (s) => BoxShadow(
+                      color: s.color,
+                      offset: s.offset,
+                      blurRadius: s.blurRadius,
+                      inset: isConcave,
+                    ),
+                  )
+                  .toList(),
         ),
         child: widget.child,
       ),

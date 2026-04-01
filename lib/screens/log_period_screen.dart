@@ -50,11 +50,12 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        decoration: const BoxDecoration(
-          color: AppTheme.frameColor,
+        decoration: BoxDecoration(
+          color: isDark ? AppTheme.darkSurface : AppTheme.frameColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
         ),
         padding: const EdgeInsets.only(top: 16),
@@ -89,7 +90,8 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
+                      color:
+                          isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
                     ),
                   ).animate().fadeIn(duration: 400.ms),
                   const SizedBox(height: 8),
@@ -114,7 +116,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   const SizedBox(height: 40),
 
                   // ── Step 1: Date ────────────────────────────────────────────
-                  _stepLabel('1', 'When did it start?'),
+                  _stepLabel(context, '1', 'When did it start?'),
                   const SizedBox(height: 16),
                   GlassContainer(
                     radius: 24,
@@ -160,7 +162,9 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                               color:
                                   _selectedDate == null
                                       ? AppTheme.textSecondary
-                                      : AppTheme.textDark,
+                                      : (isDark
+                                          ? AppTheme.darkTextPrimary
+                                          : AppTheme.textDark),
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -179,7 +183,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   const SizedBox(height: 32),
 
                   // ── Step 2: AM / PM ─────────────────────────────────────────
-                  _stepLabel('2', 'Select Start Time'),
+                  _stepLabel(context, '2', 'Select Start Time'),
                   const SizedBox(height: 16),
                   GlassContainer(
                     radius: 24,
@@ -207,7 +211,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
 
                   const SizedBox(height: 32),
 
-                  _stepLabel('3', 'How many days?'),
+                  _stepLabel(context, '3', 'How many days?'),
                   const SizedBox(height: 16),
                   Container(
                     decoration: AppTheme.glassDecoration(
@@ -223,7 +227,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                       keyboardType: TextInputType.number,
                       style: GoogleFonts.inter(
                         fontSize: 18,
-                        color: AppTheme.textDark,
+                        color:
+                            isDark
+                                ? AppTheme.darkTextPrimary
+                                : AppTheme.textDark,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
@@ -239,7 +246,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   const SizedBox(height: 32),
 
                   // ── Step 4: Flow Intensity ──────────────────────────────────
-                  _stepLabel('4', 'Flow Intensity'),
+                  _stepLabel(context, '4', 'Flow Intensity'),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -292,7 +299,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   const SizedBox(height: 32),
 
                   // ── Step 5: Symptoms ────────────────────────────────────────
-                  _stepLabel('5', 'Symptoms'),
+                  _stepLabel(context, '5', 'Symptoms'),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 10,
@@ -331,7 +338,9 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                     color:
                                         isSelected
                                             ? AppTheme.accentPink
-                                            : AppTheme.textDark,
+                                            : (isDark
+                                                ? AppTheme.darkTextPrimary
+                                                : AppTheme.textDark),
                                     fontWeight:
                                         isSelected
                                             ? FontWeight.w800
@@ -347,7 +356,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   const SizedBox(height: 32),
 
                   // ── Step 6: Mood ────────────────────────────────────────────
-                  _stepLabel('6', 'Current Mood'),
+                  _stepLabel(context, '6', 'Current Mood'),
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 80,
@@ -384,7 +393,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                         entry.key,
                                         style: GoogleFonts.inter(
                                           fontSize: 10,
-                                          color: AppTheme.textDark,
+                                          color:
+                                              isDark
+                                                  ? AppTheme.darkTextPrimary
+                                                  : AppTheme.textDark,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -493,7 +505,8 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
     );
   }
 
-  Widget _stepLabel(String step, String label) {
+  Widget _stepLabel(BuildContext context, String step, String label) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         Container(
@@ -519,7 +532,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
           style: GoogleFonts.inter(
             fontSize: 17,
             fontWeight: FontWeight.w800,
-            color: AppTheme.textDark,
+            color: isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
           ),
         ),
       ],

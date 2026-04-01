@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
 import '../services/storage_service.dart';
 import '../services/google_auth_services.dart';
-import '../widgets/glass_container.dart';
 import '../widgets/delight_widgets.dart';
 import '../widgets/neu_container.dart';
+import '../widgets/common/themed_container.dart';
 import 'onboarding_screen.dart';
 import 'main_navigation_screen.dart';
 import '../widgets/brand_widgets.dart';
@@ -32,204 +32,221 @@ class _LoginScreenState extends State<LoginScreen> {
         leading: Center(
           child: Padding(
             padding: const EdgeInsets.only(left: 12),
-            child: GlassContainer(
+            child: ThemedContainer(
+              type: ContainerType.glass,
               radius: 14,
               padding: const EdgeInsets.all(8),
               onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_rounded,
-                color: AppTheme.textDark,
+                color: Theme.of(context).colorScheme.onSurface,
                 size: 20,
               ),
             ),
           ),
         ),
       ),
-      body: AnimatedGlowBackground(
+      body: Container(
+        decoration: AppTheme.getBackgroundDecoration(context),
         child: Stack(
           children: [
-            const FloatingSparkles(),
             SafeArea(
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final bool isSmall = constraints.maxWidth < 360;
+                  final bool isDark =
+                      Theme.of(context).brightness == Brightness.dark;
                   final double horizontalPadding =
                       isSmall ? AppTheme.spacingMedium : AppTheme.spacingXlarge;
+                  final double verticalPadding =
+                      isSmall ? AppTheme.spacingLarge : AppTheme.spacingXXlarge;
 
                   return SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: horizontalPadding,
+                        vertical: verticalPadding,
                       ),
                       child: Column(
                         children: [
                           Center(
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                vertical:
-                                    isSmall
-                                        ? AppTheme.spacingLarge
-                                        : AppTheme.spacingXXlarge,
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 450,
+                                minHeight: constraints.maxHeight * 0.7,
                               ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    isSmall
-                                        ? AppTheme.spacingLarge
-                                        : AppTheme.spacingXlarge,
-                                vertical:
-                                    isSmall
-                                        ? AppTheme.spacingXlarge
-                                        : AppTheme.spacingXXlarge,
-                              ),
-                              decoration: AppTheme.premiumGlassDecoration(),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  BrandLogo(
-                                        size: isSmall ? 80 : 100,
-                                        imagePath:
-                                            'assets/images/feature_graphic.png',
-                                        showName: true,
-                                        nameFontSize: AppTheme.adaptiveFontSize(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isSmall ? 20 : 32,
+                                  vertical: isSmall ? 32 : 48,
+                                ),
+                                decoration: AppTheme.loginContainerDecoration(
+                                  isDark: isDark,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    BrandLogo(
+                                          size: isSmall ? 80 : 100,
+                                          imagePath:
+                                              'assets/images/feature_graphic.png',
+                                          showName: true,
+                                          nameFontSize:
+                                              AppTheme.adaptiveFontSize(
+                                                context,
+                                                32,
+                                              ),
+                                        )
+                                        .animate()
+                                        .fadeIn(duration: 800.ms)
+                                        .scale(
+                                          begin: const Offset(0.9, 0.9),
+                                          curve: Curves.easeOutBack,
+                                        ),
+                                    const SizedBox(
+                                      height: AppTheme.spacingSmall,
+                                    ),
+                                    Text(
+                                      'Your Personal Health Sanctuary',
+                                      style: AppTheme.outfit(
+                                        context: context,
+                                        fontSize: AppTheme.adaptiveFontSize(
                                           context,
-                                          32,
+                                          14,
                                         ),
-                                      )
-                                      .animate()
-                                      .fadeIn(duration: 800.ms)
-                                      .scale(
-                                        begin: const Offset(0.9, 0.9),
-                                        curve: Curves.easeOutBack,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.7),
                                       ),
-                                  const SizedBox(height: AppTheme.spacingSmall),
-                                  Text(
-                                        'Your Personal Health Sanctuary',
-                                        style: AppTheme.outfit(
-                                          fontSize: AppTheme.adaptiveFontSize(
-                                            context,
-                                            14,
-                                          ),
-                                          color: AppTheme.textSecondary
-                                              .withValues(alpha: 0.7),
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      )
-                                      .animate()
-                                      .fadeIn(delay: 400.ms)
-                                      .slideY(begin: 0.2),
-                                  SizedBox(
-                                    height:
-                                        isSmall
-                                            ? AppTheme.spacingXlarge
-                                            : AppTheme.spacingXXlarge,
-                                  ),
-                                  GoogleAuthButton(
+                                      textAlign: TextAlign.center,
+                                    ).animate().fadeIn(delay: 400.ms),
+                                    SizedBox(
+                                      height:
+                                          isSmall
+                                              ? AppTheme.spacingXlarge
+                                              : AppTheme.spacingXXlarge,
+                                    ),
+                                    Semantics(
+                                      label: 'Sign in with Google',
+                                      button: true,
+                                      child: GoogleAuthButton(
                                         onTap:
                                             () => _handleLogin(context, true),
-                                        onNameFetched: (name) {
-                                          if (context.mounted) {
-                                            final storage =
-                                                context.read<StorageService>();
-                                            _navigateToPostLogin(
-                                              context,
-                                              storage,
-                                              name,
-                                            );
-                                          }
-                                        },
-                                      )
-                                      .animate()
-                                      .fadeIn(delay: 600.ms)
-                                      .slideY(begin: 0.1),
-                                  const SizedBox(
-                                    height: AppTheme.spacingMedium,
-                                  ),
-                                  _AuthButton(
+                                      ),
+                                    ).animate().fadeIn(delay: 400.ms),
+                                    const SizedBox(
+                                      height: AppTheme.spacingMedium,
+                                    ),
+                                    Semantics(
+                                      label: 'Continue as guest',
+                                      button: true,
+                                      child: _AuthButton(
                                         label: 'Continue as Guest',
                                         icon: Icons.person_outline_rounded,
                                         isPrimary: false,
                                         onTap:
                                             () => _handleLogin(context, false),
                                         isSmall: isSmall,
-                                      )
-                                      .animate()
-                                      .fadeIn(delay: 750.ms)
-                                      .slideY(begin: 0.1),
-                                  SizedBox(
-                                    height:
-                                        isSmall
-                                            ? AppTheme.spacingXlarge
-                                            : AppTheme.spacingHuge,
-                                  ),
-                                  Container(
-                                        padding: EdgeInsets.all(
+                                      ),
+                                    ).animate().fadeIn(delay: 500.ms),
+                                    SizedBox(
+                                      height:
                                           isSmall
-                                              ? AppTheme.spacingMedium
-                                              : AppTheme.spacingLarge,
-                                        ),
-                                        decoration: AppTheme.glassDecoration(
-                                          radius: 20,
-                                          opacity: 0.05,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.shield_moon_rounded,
-                                                  size: isSmall ? 16 : 18,
-                                                  color: AppTheme.accentPink,
-                                                ),
-                                                const SizedBox(
-                                                  width: AppTheme.spacingSmall,
-                                                ),
-                                                Text(
-                                                  'Privacy Assured',
-                                                  style: AppTheme.outfit(
-                                                    fontSize: isSmall ? 14 : 15,
-                                                    fontWeight: FontWeight.w700,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(
-                                              height: AppTheme.spacingSmall,
-                                            ),
-                                            Text(
-                                              'Your data is private, encrypted, and stays with you.',
-                                              style: AppTheme.outfit(
-                                                fontSize: isSmall ? 11 : 12,
-                                                color: AppTheme.textSecondary
-                                                    .withValues(alpha: 0.8),
+                                              ? AppTheme.spacingXlarge
+                                              : AppTheme.spacingHuge,
+                                    ),
+                                    ThemedContainer(
+                                      type: ContainerType.glass,
+                                      radius: 20,
+                                      padding: EdgeInsets.all(
+                                        isSmall ? 16 : 24,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.shield_moon_rounded,
+                                                size: isSmall ? 16 : 18,
+                                                color:
+                                                    Theme.of(
+                                                      context,
+                                                    ).colorScheme.primary,
                                               ),
-                                              textAlign: TextAlign.center,
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Privacy Assured',
+                                                style: AppTheme.outfit(
+                                                  context: context,
+                                                  fontSize: isSmall ? 14 : 15,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            'Your data is private, encrypted, and stays with you.',
+                                            style: AppTheme.outfit(
+                                              context: context,
+                                              fontSize: isSmall ? 11 : 12,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.7),
                                             ),
-                                          ],
-                                        ),
-                                      )
-                                      .animate()
-                                      .fadeIn(delay: 900.ms)
-                                      .scale(begin: const Offset(0.95, 0.95)),
-                                ],
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
+                          const SizedBox(height: 32),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 24),
                             child: Wrap(
                               alignment: WrapAlignment.center,
                               crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: 12, // Increased as per user suggestion
+                              spacing: 12,
                               runSpacing: 12,
                               children: [
-                                _FooterLink(label: 'Terms', onTap: () {}),
+                                _FooterLink(
+                                  label: 'Terms',
+                                  onTap:
+                                      () => _showLegalDialog(
+                                        context,
+                                        'Terms of Service',
+                                        'By using Her-Flowmate, you agree to our terms of service...',
+                                      ),
+                                ),
                                 _Bullet(),
-                                _FooterLink(label: 'Privacy', onTap: () {}),
+                                _FooterLink(
+                                  label: 'Privacy',
+                                  onTap:
+                                      () => _showLegalDialog(
+                                        context,
+                                        'Privacy Policy',
+                                        'Your privacy is our top priority. We do not sell your data...',
+                                      ),
+                                ),
                                 _Bullet(),
-                                _FooterLink(label: 'Support', onTap: () {}),
+                                _FooterLink(
+                                  label: 'Support',
+                                  onTap:
+                                      () => _showLegalDialog(
+                                        context,
+                                        'Support',
+                                        'Need help? Contact us at support@herflowmate.app',
+                                      ),
+                                ),
                               ],
                             ),
                           ).animate().fadeIn(delay: 800.ms),
@@ -248,39 +265,88 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin(BuildContext context, bool isGoogle) async {
     final storage = context.read<StorageService>();
-    String? fetchedName;
+    String? name;
 
-    if (isGoogle) {
-      if (kIsWeb) {
-        debugPrint('LoginScreen: GSI button clicked on Web.');
-        return;
-      }
-
-      final token = await GoogleAuthService.signInAndGetToken();
-
-      if (token == null) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Google Sign-In failed or was canceled.'),
-            ),
-          );
+    try {
+      if (isGoogle) {
+        if (kIsWeb) {
+          await _handleWebSignIn(context);
+          return;
         }
-        return;
+
+        final token = await GoogleAuthService.signInAndGetToken();
+        if (token == null) {
+          if (context.mounted) _showError(context, 'Sign-in canceled.');
+          return;
+        }
+
+        final userData = await GoogleAuthService.authenticateWithBackend(token);
+        name = userData?['name'] ?? userData?['given_name'];
       }
 
-      final userData = await GoogleAuthService.authenticateWithBackend(token);
-      if (userData != null && userData['name'] != null) {
-        fetchedName = userData['name'] as String;
-      } else if (userData != null && userData['given_name'] != null) {
-        fetchedName = userData['given_name'] as String;
+      if (!context.mounted) return;
+      await storage.completeLogin(isGoogle, name ?? '');
+
+      if (!context.mounted) return;
+      _navigateToPostLogin(context, storage, name);
+    } catch (e) {
+      if (context.mounted) {
+        _showError(context, 'An unexpected error occurred during sign-in.');
       }
     }
+  }
 
-    if (!context.mounted) return;
-    await storage.completeLogin(isGoogle, fetchedName ?? '');
-    if (!context.mounted) return;
-    _navigateToPostLogin(context, storage, fetchedName);
+  Future<void> _handleWebSignIn(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Web Sign-In'),
+            content: const Text(
+              'Google Sign-In for web is not yet implemented in this preview. Please use Guest login.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showError(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Sign-in Error'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showLegalDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(child: Text(content)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
+          ),
+    );
   }
 
   void _navigateToPostLogin(
@@ -392,7 +458,7 @@ class _FooterLink extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: AppTheme.textSecondary.withValues(alpha: 0.6),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
           ),
         ),
       ),
@@ -407,7 +473,7 @@ class _Bullet extends StatelessWidget {
       width: 4,
       height: 4,
       decoration: BoxDecoration(
-        color: AppTheme.accentPink.withValues(alpha: 0.3),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
         shape: BoxShape.circle,
       ),
     );

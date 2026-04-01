@@ -22,6 +22,9 @@ class PeriodLog extends HiveObject {
   @HiveField(5)
   final DateTime? endDate;
 
+  @HiveField(6)
+  final bool isAM;
+
   PeriodLog({
     required this.startDate,
     required this.duration,
@@ -29,6 +32,7 @@ class PeriodLog extends HiveObject {
     this.symptoms,
     this.mood,
     this.endDate,
+    this.isAM = true,
   });
 }
 
@@ -50,13 +54,14 @@ class PeriodLogAdapter extends TypeAdapter<PeriodLog> {
       symptoms: (fields[3] as List?)?.cast<String>(),
       mood: fields[4] as String?,
       endDate: fields[5] as DateTime?,
+      isAM: fields[6] as bool? ?? true,
     );
   }
 
   @override
   void write(BinaryWriter writer, PeriodLog obj) {
     writer
-      ..writeByte(6) // Updated count
+      ..writeByte(7) // Updated count
       ..writeByte(0)
       ..write(obj.startDate)
       ..writeByte(1)
@@ -68,7 +73,9 @@ class PeriodLogAdapter extends TypeAdapter<PeriodLog> {
       ..writeByte(4)
       ..write(obj.mood)
       ..writeByte(5)
-      ..write(obj.endDate);
+      ..write(obj.endDate)
+      ..writeByte(6)
+      ..write(obj.isAM);
   }
 
   @override

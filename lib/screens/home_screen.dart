@@ -29,6 +29,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late ConfettiController _confettiController;
 
+  // ───── Confetti guard ─────
+  // Prevents confetti from firing on every rebuild when the streak happens
+  // to be a multiple of 7.  Once the confetti has been shown for the current
+  // milestone it is suppressed until the streak value changes.
+  int? _lastConfettiMilestone;
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +64,24 @@ class _HomeScreenState extends State<HomeScreen> {
       );
       storage.markInfoPopupAsSeen();
     }
+  }
+
+  /// Fires confetti *once* when the streak hits a 7‑day milestone and the
+  /// milestone has not already been celebrated in the current session.
+  void _maybeFireConfetti(int streak) {
+    if (streak <= 0) return;
+    final isMilestone = streak % 7 == 0;
+    if (!isMilestone) {
+      // Streak is no longer a milestone — reset so confetti can fire again
+      // when the user hits the next one.
+      _lastConfettiMilestone = null;
+      return;
+    }
+    // Already showed confetti for this milestone this session.
+    if (_lastConfettiMilestone == streak) return;
+
+    _lastConfettiMilestone = streak;
+    _confettiController.play();
   }
 
   @override
@@ -502,10 +526,10 @@ class _HomeScreenState extends State<HomeScreen> {
     String quality = '—';
     Color qualityColor = AppTheme.textSecondary;
     if (hasData) {
-      if (sleepHours >= 8) {
+      if (sleepHours >= AppConstants.greatSleepHours) {
         quality = 'Great';
         qualityColor = const Color(0xFF66BB6A);
-      } else if (sleepHours >= 6) {
+      } else if (sleepHours >= AppConstants.okSleepHours) {
         quality = 'Ok';
         qualityColor = const Color(0xFFFFB347);
       } else {
@@ -602,26 +626,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildStreakCard(BuildContext context, StorageService storage) {
     final streak = storage.getCheckinStreak();
-    final isMilestone = streak > 0 && (streak % 7 == 0);
 
-    if (isMilestone && streak > 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _confettiController.play();
-      });
-    }
+    // Use a guard to prevent confetti from firing on every rebuild.
+    _maybeFireConfetti(streak);
 
     String streakLabel;
     Color streakColor;
     String emoji;
-    if (streak >= 30) {
+    if (streak >= AppConstants.streakMilestones.last) {
       streakLabel = 'Legend!';
       streakColor = const Color(0xFFD481FF);
       emoji = '🏆';
-    } else if (streak >= 14) {
+    } else if (streak >= AppConstants.streakMilestones[1]) {
       streakLabel = 'On fire!';
       streakColor = const Color(0xFFFF9800);
       emoji = '🔥';
-    } else if (streak >= 7) {
+    } else if (streak >= AppConstants.streakMilestones.first) {
       streakLabel = '1 week!';
       streakColor = const Color(0xFF66BB6A);
       emoji = '⭐';
@@ -847,6 +867,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBentoWaterCard(StorageService storage) {
     final log = storage.getDailyLog(DateTime.now());
     final water = log?.waterIntake ?? 0;
+    final goal = storage.hydrationGoal;
 
     return NeuContainer(
       padding: const EdgeInsets.all(20),
@@ -928,9 +949,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 14),
-          // Glass markers row
+          // Glass markers row (dynamic based on goal)
           Row(
-            children: List.generate(20, (i) {
+            children: List.generate(goal, (i) {
               final filled = i < water;
               return Expanded(
                 child: Container(
@@ -949,7 +970,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            '$water / 20 glasses',
+            '$water / ${storage.hydrationGoal} glasses',
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w700,
@@ -1247,17 +1268,18 @@ class _HomeScreenState extends State<HomeScreen> {
     debugPrint('HomeScreen: _addWater called');
     final now = DateTime.now();
     final log = storage.getDailyLog(now) ?? DailyLog(date: now, waterIntake: 0);
-    final newWater = ((log.waterIntake ?? 0) + 1).clamp(0, 20);
+    final goal = storage.hydrationGoal;
+    final newWater = ((log.waterIntake ?? 0) + 1).clamp(0, goal);
 
     // Check for celebration milestone
-    if (newWater == 20 && log.waterIntake != 20) {
+    if (newWater == goal && (log.waterIntake ?? 0) < goal) {
       _confettiController.play();
       if (mounted) {
         showGlassInfoPopup(
           context,
           title: 'Hydration Goal Met! 💧',
           explanation:
-              'Amazing! You successfully reached 20 glasses of water today.',
+              'Amazing! You successfully reached $goal glasses of water today.',
           tip:
               'You are maintaining a great hydration streak. Your body thanks you!',
         );
@@ -1285,11 +1307,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final log = storage.getDailyLog(now);
     if (log == null) return;
 
+    final goal = storage.hydrationGoal;
     final updatedLog = DailyLog(
       date: log.date,
       moods: log.moods,
       symptoms: log.symptoms,
-      waterIntake: ((log.waterIntake ?? 0) - 1).clamp(0, 20),
+      waterIntake: ((log.waterIntake ?? 0) - 1).clamp(0, goal),
       notes: log.notes,
       flowIntensity: log.flowIntensity,
       physicalActivity: log.physicalActivity,
@@ -1307,20 +1330,27 @@ class _HomeScreenState extends State<HomeScreen> {
     final phaseName = pred.phaseDisplayName;
     final day = pred.currentCycleDay == 0 ? 1 : pred.currentCycleDay;
     final cycleLen = pred.averageCycleLength;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Responsive sizing based on screen width
+    final ringSize = (screenWidth * 0.55).clamp(160.0, 240.0);
+    final innerSize = ringSize * 0.77; // ~170/220 ratio
+    final glowSize = ringSize * 0.64; // ~140/220 ratio
+    final outerRing = ringSize * 0.95; // ~210/220 ratio
 
     return Column(
       children: [
         // Center: Glowing Ring
         SizedBox(
-          width: 220,
-          height: 220,
+          width: ringSize,
+          height: ringSize,
           child: Stack(
             alignment: Alignment.center,
             children: [
               // Soft Glow Effect
               Container(
-                width: 140,
-                height: 140,
+                width: glowSize,
+                height: glowSize,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
@@ -1328,15 +1358,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: AppTheme.phaseColor(
                         phaseName,
                       ).withValues(alpha: 0.25),
-                      blurRadius: 40,
-                      spreadRadius: 8,
+                      blurRadius: ringSize * 0.18,
+                      spreadRadius: ringSize * 0.04,
                     ),
                   ],
                 ),
               ),
               SizedBox(
-                width: 210,
-                height: 210,
+                width: outerRing,
+                height: outerRing,
                 child: CustomPaint(
                   painter: _CycleRingPainter(
                     progress: day / (cycleLen == 0 ? 28 : cycleLen),
@@ -1359,9 +1389,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     tip: 'Common symptoms: ${symptoms.join(", ")}',
                   );
                 },
-                width: 170,
-                height: 170,
-                radius: 85,
+                width: innerSize,
+                height: innerSize,
+                radius: innerSize / 2,
                 style: NeuStyle.convex,
                 borderColor: Colors.white.withValues(alpha: 0.5),
                 child: Center(
@@ -1371,7 +1401,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         phaseName.toUpperCase(),
                         style: GoogleFonts.poppins(
-                          fontSize: 16,
+                          fontSize: (ringSize * 0.073).clamp(12.0, 16.0),
                           fontWeight: FontWeight.w800,
                           color: AppTheme.phaseColor(phaseName),
                         ),
@@ -1381,7 +1411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Day $day / $cycleLen',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
+                          fontSize: (ringSize * 0.064).clamp(11.0, 14.0),
                           fontWeight: FontWeight.w600,
                           color: AppTheme.textSecondary,
                         ),
@@ -1393,7 +1423,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 24),
         _buildPredictiveMessage(pred),
       ],
     );

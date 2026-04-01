@@ -8,6 +8,7 @@ import 'package:her_flowmate/models/period_log.dart';
 
 // Fake StorageService that circumvents Hive for headless widget testing
 class FakeStorageService extends StorageService {
+  FakeStorageService() : super.internal();
   List<PeriodLog> logs = [];
   bool loggedIn = false;
   String customName = '';

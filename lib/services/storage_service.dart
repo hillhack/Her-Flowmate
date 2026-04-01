@@ -6,13 +6,15 @@ import '../models/period_log.dart';
 import '../models/daily_log.dart';
 import '../models/appointment.dart';
 import 'notification_service.dart';
+import '../utils/constants.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class StorageService extends ChangeNotifier {
-  StorageService();
-  static final StorageService _instance = StorageService();
+  // ── Singleton Pattern: Allow internal/test instantiation ─────────────────
+  StorageService.internal();
+  static final StorageService _instance = StorageService.internal();
   static StorageService get instance => _instance;
 
   static const String boxName = 'period_logs';
@@ -214,7 +216,8 @@ class StorageService extends ChangeNotifier {
       int count = 0;
       for (int i = 0; i < logs.length - 1; i++) {
         final diff = logs[i].startDate.difference(logs[i + 1].startDate).inDays;
-        if (diff > 15 && diff < 90) {
+        if (diff > AppConstants.minCycleLength &&
+            diff < AppConstants.maxCycleLength) {
           totalDays += diff;
           count++;
         }
@@ -229,7 +232,9 @@ class StorageService extends ChangeNotifier {
 
     // Schedule ovulation reminder (approx 14 days before next period)
     if (userGoal != 'pregnant') {
-      final ovulationDate = nextDate.subtract(const Duration(days: 14));
+      final ovulationDate = nextDate.subtract(
+        const Duration(days: AppConstants.ovulationOffsetFromPeriod),
+      );
       await NotificationService().scheduleOvulationReminder(ovulationDate);
     }
 
@@ -332,7 +337,8 @@ class StorageService extends ChangeNotifier {
   // --- Health Tracker & Dashboard Helpers ---
 
   // ── Hydration goal (user-configurable) ──────────────────────────────────
-  int get hydrationGoal => _prefs.getInt('hydrationGoal') ?? 8;
+  int get hydrationGoal =>
+      _prefs.getInt('hydrationGoal') ?? AppConstants.defaultHydrationGoal;
 
   Future<void> setHydrationGoal(int glasses) async {
     await _prefs.setInt('hydrationGoal', glasses);
@@ -438,7 +444,9 @@ class StorageService extends ChangeNotifier {
   /// Returns appointments in the next 30 days, sorted by date.
   List<Appointment> getUpcomingAppointments() {
     final now = DateTime.now();
-    final limit = now.add(const Duration(days: 30));
+    final limit = now.add(
+      const Duration(days: AppConstants.upcomingAppointmentDays),
+    );
     final appts =
         _appointmentBox.values
             .where((a) => a.date.isAfter(now) && a.date.isBefore(limit))

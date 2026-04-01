@@ -13,17 +13,21 @@ import 'services/google_auth_services.dart';
 import 'providers/community_provider.dart';
 import 'domain/use_cases/get_community_feed.dart';
 import 'data/repositories/mock_community_repository.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
-import 'package:sentry_flutter/sentry_flutter.dart';
-
+/// Application entry point.
+///
+/// Sentry integration has been removed until a valid DSN is configured.
+/// To re-enable it, add `sentry_flutter` back to pubspec.yaml and wrap
+/// the `runApp()` call with `SentryFlutter.init()`.
 Future<void> main() async {
   // ── Global Error Handling ────────────────────────────────────────────────
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    if (Sentry.isEnabled) {
-      Sentry.captureException(details.exception, stackTrace: details.stack);
-    }
     debugPrint('FLUTTER ERROR: ${details.exception}');
+    // TODO: Integrate Sentry or another crash reporter with a real DSN
   };
 
   // Catch errors that happen during building/rendering
@@ -31,25 +35,21 @@ Future<void> main() async {
     return MaterialAppearanceErrorScreen(details: details);
   };
 
-  const sentryDsn = 'YOUR_SENTRY_DSN_HERE';
+  WidgetsFlutterBinding.ensureInitialized();
 
-  if (sentryDsn == 'YOUR_SENTRY_DSN_HERE') {
-    debugPrint('Sentry DSN is placeholder. Running without Sentry.');
-    WidgetsFlutterBinding.ensureInitialized();
-    runApp(const BootstrapScreen());
-    return;
+  // Initialize timezone database
+  tz.initializeTimeZones();
+
+  // Get device timezone
+  try {
+    final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+  } catch (e) {
+    debugPrint('Could not get local timezone, defaulting to UTC: $e');
   }
 
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = sentryDsn;
-      options.tracesSampleRate = 1.0;
-    },
-    appRunner: () {
-      WidgetsFlutterBinding.ensureInitialized();
-      runApp(const BootstrapScreen());
-    },
-  );
+  // ── Launch the bootstrap sequence ────────────────────────────────────────
+  runApp(const BootstrapScreen());
 }
 
 /// A robust startup screen that handles initialization of services.
@@ -170,9 +170,10 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
           update: (context, storage, previous) => PredictionService(storage),
         ),
         ChangeNotifierProvider(
-          create: (_) => CommunityProvider(
-            getFeedUseCase: GetCommunityFeed(MockCommunityRepository()),
-          ),
+          create:
+              (_) => CommunityProvider(
+                getFeedUseCase: GetCommunityFeed(MockCommunityRepository()),
+              ),
         ),
       ],
       child: const HerFlowmateApp(),

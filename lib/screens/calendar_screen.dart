@@ -50,213 +50,237 @@ class _CalendarScreenState extends State<CalendarScreen> {
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         child: SafeArea(
           bottom: false,
-          child: Column(
-            children: [
-              // Custom Top Bar (replacing AppBar)
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 24,
-                  right: 24,
-                  top: 24,
-                  bottom: 16,
-                ),
-                child: Row(
-                  children: [
-                    Builder(
-                      builder:
-                          (context) => NeuContainer(
-                            padding: const EdgeInsets.all(10),
-                            radius: 18,
-                            style: NeuStyle.convex,
-                            onTap: () => Scaffold.of(context).openDrawer(),
-                            child: const Icon(
-                              Icons.menu_rounded,
-                              color: AppTheme.accentPink,
-                              size: 26,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final screenWidth = constraints.maxWidth;
+              final isSmallScreen = screenWidth < 360;
+              final hPad = isSmallScreen ? 12.0 : 20.0;
+
+              return Column(
+                children: [
+                  // Custom Top Bar (replacing AppBar)
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: isSmallScreen ? 16 : 24,
+                      right: isSmallScreen ? 16 : 24,
+                      top: 24,
+                      bottom: 16,
+                    ),
+                    child: Row(
+                      children: [
+                        Builder(
+                          builder:
+                              (context) => NeuContainer(
+                                padding: const EdgeInsets.all(10),
+                                radius: 18,
+                                style: NeuStyle.convex,
+                                onTap: () => Scaffold.of(context).openDrawer(),
+                                child: const Icon(
+                                  Icons.menu_rounded,
+                                  color: AppTheme.accentPink,
+                                  size: 26,
+                                ),
+                              ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              'Cycle Calendar',
+                              style: GoogleFonts.poppins(
+                                color: AppTheme.midnightPlum,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 22,
+                                letterSpacing: -0.5,
+                              ),
                             ),
                           ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'Cycle Calendar',
-                          style: GoogleFonts.poppins(
-                            color: AppTheme.midnightPlum,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 22,
-                            letterSpacing: -0.5,
-                          ),
                         ),
+                        const NotificationBell(),
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: isSmallScreen ? 8 : 16),
+                          Padding(
+                                padding: EdgeInsets.symmetric(horizontal: hPad),
+                                child: GlassContainer(
+                                  radius: 32,
+                                  padding: const EdgeInsets.all(16),
+                                  child: TableCalendar(
+                                    firstDay: DateTime.utc(2020, 1, 1),
+                                    lastDay: DateTime.utc(2030, 12, 31),
+                                    focusedDay: _focusedDay,
+                                    selectedDayPredicate:
+                                        (day) => isSameDay(_selectedDay, day),
+                                    onDaySelected: (selectedDay, focusedDay) {
+                                      setState(() {
+                                        _selectedDay = selectedDay;
+                                        _focusedDay = focusedDay;
+                                      });
+                                      _showDailyLogSheet(context, selectedDay);
+                                    },
+                                    calendarFormat: CalendarFormat.month,
+                                    headerStyle: HeaderStyle(
+                                      formatButtonVisible: false,
+                                      titleCentered: true,
+                                      titleTextStyle: GoogleFonts.poppins(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppTheme.midnightPlum,
+                                      ),
+                                      leftChevronIcon: const Icon(
+                                        Icons.chevron_left_rounded,
+                                        color: AppTheme.accentPink,
+                                        size: 28,
+                                      ),
+                                      rightChevronIcon: const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: AppTheme.accentPink,
+                                        size: 28,
+                                      ),
+                                    ),
+                                    daysOfWeekStyle: DaysOfWeekStyle(
+                                      weekdayStyle: GoogleFonts.inter(
+                                        color: AppTheme.textSecondary,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      weekendStyle: GoogleFonts.inter(
+                                        color: AppTheme.accentPink,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    calendarBuilders: CalendarBuilders(
+                                      defaultBuilder: (
+                                        context,
+                                        day,
+                                        focusedDay,
+                                      ) {
+                                        return _buildCalendarCell(
+                                          day,
+                                          pred,
+                                          storage,
+                                          isSelected: false,
+                                        );
+                                      },
+                                      selectedBuilder: (
+                                        context,
+                                        day,
+                                        focusedDay,
+                                      ) {
+                                        return _buildCalendarCell(
+                                          day,
+                                          pred,
+                                          storage,
+                                          isSelected: true,
+                                        );
+                                      },
+                                      todayBuilder: (context, day, focusedDay) {
+                                        return _buildCalendarCell(
+                                          day,
+                                          pred,
+                                          storage,
+                                          isSelected: false,
+                                          isToday: true,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .animate()
+                              .fadeIn(duration: 400.ms)
+                              .slideY(begin: 0.1),
+
+                          SizedBox(height: isSmallScreen ? 16 : 32),
+
+                          // Legend
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: hPad),
+                            child: _buildLegend(
+                              pred,
+                              isSmallScreen: isSmallScreen,
+                            ),
+                          ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+
+                          SizedBox(height: isSmallScreen ? 16 : 24),
+
+                          // Floating Phase Explanation Card
+                          if (_selectedDay != null)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: hPad),
+                              child: _buildPhaseExplanationCard(
+                                context,
+                                pred,
+                                _selectedDay!,
+                                isSmallScreen: isSmallScreen,
+                              ),
+                            ),
+
+                          SizedBox(height: isSmallScreen ? 16 : 24),
+
+                          // Additional Actions - disabled on small screens to save space
+                          if (!isSmallScreen)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: hPad),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: NeuContainer(
+                                      radius: 20,
+                                      onTap: () {},
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Add Note',
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w700,
+                                              color: AppTheme.textDark,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: NeuContainer(
+                                      radius: 20,
+                                      onTap: () => Navigator.pop(context),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'View Insights',
+                                            style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w700,
+                                              color: AppTheme.textDark,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).animate().fadeIn(delay: 400.ms),
+
+                          SizedBox(height: isSmallScreen ? 80 : 100),
+                        ],
                       ),
                     ),
-                    const NotificationBell(),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: GlassContainer(
-                          radius: 32,
-                          padding: const EdgeInsets.all(16),
-                          child: TableCalendar(
-                            firstDay: DateTime.utc(2020, 1, 1),
-                            lastDay: DateTime.utc(2030, 12, 31),
-                            focusedDay: _focusedDay,
-                            selectedDayPredicate:
-                                (day) => isSameDay(_selectedDay, day),
-                            onDaySelected: (selectedDay, focusedDay) {
-                              setState(() {
-                                _selectedDay = selectedDay;
-                                _focusedDay = focusedDay;
-                              });
-                              _showDailyLogSheet(context, selectedDay);
-                            },
-                            calendarFormat: CalendarFormat.month,
-                            headerStyle: HeaderStyle(
-                              formatButtonVisible: false,
-                              titleCentered: true,
-                              titleTextStyle: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                color: AppTheme.midnightPlum,
-                              ),
-                              leftChevronIcon: const Icon(
-                                Icons.chevron_left_rounded,
-                                color: AppTheme.accentPink,
-                                size: 28,
-                              ),
-                              rightChevronIcon: const Icon(
-                                Icons.chevron_right_rounded,
-                                color: AppTheme.accentPink,
-                                size: 28,
-                              ),
-                            ),
-                            daysOfWeekStyle: DaysOfWeekStyle(
-                              weekdayStyle: GoogleFonts.inter(
-                                color: AppTheme.textSecondary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              weekendStyle: GoogleFonts.inter(
-                                color: AppTheme.accentPink,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            calendarBuilders: CalendarBuilders(
-                              defaultBuilder: (context, day, focusedDay) {
-                                return _buildCalendarCell(
-                                  day,
-                                  pred,
-                                  storage,
-                                  isSelected: false,
-                                );
-                              },
-                              selectedBuilder: (context, day, focusedDay) {
-                                return _buildCalendarCell(
-                                  day,
-                                  pred,
-                                  storage,
-                                  isSelected: true,
-                                );
-                              },
-                              todayBuilder: (context, day, focusedDay) {
-                                return _buildCalendarCell(
-                                  day,
-                                  pred,
-                                  storage,
-                                  isSelected: false,
-                                  isToday: true,
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
-
-                      const SizedBox(height: 32),
-
-                      // Legend
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: _buildLegend(pred),
-                      ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
-
-                      const SizedBox(height: 24),
-
-                      // Floating Phase Explanation Card
-                      if (_selectedDay != null)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                          child: _buildPhaseExplanationCard(
-                            context,
-                            pred,
-                            _selectedDay!,
-                          ),
-                        ),
-
-                      const SizedBox(height: 24),
-
-                      // Additional Actions
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: NeuContainer(
-                                radius: 20,
-                                onTap: () {},
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Add Note',
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.textDark,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: NeuContainer(
-                                radius: 20,
-                                onTap: () => Navigator.pop(context),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'View Insights',
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w700,
-                                        color: AppTheme.textDark,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ).animate().fadeIn(delay: 400.ms),
-
-                      const SizedBox(height: 120),
-                    ],
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -266,8 +290,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildPhaseExplanationCard(
     BuildContext context,
     PredictionService pred,
-    DateTime date,
-  ) {
+    DateTime date, {
+    bool isSmallScreen = false,
+  }) {
     final cycleDay = pred.getCycleDay(date);
     final phase = pred.getPhaseForDay(date);
     final biology = pred.getPhaseBiology(cycleDay);
@@ -413,19 +438,62 @@ class _CalendarScreenState extends State<CalendarScreen> {
     ).animate().fadeIn().slideY(begin: 0.05);
   }
 
-  Widget _buildLegend(PredictionService pred) {
+  Widget _buildLegend(PredictionService pred, {bool isSmallScreen = false}) {
     return NeuContainer(
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-      radius: 28,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      padding: EdgeInsets.symmetric(
+        vertical: isSmallScreen ? 16 : 24,
+        horizontal: isSmallScreen ? 8 : 16,
+      ),
+      radius: isSmallScreen ? 20 : 28,
+      child: Wrap(
+        spacing: isSmallScreen ? 8 : 12,
+        runSpacing: 4,
+        alignment: WrapAlignment.spaceEvenly,
         children: [
-          _buildLegendItem('Period', AppTheme.phaseColors['Menstrual']!),
-          _buildLegendItem('Follicular', AppTheme.phaseColors['Follicular']!),
-          _buildLegendItem('Ovulation', AppTheme.phaseColors['Ovulation']!),
-          _buildLegendItem('Luteal', AppTheme.phaseColors['Luteal']!),
+          _buildLegendItem(
+            'Period',
+            AppTheme.phaseColors['Menstrual']!,
+            isSmallScreen,
+          ),
+          _buildLegendItem(
+            'Follicular',
+            AppTheme.phaseColors['Follicular']!,
+            isSmallScreen,
+          ),
+          _buildLegendItem(
+            'Ovulation',
+            AppTheme.phaseColors['Ovulation']!,
+            isSmallScreen,
+          ),
+          _buildLegendItem(
+            'Luteal',
+            AppTheme.phaseColors['Luteal']!,
+            isSmallScreen,
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLegendItem(String label, Color color, bool isSmallScreen) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: isSmallScreen ? 10 : 12,
+          height: isSmallScreen ? 10 : 12,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        SizedBox(width: isSmallScreen ? 4 : 8),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            color: AppTheme.midnightPlum,
+            fontSize: isSmallScreen ? 10 : 13,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
     );
   }
 
@@ -555,28 +623,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
         ],
       ),
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            color: AppTheme.midnightPlum,
-            fontSize: 13,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
     );
   }
 }

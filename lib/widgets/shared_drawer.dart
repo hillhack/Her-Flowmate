@@ -14,6 +14,7 @@ import '../screens/feedback_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/wellness_reminders_screen.dart';
 import '../screens/community_screen.dart';
+import '../screens/about_screen.dart';
 
 class SharedDrawer extends StatelessWidget {
   const SharedDrawer({super.key});
@@ -202,19 +203,28 @@ class SharedDrawer extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const BrandName(fontSize: 14),
-                  Text(
-                    ' v1.2.0',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.w500,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AboutAppScreen()),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const BrandName(fontSize: 14),
+                    Text(
+                      ' v1.0.1',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -222,7 +232,6 @@ class SharedDrawer extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _actionDrawerItem({
     required BuildContext context,

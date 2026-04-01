@@ -10,69 +10,68 @@ class BrandName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            // "Her" - Bold & Vibrant Cursive
-            ShaderMask(
-              shaderCallback:
-                  (bounds) => const LinearGradient(
-                    colors: [
-                      Color(0xFFFF1493),
-                      Color(0xFFFF69B4),
-                    ], // Magenta to Hot Pink
-                  ).createShader(
-                    Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                  ),
-              child: Text(
-                'Her ',
-                style: GoogleFonts.dancingScript(
-                  fontSize: fontSize * 1.35,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      color: const Color(0xFFFF1493).withValues(alpha: 0.5),
-                      blurRadius: 15,
+    return FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              // "Her" - Bold & Vibrant Cursive
+              ShaderMask(
+                shaderCallback:
+                    (bounds) => const LinearGradient(
+                      colors: [Color(0xFFFF1493), Color(0xFFFF69B4)],
+                    ).createShader(
+                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
                     ),
-                  ],
+                child: Text(
+                  'Her ',
+                  style: GoogleFonts.dancingScript(
+                    fontSize: fontSize * 1.35,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.2, // Improved line-height
+                    shadows: [
+                      Shadow(
+                        color: const Color(0xFFFF1493).withValues(alpha: 0.5),
+                        blurRadius: 15,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // "FlowMate" - Modern High-Contrast
-            ShaderMask(
-              shaderCallback:
-                  (bounds) => const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFFFF69B4),
-                      Color(0xFF9370DB),
-                    ], // Pink to Radiant Purple
-                  ).createShader(
-                    Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                  ),
-              child: Text(
-                'FlowMate',
-                style: AppTheme.playfair(
-                  fontSize: fontSize * 0.95,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                ).copyWith(
-                  letterSpacing: 0.5,
-                  shadows: [
-                    Shadow(
-                      color: const Color(0xFF9370DB).withValues(alpha: 0.5),
-                      blurRadius: 15,
+              // "FlowMate" - Modern High-Contrast
+              ShaderMask(
+                shaderCallback:
+                    (bounds) => const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFFF69B4), Color(0xFF9370DB)],
+                    ).createShader(
+                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
                     ),
-                  ],
+                child: Text(
+                  'FlowMate',
+                  style: AppTheme.playfair(
+                    fontSize: fontSize * 0.95,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ).copyWith(
+                    letterSpacing: 0.5,
+                    height: 1.2, // Improved line-height
+                    shadows: [
+                      Shadow(
+                        color: const Color(0xFF9370DB).withValues(alpha: 0.5),
+                        blurRadius: 15,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
         .animate(onPlay: (c) => c.repeat())
         .shimmer(duration: 2.seconds, color: Colors.white24);

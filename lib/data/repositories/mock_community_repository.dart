@@ -8,12 +8,13 @@ class MockCommunityRepository implements ICommunityRepository {
   Future<List<CommunityPost>> getFeedPosts() async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 800));
-    
+
     return [
       CommunityPost(
         id: '1',
         userName: 'Avery',
-        content: 'I just finished my first yoga session this morning! Feeling so energized. 🧘‍♀️✨',
+        content:
+            'I just finished my first yoga session this morning! Feeling so energized. 🧘‍♀️✨',
         category: 'Self-Care',
         createdAt: DateTime.now().subtract(const Duration(hours: 2)),
         likes: 12,
@@ -21,7 +22,8 @@ class MockCommunityRepository implements ICommunityRepository {
       CommunityPost(
         id: '2',
         userName: 'Luna',
-        content: 'Reminder for everyone in their Luteal phase: be kind to yourself today. You deserve extra rest! 🌸',
+        content:
+            'Reminder for everyone in their Luteal phase: be kind to yourself today. You deserve extra rest! 🌸',
         category: 'Cycle Support',
         createdAt: DateTime.now().subtract(const Duration(hours: 5)),
         likes: 45,
@@ -29,7 +31,8 @@ class MockCommunityRepository implements ICommunityRepository {
       CommunityPost(
         id: '3',
         userName: 'Sasha',
-        content: 'Does anyone have tips for staying hydrated during busy workdays? I\'m struggling with my water goals lately. 💧',
+        content:
+            'Does anyone have tips for staying hydrated during busy workdays? I\'m struggling with my water goals lately. 💧',
         category: 'Wellness',
         createdAt: DateTime.now().subtract(const Duration(days: 1)),
         likes: 8,

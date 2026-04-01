@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -53,24 +52,29 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   Widget _buildBottomBar() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(32),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            height: 80,
-            decoration: AppTheme.glassDecoration(radius: 32, opacity: 0.1),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _bottomNavItem(0, Icons.home_rounded, 'Home'),
-                _bottomNavItem(1, Icons.calendar_month_rounded, 'Calendar'),
-                _logButton(),
-                _bottomNavItem(2, Icons.person_rounded, 'Profile'),
-              ],
-            ),
+        borderRadius: BorderRadius.circular(28),
+        child: Container(
+          height: 64,
+          decoration: AppTheme.glassDecoration(radius: 28, opacity: 0.08),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(child: _bottomNavItem(0, Icons.home_rounded, 'Home')),
+              Expanded(
+                child: _bottomNavItem(
+                  1,
+                  Icons.calendar_month_rounded,
+                  'Calendar',
+                ),
+              ),
+              _logButton(),
+              Expanded(
+                child: _bottomNavItem(2, Icons.person_rounded, 'Profile'),
+              ),
+            ],
           ),
         ),
       ),
@@ -93,21 +97,24 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           builder: (context) => _buildAddMenu(context),
         );
       },
+      // Increased touch target to minimum 44x44
+      behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 40,
-        height: 40,
+        width: 48,
+        height: 48,
+        margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
           gradient: AppTheme.brandGradient,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppTheme.roseGold.withValues(alpha: 0.4),
-              blurRadius: 15,
-              offset: const Offset(0, 6),
+              color: AppTheme.roseGold.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: const Icon(Icons.add_rounded, size: 32, color: Colors.white),
+        child: const Icon(Icons.add_rounded, size: 28, color: Colors.white),
       ),
     );
   }

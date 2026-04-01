@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/cycle_engine.dart';
+// Re-export constants for backward compat with files that import app_theme.dart
+export 'constants.dart';
 
 abstract final class AppTheme {
   // ── Premium Color Palette (Rose Quartz & Midnight Pearl) ───────────────────
@@ -79,10 +81,46 @@ abstract final class AppTheme {
     }
   }
 
-  // ── Spacing System (8px Grid) ─────────────────────────────────────────────
-  static const double gridUnit = 8.0;
-  static const double margin = 16.0;
-  static const double padding = 24.0;
+  // ── Spacing System (Consistent 8px Grid) ──────────────────────────────────
+  static const double spacingXsmall = 4.0;
+  static const double spacingSmall = 8.0;
+  static const double spacingMedium = 16.0;
+  static const double spacingLarge = 24.0;
+  static const double spacingXlarge = 32.0;
+  static const double spacingXXlarge = 48.0;
+  static const double spacingHuge = 64.0;
+
+  // ── Responsive Scaling Helper ─────────────────────────────────────────────
+  static double screenWidth(BuildContext context) =>
+      MediaQuery.of(context).size.width;
+  static double screenHeight(BuildContext context) =>
+      MediaQuery.of(context).size.height;
+  static bool isSmallScreen(BuildContext context) => screenWidth(context) < 360;
+
+  static double clamp(double min, double val, double max) {
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+  }
+
+  static double adaptiveFontSize(BuildContext context, double baseSize) {
+    double width = screenWidth(context);
+    // Mimic CSS clamp behavior: clamp(min, preferred, max)
+    double preferred = baseSize * (width / 375); // 375 is standard design width
+    return clamp(baseSize * 0.85, preferred, baseSize * 1.2);
+  }
+
+  static double responsiveFontSize(BuildContext context, double baseSize) {
+    if (isSmallScreen(context)) return baseSize * 0.85; // Small phones
+    if (screenWidth(context) < 400) return baseSize * 0.95; // Medium phones
+    return baseSize;
+  }
+
+  static double scale(BuildContext context, double value) {
+    double width = screenWidth(context);
+    if (width < 360) return value * 0.8;
+    return value;
+  }
 
   // ── Neumorphic Shadows ───────────────────────────────────────────────────
   static List<BoxShadow> neuShadows({

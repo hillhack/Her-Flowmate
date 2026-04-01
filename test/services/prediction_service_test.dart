@@ -4,6 +4,7 @@ import 'package:her_flowmate/services/prediction_service.dart';
 import 'package:her_flowmate/services/storage_service.dart';
 
 class FakeStorageService extends StorageService {
+  FakeStorageService() : super.internal();
   List<PeriodLog> logs = [];
 
   @override

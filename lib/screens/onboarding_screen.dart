@@ -193,119 +193,141 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          toolbarHeight: 90,
-          automaticallyImplyLeading: false,
-          leadingWidth: 80,
-          leading: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 12, top: 8),
-              child: NeuContainer(
-                padding: const EdgeInsets.all(12),
-                radius: 16,
-                onTap: () {
-                  debugPrint(
-                    'Step Back: page=$_currentPage, init=${widget.initialPage}',
-                  );
-                  if (_currentPage > widget.initialPage) {
-                    _back();
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: AppTheme.textDark,
-                  size: 18,
-                ),
-              ),
-            ),
-          ),
-          title: Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'STEP ${_currentPage + 1} OF $_totalPages',
-                  style: GoogleFonts.inter(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    color: AppTheme.textDark.withValues(alpha: 0.5),
-                    letterSpacing: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _ProgressBar(current: _currentPage, total: _totalPages),
-              ],
-            ),
-          ),
-          centerTitle: true,
-        ),
         body: SafeArea(
-          child: Column(
-            children: [
-              // ── Pages ────────────────────────────────────────────
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  onPageChanged: (i) => setState(() => _currentPage = i),
-                  children: [
-                    _goalPage().animate().fadeIn(duration: 400.ms),
-                    _infoPage().animate().fadeIn(duration: 400.ms),
-                    _periodPage().animate().fadeIn(duration: 400.ms),
-                  ],
-                ),
-              ),
-              // ── Continue / Finish button ──────────────────────────
-              Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 4, 28, 24),
-                    child: ShimmerButton(
-                      radius: 20,
-                      onTap: _next,
-                      child: NeuContainer(
-                        radius: 20,
-                        child: Container(
-                          width: double.infinity,
-                          height: 58,
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final bool isSmall = constraints.maxWidth < 360;
+              final double horizontalPadding =
+                  isSmall ? AppTheme.spacingMedium : AppTheme.spacingXlarge;
+
+              return Column(
+                children: [
+                  // Custom App Bar
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        NeuContainer(
+                          padding: const EdgeInsets.all(12),
+                          radius: 16,
+                          onTap: () {
+                            if (_currentPage > widget.initialPage) {
+                              _back();
+                            } else {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: AppTheme.textDark,
+                            size: 18,
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                _currentPage == _totalPages - 1
-                                    ? 'Finish Setup'
-                                    : 'Continue',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppTheme.accentPink,
+                                'STEP ${_currentPage + 1} OF $_totalPages',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w900,
+                                  color: AppTheme.textDark.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                  letterSpacing: 1.2,
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              Icon(
-                                _currentPage == _totalPages - 1
-                                    ? Icons.check_circle_rounded
-                                    : Icons.arrow_forward_rounded,
-                                color: AppTheme.accentPink,
-                                size: 20,
+                              const SizedBox(height: 12),
+                              _ProgressBar(
+                                current: _currentPage,
+                                total: _totalPages,
                               ),
                             ],
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 80), // Balance the leading button
+                      ],
                     ),
-                  )
-                  .animate(
-                    target:
-                        (_currentPage == 0 && _selectedGoal.isEmpty) ? 0 : 1,
-                  )
-                  .fadeIn()
-                  .slideY(begin: 0.2, end: 0, curve: Curves.easeOutBack),
-            ],
+                  ),
+                  // Pages
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: (i) => setState(() => _currentPage = i),
+                      children: [
+                        _goalPage(
+                          isSmall,
+                          horizontalPadding,
+                        ).animate().fadeIn(duration: 400.ms),
+                        _infoPage(
+                          isSmall,
+                          horizontalPadding,
+                        ).animate().fadeIn(duration: 400.ms),
+                        _periodPage(
+                          isSmall,
+                          horizontalPadding,
+                        ).animate().fadeIn(duration: 400.ms),
+                      ],
+                    ),
+                  ),
+                  // Continue Button
+                  Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          horizontalPadding,
+                          4,
+                          horizontalPadding,
+                          24,
+                        ),
+                        child: ShimmerButton(
+                          radius: 20,
+                          onTap: _next,
+                          child: NeuContainer(
+                            radius: 20,
+                            child: Container(
+                              width: double.infinity,
+                              height: 58,
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    _currentPage == _totalPages - 1
+                                        ? 'Finish Setup'
+                                        : 'Continue',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: isSmall ? 16 : 18,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppTheme.accentPink,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    _currentPage == _totalPages - 1
+                                        ? Icons.check_circle_rounded
+                                        : Icons.arrow_forward_rounded,
+                                    color: AppTheme.accentPink,
+                                    size: 20,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                      .animate(
+                        target:
+                            (_currentPage == 0 && _selectedGoal.isEmpty)
+                                ? 0
+                                : 1,
+                      )
+                      .fadeIn()
+                      .slideY(begin: 0.2, end: 0, curve: Curves.easeOutBack),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -313,9 +335,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // ── Page 1: Goal Selection ──────────────────────────────────────────────
-  Widget _goalPage() {
+  Widget _goalPage(bool isSmall, double horizontalPadding) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: AppTheme.spacingLarge,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -325,20 +350,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 TextSpan(
                   text: "How would you like to use ",
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: AppTheme.adaptiveFontSize(context, 28),
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textDark,
                     height: 1.2,
                   ),
                 ),
-                const WidgetSpan(
+                WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
-                  child: BrandName(fontSize: 28),
+                  child: BrandName(
+                    fontSize: AppTheme.adaptiveFontSize(context, 28),
+                  ),
                 ),
                 TextSpan(
                   text: "?",
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: AppTheme.adaptiveFontSize(context, 28),
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textDark,
                     height: 1.2,
@@ -347,33 +374,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
           ).animate().fadeIn().slideY(begin: 0.1),
-          const SizedBox(height: 32),
+          SizedBox(
+            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
+          ),
           _modePanel(
             'Track my cycle',
             'Period tracking & phase predictions',
             Icons.refresh_rounded,
             'track_cycle',
+            isSmall,
           ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.spacingMedium),
           _modePanel(
             'Trying to conceive',
             'Fertile window & ovulation tracking',
             Icons.favorite_rounded,
             'conceive',
+            isSmall,
           ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.1),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.spacingMedium),
           _modePanel(
             'Already pregnant',
             'Pregnancy week & baby development',
             Icons.child_care_rounded,
             'pregnant',
+            isSmall,
           ).animate().fadeIn(delay: 600.ms).slideX(begin: 0.1),
         ],
       ),
     );
   }
 
-  Widget _modePanel(String title, String subtitle, IconData icon, String goal) {
+  Widget _modePanel(
+    String title,
+    String subtitle,
+    IconData icon,
+    String goal,
+    bool isSmall,
+  ) {
     final isSelected = _selectedGoal == goal;
     return GestureDetector(
       onTap: () => setState(() => _selectedGoal = goal),
@@ -383,7 +421,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         scale: isSelected ? 1.02 : 1.0,
         child: AnimatedContainer(
           duration: 400.ms,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(
+            isSmall ? AppTheme.spacingMedium : AppTheme.spacingLarge,
+          ),
           decoration:
               isSelected
                   ? AppTheme.glassDecoration(
@@ -395,7 +435,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(isSmall ? 10 : AppTheme.spacingMedium),
                 decoration: BoxDecoration(
                   color:
                       isSelected
@@ -407,10 +447,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   icon,
                   color:
                       isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
-                  size: 32,
+                  size: isSmall ? 24 : 32,
                 ),
               ),
-              const SizedBox(width: 20),
+              SizedBox(
+                width: isSmall ? AppTheme.spacingMedium : AppTheme.spacingLarge,
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -418,7 +460,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Text(
                       title,
                       style: GoogleFonts.poppins(
-                        fontSize: 18,
+                        fontSize: isSmall ? 15 : 18,
                         fontWeight: FontWeight.w800,
                         color:
                             isSelected
@@ -429,7 +471,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Text(
                       subtitle,
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: isSmall ? 12 : 14,
                         color: AppTheme.textSecondary,
                         fontWeight:
                             isSelected ? FontWeight.w600 : FontWeight.w400,
@@ -451,65 +493,74 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // ── Page 2: Basic Info ──────────────────────────────────────────────────
-  Widget _infoPage() {
+  Widget _infoPage(bool isSmall, double horizontalPadding) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: AppTheme.spacingMedium,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
-          const NeuContainer(
-            padding: EdgeInsets.all(20),
+          const SizedBox(height: AppTheme.spacingLarge),
+          NeuContainer(
+            padding: EdgeInsets.all(isSmall ? AppTheme.spacingMedium : 20),
             radius: 28,
             child: Icon(
               Icons.person_rounded,
               color: AppTheme.accentPink,
-              size: 48,
+              size: isSmall ? 36 : 48,
             ),
           ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
-          const SizedBox(height: 32),
+          SizedBox(
+            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
+          ),
           Text(
             "Let's get to know you",
             style: GoogleFonts.poppins(
-              fontSize: 32,
+              fontSize: AppTheme.adaptiveFontSize(context, 32),
               fontWeight: FontWeight.w800,
               color: AppTheme.textDark,
-              height: 1.1,
+              height: 1.2,
             ),
           ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.spacingSmall),
           Text.rich(
             TextSpan(
               children: [
                 const TextSpan(text: "This helps "),
-                const WidgetSpan(
+                WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
-                  child: BrandName(fontSize: 18),
+                  child: BrandName(fontSize: isSmall ? 15 : 18),
                 ),
                 const TextSpan(text: " tailor your experience perfectly."),
               ],
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: isSmall ? 14 : 16,
                 color: AppTheme.textSecondary,
                 height: 1.5,
                 fontWeight: FontWeight.w500,
               ),
             ),
           ).animate().fadeIn(delay: 400.ms),
-          const SizedBox(height: 48),
+          SizedBox(
+            height: isSmall ? AppTheme.spacingXlarge : AppTheme.spacingXXlarge,
+          ),
           _setupInput(
             "WHAT'S YOUR NAME?",
             _nameController,
             'Enter name...',
             isRequired: true,
+            isSmall: isSmall,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppTheme.spacingLarge),
           _setupInput(
             "AND YOUR AGE?",
             _ageController,
             'Enter age...',
             isNumeric: true,
             isRequired: true,
+            isSmall: isSmall,
           ),
         ],
       ),
@@ -522,6 +573,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     String hint, {
     bool isNumeric = false,
     bool isRequired = false,
+    bool isSmall = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,7 +583,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Text(
               label,
               style: GoogleFonts.inter(
-                fontSize: 12,
+                fontSize: isSmall ? 11 : 12,
                 fontWeight: FontWeight.w900,
                 color: AppTheme.textSecondary,
                 letterSpacing: 1.2,
@@ -547,15 +599,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: isSmall ? 12 : 16),
         NeuContainer(
           radius: 20,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: isSmall ? 18 : 24,
+            vertical: 8,
+          ),
           child: TextField(
             controller: controller,
             keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: isSmall ? 18 : 20,
               color: AppTheme.textDark,
               fontWeight: FontWeight.w700,
             ),
@@ -574,17 +629,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   // ── Page 3: First Period / Pregnancy ────────────────────────────────────
-  Widget _periodPage() {
+  Widget _periodPage(bool isSmall, double horizontalPadding) {
     if (_selectedGoal == 'pregnant') {
       return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: 12,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "Congratulations! 🎉",
               style: GoogleFonts.poppins(
-                fontSize: 28,
+                fontSize: isSmall ? 24 : 28,
                 fontWeight: FontWeight.w800,
                 color: AppTheme.textDark,
               ),
@@ -593,7 +651,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Text(
               "How far along are you?",
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: isSmall ? 15 : 16,
                 color: AppTheme.textSecondary,
               ),
             ).animate().fadeIn(delay: 200.ms),
@@ -689,6 +747,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         "e.g. 8",
                         isNumeric: true,
                         isRequired: true,
+                        isSmall: isSmall,
                       )
                       : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -697,13 +756,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           Text(
                             "SELECT LAST PERIOD (LMP) DATE",
                             style: GoogleFonts.inter(
-                              fontSize: 12,
+                              fontSize: isSmall ? 11 : 12,
                               fontWeight: FontWeight.w800,
                               color: AppTheme.textSecondary,
                               letterSpacing: 1,
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: AppTheme.spacingMedium),
                           NeuContainer(
                             padding: const EdgeInsets.all(12),
                             radius: 24,
@@ -731,19 +790,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: AppTheme.spacingMedium,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "When did your last period start?",
             style: GoogleFonts.poppins(
-              fontSize: 26,
+              fontSize: AppTheme.adaptiveFontSize(context, 26),
               fontWeight: FontWeight.w800,
               color: AppTheme.textDark,
+              height: 1.3,
             ),
           ).animate().fadeIn(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppTheme.spacingLarge),
           NeuContainer(
             padding: const EdgeInsets.all(12),
             radius: 24,
@@ -754,14 +817,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onDateChanged: (date) => setState(() => _lastPeriodStart = date),
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(
+            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
+          ),
           _setupInput(
             "HOW MANY DAYS DID IT LAST?",
             _durationController,
             "e.g. 5",
             isNumeric: true,
+            isSmall: isSmall,
           ),
-          const SizedBox(height: 32),
+          SizedBox(
+            height: isSmall ? AppTheme.spacingLarge : AppTheme.spacingXlarge,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -770,12 +838,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textDark,
+                  fontSize: isSmall ? 13 : 16,
                 ),
               ),
               Row(
                 children: [
                   _timeToggle('AM', _isAM, () => setState(() => _isAM = true)),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppTheme.spacingMedium),
                   _timeToggle(
                     'PM',
                     !_isAM,

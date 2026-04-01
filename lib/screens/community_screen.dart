@@ -41,7 +41,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
       body: Consumer<CommunityProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading && provider.posts.isEmpty) {
-            return const Center(child: CircularProgressIndicator(color: AppTheme.accentPink));
+            return const Center(
+              child: CircularProgressIndicator(color: AppTheme.accentPink),
+            );
           }
 
           if (provider.error != null && provider.posts.isEmpty) {
@@ -49,11 +51,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline_rounded, size: 64, color: AppTheme.accentPink),
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    size: 64,
+                    color: AppTheme.accentPink,
+                  ),
                   const SizedBox(height: 16),
                   Text(provider.error!),
                   const SizedBox(height: 16),
-                  ElevatedButton(onPressed: provider.loadFeed, child: const Text('Retry')),
+                  ElevatedButton(
+                    onPressed: provider.loadFeed,
+                    child: const Text('Retry'),
+                  ),
                 ],
               ),
             );
@@ -78,8 +87,15 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundColor: AppTheme.accentPink.withValues(alpha: 0.1),
-                              child: Text(post.userName[0], style: const TextStyle(color: AppTheme.accentPink)),
+                              backgroundColor: AppTheme.accentPink.withValues(
+                                alpha: 0.1,
+                              ),
+                              child: Text(
+                                post.userName[0],
+                                style: const TextStyle(
+                                  color: AppTheme.accentPink,
+                                ),
+                              ),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -88,11 +104,17 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                 children: [
                                   Text(
                                     post.userName,
-                                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700, color: AppTheme.textDark),
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.textDark,
+                                    ),
                                   ),
                                   Text(
                                     '${post.category} • ${DateFormat('h:mm a').format(post.createdAt)}',
-                                    style: GoogleFonts.inter(fontSize: 12, color: AppTheme.textSecondary),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: AppTheme.textSecondary,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -102,23 +124,43 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         const SizedBox(height: 16),
                         Text(
                           post.content,
-                          style: GoogleFonts.inter(fontSize: 15, height: 1.5, color: AppTheme.textDark),
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            height: 1.5,
+                            color: AppTheme.textDark,
+                          ),
                         ),
                         const SizedBox(height: 20),
                         Row(
                           children: [
-                            const Icon(Icons.favorite_border_rounded, size: 20, color: AppTheme.accentPink),
+                            const Icon(
+                              Icons.favorite_border_rounded,
+                              size: 20,
+                              color: AppTheme.accentPink,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               '${post.likes}',
-                              style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: AppTheme.textSecondary),
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textSecondary,
+                              ),
                             ),
                             const Spacer(),
-                            const Icon(Icons.chat_bubble_outline_rounded, size: 20, color: AppTheme.textSecondary),
+                            const Icon(
+                              Icons.chat_bubble_outline_rounded,
+                              size: 20,
+                              color: AppTheme.textSecondary,
+                            ),
                             const SizedBox(width: 6),
                             Text(
                               'Reply',
-                              style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.textSecondary),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.textSecondary,
+                              ),
                             ),
                           ],
                         ),

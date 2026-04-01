@@ -57,13 +57,16 @@ class GoogleAuthButton extends StatelessWidget {
                 size: 26,
               ),
               const SizedBox(width: 16),
-              Text(
-                'Continue with Google',
-                style: GoogleFonts.outfit(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textDark,
-                  letterSpacing: 0.3,
+              Flexible(
+                child: Text(
+                  'Continue with Google',
+                  style: GoogleFonts.outfit(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.textDark,
+                    letterSpacing: 0.3,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

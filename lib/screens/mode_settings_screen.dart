@@ -6,7 +6,7 @@ import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import 'login_screen.dart';
 import 'onboarding_screen.dart';
-import '../widgets/themed_container.dart';
+import '../widgets/glass_container.dart';
 
 /// Allows the user to change their tracking mode at any time.
 class ModeSettingsScreen extends StatefulWidget {
@@ -36,8 +36,7 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const ThemedContainer(
-              type: ContainerType.glass,
+            child: const GlassContainer(
               radius: 12,
               padding: EdgeInsets.zero,
               child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -104,8 +103,7 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                   onTap: () => setState(() => _selectedGoal = 'pregnant'),
                 ).animate().fadeIn(delay: 500.ms).slideX(begin: 0.1),
                 const Spacer(),
-                ThemedContainer(
-                  type: ContainerType.glass,
+                GlassContainer(
                   radius: 20,
                   child: ElevatedButton.icon(
                     onPressed: () async {
@@ -227,22 +225,28 @@ class _ModeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: 250.ms,
         margin: const EdgeInsets.only(bottom: 18),
         padding: const EdgeInsets.all(20),
-        decoration:
-            isSelected
-                ? ThemedContainer(
-                    type: ContainerType.glass,
-                    radius: 24,
-                  )
-                : ThemedContainer(
-                    type: ContainerType.glass,
-                    radius: 24,
-                  ),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? iconColor.withValues(alpha: 0.08)
+              : (isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.white.withValues(alpha: 0.4)),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: isSelected
+                ? iconColor.withValues(alpha: 0.4)
+                : Colors.white.withValues(alpha: 0.2),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
         child: Row(
           children: [
             Container(

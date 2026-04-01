@@ -650,18 +650,9 @@ class _InfoPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        ThemedContainer(
+          type: ContainerType.glass,
+          radius: 20,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: TextField(
             controller: controller,
@@ -1034,18 +1025,9 @@ class _PeriodPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        ThemedContainer(
+          type: ContainerType.glass,
+          radius: 20,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           child: TextField(
             controller: controller,

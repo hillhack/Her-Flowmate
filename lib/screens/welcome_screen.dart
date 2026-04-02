@@ -76,15 +76,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isSmall = MediaQuery.of(context).size.width < 360;
-
     return Scaffold(
       body: AnimatedGlowBackground(
         child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: isSmall ? 16 : 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isSmall = constraints.maxWidth < 360;
+              return SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: isSmall ? 16 : 32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 48),
                 BrandLogo(
@@ -176,6 +181,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ), // Extra bottom padding for system safe area
               ],
             ),
+          ),
+                ),
+              );
+            },
           ),
         ),
       ),

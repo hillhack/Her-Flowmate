@@ -163,19 +163,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Builder(
-          builder:
-              (context) => ThemedContainer(
-                type: ContainerType.glass,
-                radius: 18,
-                padding: const EdgeInsets.all(10),
-                onTap: () => Scaffold.of(context).openDrawer(),
-                child: Icon(
-                  Icons.menu_rounded,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  size: 26,
-                ),
-              ),
+        ThemedContainer(
+          type: ContainerType.glass,
+          radius: 18,
+          padding: const EdgeInsets.all(10),
+          onTap: () => Scaffold.of(context).openDrawer(),
+          child: Icon(
+            Icons.menu_rounded,
+            color: Theme.of(context).colorScheme.onSurface,
+            size: 26,
+          ),
         ),
         _buildCurrentModeBadge(storage),
       ],

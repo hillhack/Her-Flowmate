@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
 import '../services/storage_service.dart';
 import '../services/google_auth_services.dart';
 import '../widgets/delight_widgets.dart';
 import '../widgets/themed_container.dart';
+import 'legal_screen.dart';
 import 'onboarding_screen.dart';
 import 'main_navigation_screen.dart';
 import '../widgets/brand_widgets.dart';
@@ -33,17 +33,21 @@ class _LoginScreenState extends State<LoginScreen> {
         leading: Center(
           child: Padding(
             padding: const EdgeInsets.only(left: 12),
-            child: Tooltip(
-              message: 'Back',
-              child: ThemedContainer(
-                type: ContainerType.glass,
-                radius: 14,
-                padding: const EdgeInsets.all(12),
-                onTap: _isLoading ? null : () => Navigator.of(context).pop(),
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  size: 24,
+            child: Semantics(
+              button: true,
+              label: 'Go back',
+              child: Tooltip(
+                message: 'Back',
+                child: ThemedContainer(
+                  type: ContainerType.glass,
+                  radius: 14,
+                  padding: const EdgeInsets.all(12),
+                  onTap: _isLoading ? null : () => Navigator.of(context).pop(),
+                  child: Icon(
+                    Icons.arrow_back_rounded,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -65,9 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       constraints: BoxConstraints(
                         minHeight: constraints.maxHeight,
                       ),
-                      child: ThemedContainer(
-                        type: ContainerType.glass,
-                        radius: 0,
+                      child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: isSmall ? 16 : 24),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           context,
                                           32,
                                         ),
-                                      ),
+                                      ).animate().fadeIn(duration: 500.ms).scale(),
                                       const SizedBox(
                                         height: AppTheme.spacingSm,
                                       ),
@@ -96,46 +98,62 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Sign in to sync your health data securely.',
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                        textAlign: TextAlign.center,
+                                      ),
                                       SizedBox(
                                         height:
                                             isSmall
                                                 ? AppTheme.spacingLg
                                                 : AppTheme.spacingXl,
                                       ),
-                                      Semantics(
-                                        label: 'Sign in with Google',
-                                        button: true,
-                                        child: GoogleAuthButton(
-                                          onTap:
-                                              _isLoading
-                                                  ? null
-                                                  : () => _handleLogin(
-                                                    context,
-                                                    true,
-                                                  ),
+                                      ThemedContainer(
+                                        type: ContainerType.glass,
+                                        radius: 32,
+                                        padding: EdgeInsets.all(isSmall ? 20 : 32),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Semantics(
+                                              label: 'Sign in with Google',
+                                              button: true,
+                                              child: GoogleAuthButton(
+                                                onTap:
+                                                    _isLoading
+                                                        ? null
+                                                        : () => _handleLogin(
+                                                          context,
+                                                          true,
+                                                        ),
+                                              ),
+                                            ).animate().fadeIn(delay: 400.ms),
+                                            const SizedBox(
+                                              height: AppTheme.spacingMedium,
+                                            ),
+                                            Semantics(
+                                              label: 'Continue as guest',
+                                              button: true,
+                                              child: _AuthButton(
+                                                label: 'Continue as Guest',
+                                                icon: Icons.person_outline_rounded,
+                                                isPrimary: false,
+                                                isLoading: false,
+                                                onTap:
+                                                    _isLoading
+                                                        ? null
+                                                        : () => _handleLogin(
+                                                          context,
+                                                          false,
+                                                        ),
+                                                isSmall: isSmall,
+                                              ),
+                                            ).animate().fadeIn(delay: 500.ms),
+                                          ],
                                         ),
-                                      ).animate().fadeIn(delay: 400.ms),
-                                      const SizedBox(
-                                        height: AppTheme.spacingMedium,
                                       ),
-                                      Semantics(
-                                        label: 'Continue as guest',
-                                        button: true,
-                                        child: _AuthButton(
-                                          label: 'Continue as Guest',
-                                          icon: Icons.person_outline_rounded,
-                                          isPrimary: false,
-                                          isLoading: _isLoading,
-                                          onTap:
-                                              _isLoading
-                                                  ? null
-                                                  : () => _handleLogin(
-                                                    context,
-                                                    false,
-                                                  ),
-                                          isSmall: isSmall,
-                                        ),
-                                      ).animate().fadeIn(delay: 500.ms),
                                       SizedBox(
                                         height:
                                             isSmall
@@ -155,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Icon(
-                                                  Icons.shield_moon_rounded,
+                                                  Icons.lock_rounded,
                                                   size: isSmall ? 16 : 18,
                                                   color:
                                                       Theme.of(
@@ -238,6 +256,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
             ),
+            if (_isLoading)
+              Container(
+                color: Colors.black.withValues(alpha: 0.2),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
           ],
         ),
       ),
@@ -283,7 +308,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (context.mounted) {
         _showError(
           context,
-          'An unexpected error occurred during sign-in.',
+          'Unable to connect to Google. Please check your internet connection.',
           () => _handleLogin(context, isGoogle),
         );
       }
@@ -445,75 +470,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showLegalDialog(BuildContext context, String title, String content) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        return Container(
-          decoration: BoxDecoration(
-            color: isDark ? AppTheme.darkSurface : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          padding: const EdgeInsets.all(24),
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppTheme.textDark.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.5,
-                  ),
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Text(
-                      content,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: const Text(
-                    'Got it',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LegalScreen(title: title, content: content),
+      ),
     );
   }
 
@@ -637,12 +598,12 @@ class _FooterLink extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           child: Text(
             label,
-            style: GoogleFonts.inter(
+            style: AppTheme.outfit(
+              context: context,
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ).copyWith(
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ),

@@ -98,37 +98,36 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   Widget _logButton() {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.mediumImpact();
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          barrierColor: Colors.black.withValues(alpha: 0.2),
-          builder: (context) => _buildAddMenu(context),
-        );
-      },
-      behavior: HitTestBehavior.opaque,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
       child: Semantics(
         label: 'Log dynamic health data',
         button: true,
-        child: Container(
-          width: 56,
-          height: 56,
-          margin: const EdgeInsets.only(bottom: 8, right: 8),
-          decoration: BoxDecoration(
-            gradient: AppTheme.brandGradient,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: AppTheme.accentColor.withValues(alpha: 0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+        child: FloatingActionButton(
+          onPressed: () {
+            HapticFeedback.mediumImpact();
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              barrierColor: Colors.black.withValues(alpha: 0.2),
+              builder: (context) => _buildAddMenu(context),
+            );
+          },
+          elevation: 8,
+          backgroundColor: Colors.transparent,
+          splashColor: Colors.white24,
+          shape: const CircleBorder(),
+          // Use Ink to ensure gradient fills the FAB and splash matches shape
+          child: Ink(
+            width: 56,
+            height: 56,
+            decoration: const BoxDecoration(
+              gradient: AppTheme.brandGradient,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.add_rounded, size: 32, color: Colors.white),
           ),
-          child: const Icon(Icons.add_rounded, size: 32, color: Colors.white),
         ),
       ),
     );

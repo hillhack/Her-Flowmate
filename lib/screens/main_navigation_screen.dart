@@ -54,6 +54,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           decoration: AppTheme.getBackgroundDecoration(context),
           child: IndexedStack(index: _selectedIndex, children: _screens),
         ),
+        floatingActionButton: _logButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         bottomNavigationBar: _buildBottomBar(),
       ),
     );
@@ -62,7 +64,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget _buildBottomBar() {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 80, 16), // Space for FAB
         child: ClipRRect(
           borderRadius: BorderRadius.circular(28),
           child: Container(
@@ -80,7 +82,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     'Calendar',
                   ),
                 ),
-                _logButton(),
                 Expanded(
                   child: _bottomNavItem(2, Icons.person_rounded, 'Profile'),
                 ),
@@ -108,15 +109,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           builder: (context) => _buildAddMenu(context),
         );
       },
-      // Increased touch target to minimum 44x44
       behavior: HitTestBehavior.opaque,
       child: Semantics(
         label: 'Log dynamic health data',
         button: true,
         child: Container(
-          width: 48,
-          height: 48,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: 56,
+          height: 56,
+          margin: const EdgeInsets.only(bottom: 8, right: 8),
           decoration: BoxDecoration(
             gradient: AppTheme.brandGradient,
             shape: BoxShape.circle,
@@ -128,7 +128,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               ),
             ],
           ),
-          child: const Icon(Icons.add_rounded, size: 28, color: Colors.white),
+          child: const Icon(Icons.add_rounded, size: 32, color: Colors.white),
         ),
       ),
     );

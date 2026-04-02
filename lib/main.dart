@@ -1,4 +1,6 @@
+import 'dart:async' show unawaited;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'services/storage_service.dart';
@@ -56,6 +58,17 @@ Future<void> main() async {
 
   // ── Launch the bootstrap sequence ────────────────────────────────────────
   runApp(const BootstrapScreen());
+
+  // Set global system overlay style for a premium, edge-to-edge look
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
 }
 
 /// A robust startup screen that handles initialization of services.
@@ -80,24 +93,39 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
   Future<void> _initServices() async {
     try {
       debugPrint('Bootstrap: Initializing services...');
+      final startTime = DateTime.now();
+
       setState(() {
         _error = null;
         _initialized = false;
       });
 
+      // 1. Initialize core storage (opens Hive boxes) - THIS IS CRITICAL
       final storageService = StorageService.instance;
       await storageService.init();
 
-      // NEW: Initialize Google Auth for Web/Mobile
-      await GoogleAuthService.init();
+      // 2. Initialize remaining services in parallel - NON-BLOCKING
+      // We don't await them strictly if they are not needed for the very first frame
+      // GoogleAuthService is used in Login, Notification in daily work.
+      // But we still want them ready.
+      unawaited(GoogleAuthService.init());
+      unawaited(NotificationService().init());
 
-      final notificationService = NotificationService();
-      await notificationService.init();
+      // 3. Ensure splash is visible for a short time to avoid flicker
+      final elapsed = DateTime.now().difference(startTime);
+      if (elapsed.inMilliseconds < 600) {
+        await Future.delayed(
+          Duration(milliseconds: 600 - elapsed.inMilliseconds),
+        );
+      }
 
       if (mounted) {
         setState(() {
           _initialized = true;
         });
+
+        // 4. Schedule reminders only after BOTH services are ready
+        NotificationService().scheduleDailyCheckinReminder();
       }
     } catch (e) {
       debugPrint('FATAL ERROR DURING STARTUP: $e');

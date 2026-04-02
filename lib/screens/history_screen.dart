@@ -7,8 +7,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../services/storage_service.dart';
 import '../models/daily_log.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -41,7 +40,8 @@ class HistoryScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      NeuContainer(
+                      ThemedContainer(
+                        type: ContainerType.neu,
                         padding: const EdgeInsets.all(12),
                         radius: 16,
                         onTap: () => Navigator.pop(context),
@@ -70,18 +70,19 @@ class HistoryScreen extends StatelessWidget {
                 ),
 
                 Expanded(
-                  child: SingleChildScrollView(
+                  child: CustomScrollView(
                     physics: const BouncingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        // ── Trend Chart ──────────────────────────────────────────
-                        if (logs.length > 1)
-                          Padding(
+                    slivers: [
+                      // ── Trend Chart ──────────────────────────────────────────
+                      if (logs.length > 1)
+                        SliverToBoxAdapter(
+                          child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 24,
                               vertical: 16,
                             ),
-                            child: GlassContainer(
+                            child: ThemedContainer(
+                              type: ContainerType.glass,
                               radius: 32,
                               child: Padding(
                                 padding: const EdgeInsets.all(28),
@@ -111,19 +112,18 @@ class HistoryScreen extends StatelessWidget {
                                           lineBarsData: [
                                             LineChartBarData(
                                               spots:
-                                                  logs
-                                                      .asMap()
-                                                      .entries
-                                                      .map(
-                                                        (e) => FlSpot(
-                                                          e.key.toDouble(),
-                                                          e.value.duration
-                                                              .toDouble(),
-                                                        ),
-                                                      )
-                                                      .toList(),
+                                                  logs.asMap().entries.map((e) {
+                                                    return FlSpot(
+                                                      e.key.toDouble(),
+                                                      e.value.duration
+                                                          .toDouble(),
+                                                    );
+                                                  }).toList(),
                                               isCurved: true,
-                                              color: AppTheme.accentPink,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).colorScheme.primary,
                                               barWidth: 4,
                                               isStrokeCapRound: true,
                                               dotData: const FlDotData(
@@ -131,7 +131,9 @@ class HistoryScreen extends StatelessWidget {
                                               ),
                                               belowBarData: BarAreaData(
                                                 show: true,
-                                                color: AppTheme.accentPink
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary
                                                     .withValues(alpha: 0.1),
                                               ),
                                             ),
@@ -144,51 +146,56 @@ class HistoryScreen extends StatelessWidget {
                               ),
                             ),
                           ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+                        ),
 
-                        // ── Log List ─────────────────────────────────────────────────
-                        if (logs.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(48),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const GlassContainer(
-                                  padding: EdgeInsets.all(32),
-                                  radius: 48,
-                                  child: Icon(
-                                    Icons.history_toggle_off_rounded,
-                                    color: AppTheme.accentPink,
-                                    size: 64,
+                      // ── Log List ─────────────────────────────────────────────────
+                      if (logs.isEmpty)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(48),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const ThemedContainer(
+                                    type: ContainerType.glass,
+                                    padding: EdgeInsets.all(32),
+                                    radius: 48,
+                                    child: Icon(
+                                      Icons.history_toggle_off_rounded,
+                                      color: AppTheme.accentPink,
+                                      size: 64,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 32),
-                                Text(
-                                  'No data recorded yet.',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppTheme.textSecondary,
+                                  const SizedBox(height: 32),
+                                  Text(
+                                    'No data recorded yet.',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.textSecondary,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          )
-                        else
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
-                            itemCount: logs.length,
-                            itemBuilder: (ctx, i) {
-                              final log =
-                                  logs[logs.length - 1 - i]; // Latest first
+                          ),
+                        )
+                      else
+                        SliverPadding(
+                          padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate((ctx, i) {
+                              final log = logs[logs.length - 1 - i];
                               final dailyLog = storage.getDailyLog(
                                 log.startDate,
                               );
 
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
-                                child: GlassContainer(
+                                child: ThemedContainer(
+                                  type: ContainerType.glass,
                                   radius: 28,
                                   onTap:
                                       dailyLog != null
@@ -205,14 +212,19 @@ class HistoryScreen extends StatelessWidget {
                                           width: 56,
                                           height: 56,
                                           decoration: BoxDecoration(
-                                            color: AppTheme.accentPink
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary
                                                 .withValues(alpha: 0.1),
                                             shape: BoxShape.circle,
                                           ),
-                                          child: const Center(
+                                          child: Center(
                                             child: Icon(
                                               Icons.water_drop_rounded,
-                                              color: AppTheme.accentPink,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).colorScheme.primary,
                                               size: 28,
                                             ),
                                           ),
@@ -245,8 +257,9 @@ class HistoryScreen extends StatelessWidget {
                                                             vertical: 4,
                                                           ),
                                                       decoration: BoxDecoration(
-                                                        color: AppTheme
-                                                            .accentPink
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary
                                                             .withValues(
                                                               alpha: 0.1,
                                                             ),
@@ -255,12 +268,14 @@ class HistoryScreen extends StatelessWidget {
                                                               8,
                                                             ),
                                                       ),
-                                                      child: const Icon(
+                                                      child: Icon(
                                                         Icons
                                                             .assignment_turned_in_rounded,
                                                         size: 14,
                                                         color:
-                                                            AppTheme.accentPink,
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .primary,
                                                       ),
                                                     ),
                                                   ],
@@ -300,7 +315,9 @@ class HistoryScreen extends StatelessWidget {
                                                         fontWeight:
                                                             FontWeight.w700,
                                                         color:
-                                                            AppTheme.accentPink,
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .primary,
                                                       ),
                                                     ),
                                                   ],
@@ -324,10 +341,10 @@ class HistoryScreen extends StatelessWidget {
                               ).animate().fadeIn(
                                 delay: Duration(milliseconds: 100 * i),
                               );
-                            },
+                            }, childCount: logs.length),
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   ),
                 ),
               ],

@@ -5,7 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import '../providers/community_provider.dart';
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
@@ -78,7 +78,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 final post = provider.posts[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 20),
-                  child: NeuContainer(
+                  child: ThemedContainer(
+                    type: ContainerType.neu,
                     radius: 28,
                     padding: const EdgeInsets.all(20),
                     child: Column(

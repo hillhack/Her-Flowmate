@@ -6,7 +6,6 @@ import 'period_log_service.dart';
 import 'pregnancy_service.dart';
 import 'health_tracker_service.dart';
 import 'appointment_service.dart';
-import 'notification_service.dart';
 import '../models/period_log.dart';
 import '../models/daily_log.dart';
 import '../models/appointment.dart';
@@ -37,21 +36,25 @@ class StorageService extends ChangeNotifier {
 
   Future<void> init() async {
     try {
+      // 1. Initialize base shared preferences and Hive registration first (required by others)
       await BaseStorageService.instance.init();
-      await onboarding.init();
-      await periodLog.init();
-      await healthTracker.init();
-      await appointment.init();
 
-      // Link services if they need each other (not needed here yet)
+      // 2. Open all specific Hive boxes in parallel to reduce main-thread blocking
+      await Future.wait([
+        onboarding.init(),
+        periodLog.init(),
+        healthTracker.init(),
+        appointment.init(),
+      ]);
 
+      // 3. Set up listeners and reminders after data is ready
       onboarding.addListener(notifyListeners);
       periodLog.addListener(notifyListeners);
       pregnancy.addListener(notifyListeners);
       healthTracker.addListener(notifyListeners);
       appointment.addListener(notifyListeners);
 
-      NotificationService().scheduleDailyCheckinReminder();
+      // Re-link services if they need each other (handled by main.dart now)
     } catch (e) {
       debugPrint('ERROR IN StorageService.init: $e');
       rethrow;
@@ -70,6 +73,9 @@ class StorageService extends ChangeNotifier {
   bool get isDarkMode => onboarding.isDarkMode;
   bool get isMinimalMode =>
       BaseStorageService.instance.prefs.getBool('isMinimalMode') ?? false;
+  bool get isHighPerformanceMode =>
+      BaseStorageService.instance.prefs.getBool('isHighPerformanceMode') ??
+      true;
 
   DateTime? get dueDate => pregnancy.dueDate;
   DateTime? get conceptionDate => pregnancy.conceptionDate;
@@ -138,7 +144,7 @@ class StorageService extends ChangeNotifier {
     try {
       // 1. Try to fetch existing profile from backend
       final remoteUser = await UserService.getUserProfile();
-      
+
       if (remoteUser != null) {
         // Sync remote to local
         await onboarding.saveUser(remoteUser);
@@ -159,6 +165,15 @@ class StorageService extends ChangeNotifier {
   }
 
   Future<void> toggleDarkMode() => onboarding.toggleDarkMode();
+
+  Future<void> togglePerformanceMode() async {
+    final current = isHighPerformanceMode;
+    await BaseStorageService.instance.prefs.setBool(
+      'isHighPerformanceMode',
+      !current,
+    );
+    notifyListeners();
+  }
 
   Future<void> saveLog(PeriodLog log) => periodLog.saveLog(log);
   Future<void> deleteLog(int index) => periodLog.deleteLog(index);

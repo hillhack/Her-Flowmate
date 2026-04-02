@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'glass_container.dart';
+import 'themed_container.dart';
 import '../utils/app_theme.dart';
 
 class GlassInsightCard extends StatelessWidget {
@@ -23,7 +23,8 @@ class GlassInsightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       padding: const EdgeInsets.all(20),
       radius: 28,
       onTap: onTap,

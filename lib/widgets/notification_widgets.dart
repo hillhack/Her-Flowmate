@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import 'glass_container.dart';
+import 'themed_container.dart';
 
 class NotificationBell extends StatelessWidget {
   final bool hasUnread;
@@ -11,7 +11,8 @@ class NotificationBell extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => _showNotifications(context),
-      icon: GlassContainer(
+      icon: ThemedContainer(
+        type: ContainerType.glass,
         padding: const EdgeInsets.all(8),
         radius: 12,
         child: Stack(
@@ -61,7 +62,8 @@ class NotificationPanel extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
       ),
       padding: const EdgeInsets.only(top: 16),
-      child: GlassContainer(
+      child: ThemedContainer(
+        type: ContainerType.glass,
         radius: 32,
         opacity: 0.05,
         child: Column(
@@ -135,7 +137,8 @@ class NotificationPanel extends StatelessWidget {
   Widget _notifItem(String title, String body, String time, IconData icon) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: GlassContainer(
+      child: ThemedContainer(
+        type: ContainerType.glass,
         radius: 20,
         child: Padding(
           padding: const EdgeInsets.all(16),

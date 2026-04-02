@@ -3,26 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-
 import '../services/prediction_service.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/home/cycle_core_ring.dart';
-import '../widgets/home/insight_bubble.dart';
-import '../widgets/home/water_intake_card.dart';
-import '../widgets/home/wellness_stats.dart';
-import '../widgets/home/body_insight_card.dart';
+import '../widgets/home/modern_bento_dashboard.dart';
+import '../widgets/home/ttc_dashboard.dart';
+import '../widgets/home/pregnancy_dashboard.dart';
 import '../widgets/home/greeting_section.dart';
-import '../widgets/home/predictive_chips.dart';
-import '../widgets/pregnancy_dashboard.dart';
-import 'wellness_reminders_screen.dart';
-import 'log_period_screen.dart';
-import '../widgets/home/daily_insight_card.dart';
 import '../widgets/themed_container.dart';
 import '../widgets/info_widgets.dart';
 import '../widgets/skeleton_widgets.dart';
-import '../widgets/cycle_widgets.dart';
+import 'log_period_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,11 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late ConfettiController _confettiController;
   bool _isLocalLoading = true;
 
-  // Expansion States
-  bool _isHormonesExpanded = false;
-  bool _isWaterExpanded = false;
-  bool _isSleepExpanded = false;
-  bool _isStreakExpanded = false;
+  // Expansion logic moved to ModernBentoDashboard Widget
 
   @override
   void initState() {
@@ -86,11 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Background Gradient (Unified Theme Background)
           Container(decoration: AppTheme.getBackgroundDecoration(context)),
-
           RefreshIndicator(
-            color: AppTheme.accentPink,
+            color: Theme.of(context).colorScheme.primary,
             onRefresh: () async => setState(() {}),
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -110,12 +95,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (_isLocalLoading)
                       _buildSkeletonDashboard()
                     else if (storage.userGoal == 'pregnant')
-                      PregnancyDashboard(storage: storage)
+                      Semantics(
+                        label: 'Pregnancy Dashboard',
+                        child: PregnancyDashboard(storage: storage),
+                      )
                     else if (storage.userGoal == 'conceive')
-                      _buildTTCDashboard(storage, pred)
+                      Semantics(
+                        label: 'Conception Dashboard',
+                        child: TTCDashboard(storage: storage, pred: pred),
+                      )
                     else
-                      _buildModernBentoDashboard(context, storage, pred),
-
+                      Semantics(
+                        label: 'Cycle Tracking Dashboard',
+                        child: _buildCycleDashboard(context, storage, pred),
+                      ),
                     const SizedBox(height: AppTheme.spacingLg),
                     _buildMedicalDisclaimer(),
                   ],
@@ -123,23 +116,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-
-          // Confetti overlay
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              colors: const [
-                AppTheme.accentPink,
-                AppTheme.primaryPink700,
-                Colors.blueAccent,
-              ],
+          IgnorePointer(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  AppTheme.primaryPink700,
+                  Colors.blueAccent,
+                ],
+              ),
             ),
           ),
         ],
       ),
+      floatingActionButton:
+          _isLocalLoading || storage.userGoal == 'pregnant'
+              ? null
+              : FloatingActionButton.extended(
+                onPressed:
+                    () => showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => const LogPeriodScreen(),
+                    ),
+                label: Text(
+                  'Log Event',
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                icon: const Icon(Icons.add_rounded),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+                elevation: 4,
+              ).animate().scale(delay: 1.seconds, curve: Curves.bounceOut),
     );
   }
 
@@ -154,9 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 radius: 18,
                 padding: const EdgeInsets.all(10),
                 onTap: () => Scaffold.of(context).openDrawer(),
-                child: const Icon(
+                child: Icon(
                   Icons.menu_rounded,
-                  color: AppTheme.textDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                   size: 26,
                 ),
               ),
@@ -181,9 +197,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
+          Icon(
             Icons.favorite_rounded,
-            color: AppTheme.accentPink,
+            color: Theme.of(context).colorScheme.primary,
             size: 16,
           ),
           const SizedBox(width: 8),
@@ -192,12 +208,14 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          const Icon(
+          Icon(
             Icons.keyboard_arrow_down_rounded,
-            color: AppTheme.textSecondary,
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.6),
             size: 20,
           ),
         ],
@@ -267,42 +285,48 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {});
       },
       padding: const EdgeInsets.all(16),
-      border: isSelected
-          ? Border.all(color: AppTheme.accentPink, width: 2)
-          : Border.all(color: Colors.white24),
+      border:
+          isSelected
+              ? Border.all(
+                color: Theme.of(context).colorScheme.primary,
+                width: 2,
+              )
+              : Border.all(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.1),
+              ),
       child: Row(
         children: [
           Icon(
             icon,
-            color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+            color:
+                isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
           ),
           const SizedBox(width: 16),
           Text(
             title,
             style: GoogleFonts.inter(
               fontWeight: FontWeight.w700,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const Spacer(),
           if (isSelected)
-            const Icon(Icons.check_circle_rounded, color: AppTheme.accentPink),
+            Icon(
+              Icons.check_circle_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildTTCDashboard(StorageService storage, PredictionService pred) {
-    return Column(
-      children: [
-        PredictiveChips(pred: pred),
-        const SizedBox(height: 24),
-        _buildWellnessGoalsCard(context, storage),
-      ],
-    );
-  }
-
-  Widget _buildModernBentoDashboard(
+  Widget _buildCycleDashboard(
     BuildContext context,
     StorageService storage,
     PredictionService pred,
@@ -311,160 +335,10 @@ class _HomeScreenState extends State<HomeScreen> {
       return _buildNewUserContent(context, storage);
     }
 
-    return Column(
-      children: [
-        CycleCoreRing(pred: pred)
-            .animate()
-            .fadeIn(duration: 600.ms)
-            .scale(begin: const Offset(0.9, 0.9)),
-        const SizedBox(height: 24),
-        DailyInsightCard(
-          pred: pred,
-        ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
-        const SizedBox(height: 32),
-        _buildInsightBubbles(),
-        const SizedBox(height: 24),
-
-        if (_isHormonesExpanded)
-          ...[
-            HormoneGraph(pred: pred),
-            const SizedBox(height: 16),
-            PhaseHealthTipsWidget(pred: pred),
-            const SizedBox(height: 16),
-          ].animate().fadeIn().slideY(begin: -0.05),
-
-        if (_isWaterExpanded)
-          WaterIntakeCard(
-            storage: storage,
-            onGoalReached: () => _confettiController.play(),
-          ).animate().fadeIn().slideY(begin: -0.05),
-
-        if (_isSleepExpanded)
-          SleepCard(
-            storage: storage,
-            pred: pred,
-          ).animate().fadeIn().slideY(begin: -0.05),
-
-        if (_isStreakExpanded)
-          StreakCard(
-            storage: storage,
-            onMilestoneReached: () => _confettiController.play(),
-          ).animate().fadeIn().slideY(begin: -0.05),
-
-        const SizedBox(height: 16),
-        BodyInsightCard(pred: pred),
-        const SizedBox(height: 24),
-        _buildWellnessGoalsCard(context, storage),
-      ],
-    );
-  }
-
-  Widget _buildInsightBubbles() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        InsightBubble(
-          icon: '🧪',
-          label: 'Hormones',
-          color: AppTheme.primaryPink700,
-          isExpanded: _isHormonesExpanded,
-          onTap:
-              () => setState(() => _isHormonesExpanded = !_isHormonesExpanded),
-        ),
-        InsightBubble(
-          icon: '💧',
-          label: 'Water',
-          color: Colors.blueAccent,
-          isExpanded: _isWaterExpanded,
-          onTap: () => setState(() => _isWaterExpanded = !_isWaterExpanded),
-        ),
-        InsightBubble(
-          icon: '🌙',
-          label: 'Sleep',
-          color: const Color(0xFF66BB6A),
-          isExpanded: _isSleepExpanded,
-          onTap: () => setState(() => _isSleepExpanded = !_isSleepExpanded),
-        ),
-        InsightBubble(
-          icon: '🔥',
-          label: 'Streak',
-          color: AppTheme.accentPink,
-          isExpanded: _isStreakExpanded,
-          onTap: () => setState(() => _isStreakExpanded = !_isStreakExpanded),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildWellnessGoalsCard(BuildContext context, StorageService storage) {
-    final upcoming = storage.getUpcomingAppointments();
-    final hasGoals = upcoming.isNotEmpty;
-
-    return ThemedContainer(
-      type: ContainerType.glass,
-      padding: const EdgeInsets.all(24),
-      radius: 28,
-      onTap:
-          () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const WellnessRemindersScreen()),
-          ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.spa_rounded,
-                color: AppTheme.accentPink,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'WELLNESS GOALS',
-                style: GoogleFonts.inter(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w900,
-                  color: AppTheme.textSecondary,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const Spacer(),
-              const Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 14,
-                color: AppTheme.textSecondary,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          if (hasGoals) ...[
-            Text(
-              upcoming.first.title,
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Scheduled for ${DateFormat('MMM d').format(upcoming.first.date)}',
-              style: GoogleFonts.inter(
-                fontSize: 11,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-          ] else
-            Text(
-              'No upcoming goals. Tap to set a reminder!',
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: AppTheme.textSecondary,
-              ),
-            ),
-        ],
-      ),
+    return ModernBentoDashboard(
+      storage: storage,
+      pred: pred,
+      confettiController: _confettiController,
     );
   }
 
@@ -475,9 +349,9 @@ class _HomeScreenState extends State<HomeScreen> {
       radius: 40,
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.auto_awesome_rounded,
-            color: AppTheme.accentPink,
+            color: Theme.of(context).colorScheme.primary,
             size: 48,
           ),
           const SizedBox(height: 20),
@@ -486,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.poppins(
               fontSize: 24,
               fontWeight: FontWeight.w900,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 32),
@@ -506,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Log First Period',
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.accentPink,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ),
@@ -546,7 +420,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'This is an estimate and should not be considered medical advice.',
         style: GoogleFonts.inter(
           fontSize: 10,
-          color: AppTheme.textSecondary.withValues(alpha: 0.6),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
           fontStyle: FontStyle.italic,
         ),
         textAlign: TextAlign.center,

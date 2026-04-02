@@ -3,8 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class EducationHubScreen extends StatelessWidget {
   const EducationHubScreen({super.key});
@@ -70,7 +69,8 @@ class EducationHubScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      NeuContainer(
+                      ThemedContainer(
+                        type: ContainerType.neu,
                         padding: const EdgeInsets.all(12),
                         radius: 16,
                         onTap: () => Navigator.pop(context),
@@ -126,7 +126,8 @@ class EducationHubScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        child: GlassContainer(
+                        child: ThemedContainer(
+                          type: ContainerType.glass,
                           radius: 24,
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -283,7 +284,8 @@ class _ArticleDetailScreen extends StatelessWidget {
               const SizedBox(height: 32),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: GlassContainer(
+                child: ThemedContainer(
+                      type: ContainerType.glass,
                       padding: const EdgeInsets.all(32),
                       radius: 32,
                       child: Text(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/prediction_service.dart';
 import '../../utils/app_theme.dart';
-import '../glass_container.dart';
+import '../themed_container.dart';
 
 class BodyInsightCard extends StatelessWidget {
   final PredictionService pred;
@@ -14,9 +14,12 @@ class BodyInsightCard extends StatelessWidget {
     final phaseName = pred.phaseDisplayName;
     final day = pred.currentCycleDay == 0 ? 1 : pred.currentCycleDay;
     final biology = pred.getPhaseBiology(day);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final phaseColor = AppTheme.getPhaseColor(pred.currentPhase);
 
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       padding: const EdgeInsets.all(24),
       radius: 28,
       child: Column(
@@ -27,9 +30,9 @@ class BodyInsightCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.auto_awesome_rounded,
-                    color: AppTheme.accentPurple,
+                    color: colorScheme.secondary,
                     size: 18,
                   ),
                   const SizedBox(width: 8),
@@ -38,7 +41,7 @@ class BodyInsightCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 10,
                       fontWeight: FontWeight.w900,
-                      color: AppTheme.textSecondary,
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                       letterSpacing: 1.5,
                     ),
                   ),
@@ -67,26 +70,40 @@ class BodyInsightCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           _insightRow(
+            context,
             '🧪',
             'HORMONES',
             biology['hormoneActivity'] ?? '',
-            AppTheme.accentPurple,
+            colorScheme.secondary,
           ),
           const Divider(height: 32, thickness: 0.5),
           _insightRow(
+            context,
             '⚡',
             'ENERGY',
             biology['energy'] ?? '',
             Colors.orangeAccent,
           ),
           const Divider(height: 32, thickness: 0.5),
-          _insightRow('🧘', 'MOOD', biology['mood'] ?? '', AppTheme.accentPink),
+          _insightRow(
+            context,
+            '🧘',
+            'MOOD',
+            biology['mood'] ?? '',
+            colorScheme.primary,
+          ),
         ],
       ),
     );
   }
 
-  Widget _insightRow(String icon, String label, String text, Color color) {
+  Widget _insightRow(
+    BuildContext context,
+    String icon,
+    String label,
+    String text,
+    Color color,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,7 +137,7 @@ class BodyInsightCard extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: AppTheme.textDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                   height: 1.4,
                 ),
               ),

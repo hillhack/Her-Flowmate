@@ -10,71 +10,78 @@ class BrandName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              // "Her" - Bold & Vibrant Cursive
-              ShaderMask(
-                shaderCallback:
-                    (bounds) => const LinearGradient(
-                      colors: [Color(0xFFFF1493), Color(0xFFFF69B4)],
-                    ).createShader(
-                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                    ),
-                child: Text(
-                  'Her ',
-                  style: GoogleFonts.dancingScript(
-                    fontSize: fontSize * 1.35,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                    height: 1.2, // Improved line-height
-                    shadows: [
-                      Shadow(
-                        color: const Color(0xFFFF1493).withValues(alpha: 0.5),
-                        blurRadius: 15,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-              // "FlowMate" - Modern High-Contrast
-              ShaderMask(
-                shaderCallback:
-                    (bounds) => const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFFFF69B4), Color(0xFF9370DB)],
-                    ).createShader(
-                      Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-                    ),
-                child: Text(
-                  'FlowMate',
-                  style: AppTheme.playfair(
-                    fontSize: fontSize * 0.95,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ).copyWith(
-                    letterSpacing: 0.5,
-                    height: 1.2, // Improved line-height
-                    shadows: [
-                      Shadow(
-                        color: const Color(0xFF9370DB).withValues(alpha: 0.5),
-                        blurRadius: 15,
-                      ),
-                    ],
-                  ),
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          // "Her" - Bold & Vibrant Cursive
+          ShaderMask(
+            shaderCallback:
+                (bounds) => LinearGradient(
+                  colors: [colorScheme.primary, colorScheme.secondary],
+                ).createShader(
+                  Rect.fromLTWH(0, 0, bounds.width, bounds.height),
                 ),
+            child: Text(
+              'Her ',
+              style: GoogleFonts.dancingScript(
+                fontSize: fontSize * 1.35,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                height: 1.2, // Improved line-height
+                shadows: [
+                  Shadow(
+                    color: colorScheme.primary.withValues(alpha: 0.5),
+                    blurRadius: 15,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        )
-        .animate(onPlay: (c) => c.repeat())
-        .shimmer(duration: 2.seconds, color: Colors.white24);
+
+          // "FlowMate" - Modern High-Contrast
+          ShaderMask(
+            shaderCallback:
+                (bounds) => LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    colorScheme.secondary,
+                    colorScheme.tertiaryContainer.withValues(alpha: 0.8) ==
+                            Colors.transparent
+                        ? colorScheme.primary
+                        : colorScheme.tertiary,
+                  ],
+                ).createShader(
+                  Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                ),
+            child: Text(
+              'FlowMate',
+              style: AppTheme.playfair(
+                fontSize: fontSize * 0.95,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ).copyWith(
+                letterSpacing: 0.5,
+                height: 1.2, // Improved line-height
+                shadows: [
+                  Shadow(
+                    color: colorScheme.tertiary.withValues(alpha: 0.5),
+                    blurRadius: 15,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().shimmer(duration: 2.seconds, color: Colors.white24);
   }
 }
 
@@ -94,6 +101,9 @@ class BrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -119,10 +129,10 @@ class BrandLogo extends StatelessWidget {
                   height: size * 0.8,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppTheme.accentPink.withValues(alpha: 0.35),
+                    color: colorScheme.primary.withValues(alpha: 0.35),
                     boxShadow: [
                       BoxShadow(
-                        color: AppTheme.accentPink.withValues(alpha: 0.2),
+                        color: colorScheme.primary.withValues(alpha: 0.2),
                         blurRadius: 20,
                         spreadRadius: 5,
                       ),
@@ -147,11 +157,11 @@ class BrandLogo extends StatelessWidget {
                       if (wasSynchronouslyLoaded || frame != null) {
                         return child;
                       }
-                      return const Center(
+                      return Center(
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            AppTheme.accentPink,
+                            colorScheme.primary,
                           ),
                         ),
                       );
@@ -192,7 +202,14 @@ class _BrandIconMark extends StatelessWidget {
       ],
       child: CustomPaint(
         size: Size(size, size),
-        painter: _LogoPainter(gradient: AppTheme.brandGradient),
+        painter: _LogoPainter(
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.secondary,
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -271,8 +288,14 @@ class NeonButterflyState extends State<NeonButterfly> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final reduceMotion =
+        MediaQuery.of(context).accessibleNavigation ||
+        MediaQuery.of(context).disableAnimations;
+
     if (_isTapped) {
       return Animate(
+        target: reduceMotion ? 1 : null, // Snap to end if reduced motion
         effects: [
           ScaleEffect(
             begin: const Offset(1, 1),
@@ -287,12 +310,15 @@ class NeonButterflyState extends State<NeonButterfly> {
           ),
           FadeEffect(begin: 1.0, end: 0.0, duration: 800.ms),
         ],
-        child: _buildButterflyBody(isGlowing: true),
+        child: RepaintBoundary(
+          child: _buildButterflyBody(context, isGlowing: true),
+        ),
       );
     }
 
     return Animate(
       onPlay: (c) => c.repeat(),
+      target: reduceMotion ? 0 : null,
       effects: [
         // Smooth floating path around the button
         const MoveEffect(
@@ -304,6 +330,7 @@ class NeonButterflyState extends State<NeonButterfly> {
       ],
       child: Animate(
         onPlay: (c) => c.repeat(reverse: true),
+        target: reduceMotion ? 0 : null,
         effects: [
           // Wing flapping effect
           const ScaleEffect(
@@ -315,22 +342,25 @@ class NeonButterflyState extends State<NeonButterfly> {
           // Glow Pulse
           ShimmerEffect(
             duration: const Duration(seconds: 3),
-            color: const Color(
-              0xFFFADADD,
-            ).withValues(alpha: 0.6), // Light Pink Glow
+            color: colorScheme.primaryContainer.withValues(alpha: 0.6),
           ),
         ],
-        child: _buildButterflyBody(),
+        child: Semantics(
+          label: 'Butterfly decoration',
+          excludeSemantics: true,
+          child: RepaintBoundary(child: _buildButterflyBody(context)),
+        ),
       ),
     );
   }
 
-  Widget _buildButterflyBody({bool isGlowing = false}) {
+  Widget _buildButterflyBody(BuildContext context, {bool isGlowing = false}) {
+    final colorScheme = Theme.of(context).colorScheme;
     return CustomPaint(
       size: Size(widget.size, widget.size),
       painter: _ButterflyPainter(
-        color: widget.color ?? const Color(0xFFFF7FA5), // Soft Pink
-        secondaryColor: const Color(0xFFE6A8FF), // Lavender
+        color: widget.color ?? colorScheme.primary,
+        secondaryColor: colorScheme.tertiary,
         isGlowing: isGlowing,
       ),
     );
@@ -421,5 +451,8 @@ class _ButterflyPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _ButterflyPainter oldDelegate) =>
+      oldDelegate.isGlowing != isGlowing ||
+      oldDelegate.color != color ||
+      oldDelegate.secondaryColor != secondaryColor;
 }

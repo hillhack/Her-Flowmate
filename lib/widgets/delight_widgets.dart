@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../utils/app_theme.dart';
@@ -14,6 +15,16 @@ class PhaseDelightOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reduceMotion =
+        MediaQuery.of(context).accessibleNavigation ||
+        MediaQuery.of(context).disableAnimations;
+
+    if (reduceMotion) {
+      // Skip delight if reduced motion is requested, but notify caller we're done
+      WidgetsBinding.instance.addPostFrameCallback((_) => onComplete());
+      return const SizedBox.shrink();
+    }
+
     String emoji = '✨';
     int count = 4;
 
@@ -97,6 +108,10 @@ class FloatingSparkles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final random = Random();
+    final reduceMotion =
+        MediaQuery.of(context).accessibleNavigation ||
+        MediaQuery.of(context).disableAnimations;
+
     return RepaintBoundary(
       child: IgnorePointer(
         child: Stack(
@@ -106,19 +121,30 @@ class FloatingSparkles extends StatelessWidget {
             final size = 3.0 + random.nextDouble() * 4.0;
             final duration = 4 + random.nextInt(4);
 
+            final sparkle = Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+              ),
+            );
+
+            if (kIsWeb)
+              return Positioned(
+                left: MediaQuery.of(context).size.width * x,
+                top: MediaQuery.of(context).size.height * y,
+                child: sparkle,
+              );
+
             return Positioned(
               left: MediaQuery.of(context).size.width * x,
               top: MediaQuery.of(context).size.height * y,
-              child: Container(
-                    width: size,
-                    height: size,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.3),
-                      shape: BoxShape.circle,
-                      // Removed BoxShadow for performance
-                    ),
+              child: sparkle
+                  .animate(
+                    target: reduceMotion ? 0 : null,
+                    onPlay: (c) => c.repeat(reverse: true),
                   )
-                  .animate(onPlay: (c) => c.repeat(reverse: true))
                   .fadeIn(duration: duration.seconds)
                   .scale(
                     begin: const Offset(0.6, 0.6),
@@ -260,23 +286,34 @@ class _GlowBlob extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-          child: Container(
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: opacity),
-                  blurRadius: 100,
-                  spreadRadius: 50,
-                ),
-              ],
+    final reduceMotion =
+        MediaQuery.of(context).accessibleNavigation ||
+        MediaQuery.of(context).disableAnimations;
+
+    final blob = RepaintBoundary(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: opacity),
+              blurRadius: kIsWeb ? 50 : 100,
+              spreadRadius: kIsWeb ? 25 : 50,
             ),
-          ),
+          ],
+        ),
+      ),
+    );
+
+    if (kIsWeb) return blob;
+
+    return blob
+        .animate(
+          target: reduceMotion ? 0 : null,
+          onPlay: (c) => c.repeat(reverse: true),
         )
-        .animate(onPlay: (c) => c.repeat(reverse: true))
         .move(
           begin: const Offset(-20, -20),
           end: const Offset(20, 20),

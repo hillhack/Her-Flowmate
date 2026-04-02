@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../models/appointment.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class WellnessRemindersScreen extends StatefulWidget {
   const WellnessRemindersScreen({super.key});
@@ -34,20 +34,26 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body:
-          reminders.isEmpty
-              ? _buildEmptyState(context)
-              : ListView.builder(
-                padding: const EdgeInsets.all(24),
-                itemCount: reminders.length,
-                itemBuilder: (context, index) {
-                  final reminder = reminders[index];
-                  return _buildReminderCard(context, storage, reminder)
-                      .animate()
-                      .fadeIn(delay: (index * 100).ms)
-                      .slideX(begin: 0.1);
-                },
-              ),
+      body: Hero(
+        tag: 'wellness_goals',
+        child: Material(
+          color: Colors.transparent,
+          child:
+              reminders.isEmpty
+                  ? _buildEmptyState(context)
+                  : ListView.builder(
+                    padding: const EdgeInsets.all(24),
+                    itemCount: reminders.length,
+                    itemBuilder: (context, index) {
+                      final reminder = reminders[index];
+                      return _buildReminderCard(context, storage, reminder)
+                          .animate()
+                          .fadeIn(delay: (index * 100).ms)
+                          .slideX(begin: 0.1);
+                    },
+                  ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddReminderSheet(context, storage),
         backgroundColor: AppTheme.accentPink,
@@ -105,7 +111,8 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: NeuContainer(
+      child: ThemedContainer(
+        type: ContainerType.neu,
         radius: 28,
         padding: const EdgeInsets.all(20),
         child: Row(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 import '../widgets/delight_widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // Conditional import for Web
 import 'google_auth_button_stub.dart'
@@ -21,40 +20,42 @@ class GoogleAuthButton extends StatelessWidget {
       return platform_button.renderWebButton(context);
     }
 
+    final colorScheme = Theme.of(context).colorScheme;
+
     // Default Mobile/Desktop Button
     return ShimmerButton(
       onTap: onTap ?? () {},
       radius: 24,
-      child: NeuContainer(
+      child: ThemedContainer(
+        type: ContainerType.neu,
         radius: 24,
         gradient: LinearGradient(
-          colors:
-              AppTheme.brandGradient.colors
-                  .map((c) => c.withValues(alpha: 0.1))
-                  .toList(),
-          begin: AppTheme.brandGradient.begin,
-          end: AppTheme.brandGradient.end,
+          colors: [
+            colorScheme.primary.withValues(alpha: 0.1),
+            colorScheme.primary.withValues(alpha: 0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.g_mobiledata_rounded,
-                color: AppTheme.accentPink,
+                color: colorScheme.primary,
                 size: 26,
               ),
               const SizedBox(width: 16),
               Flexible(
                 child: Text(
                   'Continue with Google',
-                  style: GoogleFonts.outfit(
+                  style: AppTheme.outfit(
+                    context: context,
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
-                    color: AppTheme.textDark,
-                    letterSpacing: 0.3,
-                  ),
+                  ).copyWith(letterSpacing: 0.3),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

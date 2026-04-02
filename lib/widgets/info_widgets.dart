@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import 'glass_container.dart';
+import 'themed_container.dart';
 
 class GlassInfoButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -29,6 +29,9 @@ void showGlassInfoPopup(
   required String explanation,
   String? tip,
 }) {
+  final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
+
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -37,12 +40,13 @@ void showGlassInfoPopup(
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.8,
           ),
-          decoration: const BoxDecoration(
-            color: AppTheme.frameColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
           ),
           padding: const EdgeInsets.only(top: 16),
-          child: GlassContainer(
+          child: ThemedContainer(
+            type: ContainerType.glass,
             radius: 40,
             opacity: 0.05,
             child: SingleChildScrollView(
@@ -56,7 +60,7 @@ void showGlassInfoPopup(
                       width: 48,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: AppTheme.shadowDark,
+                        color: colorScheme.onSurface.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(3),
                       ),
                     ),
@@ -67,7 +71,7 @@ void showGlassInfoPopup(
                     style: GoogleFonts.poppins(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -75,14 +79,15 @@ void showGlassInfoPopup(
                     explanation,
                     style: GoogleFonts.inter(
                       fontSize: 16,
-                      color: AppTheme.textDark,
+                      color: colorScheme.onSurface.withValues(alpha: 0.8),
                       height: 1.5,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   if (tip != null) ...[
                     const SizedBox(height: 24),
-                    GlassContainer(
+                    ThemedContainer(
+                      type: ContainerType.glass,
                       radius: 20,
                       opacity: 0.1,
                       child: Padding(
@@ -96,7 +101,9 @@ void showGlassInfoPopup(
                                 tip,
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
-                                  color: AppTheme.textSecondary,
+                                  color: colorScheme.onSurface.withValues(
+                                    alpha: 0.7,
+                                  ),
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -107,7 +114,8 @@ void showGlassInfoPopup(
                     ),
                   ],
                   const SizedBox(height: 40),
-                  GlassContainer(
+                  ThemedContainer(
+                    type: ContainerType.glass,
                     radius: 20,
                     onTap: () => Navigator.pop(context),
                     child: Padding(
@@ -118,7 +126,7 @@ void showGlassInfoPopup(
                           style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
-                            color: AppTheme.accentPink,
+                            color: colorScheme.primary,
                           ),
                         ),
                       ),

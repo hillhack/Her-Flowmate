@@ -1,7 +1,13 @@
-import 'dart:ui';
+import 'dart:ui' show ImageFilter;
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:provider/provider.dart';
+import '../services/storage_service.dart';
 
 enum ContainerType { glass, neu, elevated, simple }
+
+enum NeuStyle { flat, concave, convex, embossed }
 
 class ThemedContainer extends StatelessWidget {
   final Widget child;
@@ -11,8 +17,14 @@ class ThemedContainer extends StatelessWidget {
   final ContainerType type;
   final Color? color;
   final Border? border;
+  final Color? borderColor;
   final List<BoxShadow>? boxShadow;
   final VoidCallback? onTap;
+  final double? blur;
+  final double? opacity;
+  final Gradient? gradient;
+  final bool isSelected;
+  final NeuStyle style;
   final double? width;
   final double? height;
 
@@ -25,8 +37,14 @@ class ThemedContainer extends StatelessWidget {
     this.type = ContainerType.simple,
     this.color,
     this.border,
+    this.borderColor,
     this.boxShadow,
     this.onTap,
+    this.blur,
+    this.opacity,
+    this.gradient,
+    this.isSelected = false,
+    this.style = NeuStyle.flat,
     this.width,
     this.height,
   });
@@ -36,31 +54,62 @@ class ThemedContainer extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final borderRadius = BorderRadius.circular(radius ?? 24);
+    final isHighPerf = context.select<StorageService, bool>(
+      (StorageService s) => s.isHighPerformanceMode,
+    );
 
     Widget container;
 
     switch (type) {
       case ContainerType.glass:
-        container = ClipRRect(
-          borderRadius: borderRadius,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: Container(
-              width: width,
-              height: height,
-              padding: padding ?? const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: (color ?? theme.colorScheme.surface).withOpacity(isDark ? 0.2 : 0.4),
-                borderRadius: borderRadius,
-                border: border ?? Border.all(
-                  color: (isDark ? Colors.white : theme.colorScheme.primary).withOpacity(0.15),
-                  width: 1,
-                ),
-              ),
-              child: child,
+        // Performance optimization: Lower default blur and respect performance mode
+        final effectiveBlur = blur ?? 8.0;
+        final effectiveOpacity = opacity ?? (isDark ? 0.2 : 0.4);
+        final bool shouldSkipBlur =
+            kIsWeb || (!kIsWeb && Platform.isAndroid) || !isHighPerf;
+
+        final glassContent = Container(
+          width: width,
+          height: height,
+          padding: padding ?? const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: (color ?? theme.colorScheme.surface).withValues(
+              alpha:
+                  isHighPerf
+                      ? effectiveOpacity
+                      : (effectiveOpacity + 0.2).clamp(0.0, 1.0),
             ),
+            borderRadius: borderRadius,
+            border:
+                border ??
+                (borderColor != null
+                    ? Border.all(color: borderColor!, width: 1)
+                    : Border.all(
+                      color: (isDark ? Colors.white : theme.colorScheme.primary)
+                          .withValues(alpha: 0.15),
+                      width: 1,
+                    )),
           ),
+          child: child,
         );
+
+        if (shouldSkipBlur) {
+          container = ClipRRect(
+            borderRadius: borderRadius,
+            child: glassContent,
+          );
+        } else {
+          container = ClipRRect(
+            borderRadius: borderRadius,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: effectiveBlur,
+                sigmaY: effectiveBlur,
+              ),
+              child: glassContent,
+            ),
+          );
+        }
         break;
 
       case ContainerType.neu:
@@ -70,21 +119,31 @@ class ThemedContainer extends StatelessWidget {
           padding: padding ?? const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            color: color ?? theme.colorScheme.surface,
-            border: border,
-            boxShadow: boxShadow ?? [
-              BoxShadow(
-                color: theme.shadowColor.withOpacity(isDark ? 0.3 : 0.1),
-                offset: const Offset(4, 4),
-                blurRadius: 8,
-                spreadRadius: 1,
-              ),
-              BoxShadow(
-                color: isDark ? Colors.black12 : Colors.white,
-                offset: const Offset(-2, -2),
-                blurRadius: 4,
-              ),
-            ],
+            color:
+                gradient != null ? null : (color ?? theme.colorScheme.surface),
+            gradient: gradient,
+            border:
+                border ??
+                (borderColor != null
+                    ? Border.all(color: borderColor!, width: 1.5)
+                    : null),
+            boxShadow:
+                boxShadow ??
+                [
+                  BoxShadow(
+                    color: theme.shadowColor.withValues(
+                      alpha: isDark ? 0.3 : 0.1,
+                    ),
+                    offset: const Offset(4, 4),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                  ),
+                  BoxShadow(
+                    color: isDark ? Colors.black12 : Colors.white,
+                    offset: const Offset(-2, -2),
+                    blurRadius: 4,
+                  ),
+                ],
           ),
           child: child,
         );
@@ -99,13 +158,15 @@ class ThemedContainer extends StatelessWidget {
             borderRadius: borderRadius,
             color: color ?? theme.colorScheme.surface,
             border: border,
-            boxShadow: boxShadow ?? [
-              BoxShadow(
-                color: theme.shadowColor.withOpacity(0.08),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
-              ),
-            ],
+            boxShadow:
+                boxShadow ??
+                [
+                  BoxShadow(
+                    color: theme.shadowColor.withValues(alpha: 0.08),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
           ),
           child: child,
         );

@@ -7,7 +7,7 @@ import '../services/storage_service.dart';
 import '../models/period_log.dart';
 import '../utils/app_theme.dart';
 import '../widgets/cycle_phase_wheel.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class InsightsScreen extends StatelessWidget {
@@ -33,7 +33,8 @@ class InsightsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const NeuContainer(
+            child: const ThemedContainer(
+              type: ContainerType.neu,
               radius: 12,
               padding: EdgeInsets.zero,
               child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -175,7 +176,8 @@ class InsightsScreen extends StatelessWidget {
   }
 
   Widget _buildScoreCard(String title, String value, IconData icon) {
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -216,7 +218,8 @@ class InsightsScreen extends StatelessWidget {
     final isRegular = !pred.isIrregularCycle;
     int score = _computeFlowmateScore(pred);
 
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 28,
       padding: const EdgeInsets.all(24),
       borderColor: AppTheme.accentPink.withValues(alpha: 0.3),
@@ -289,7 +292,8 @@ class InsightsScreen extends StatelessWidget {
       }
     }
 
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -433,7 +437,8 @@ class InsightsScreen extends StatelessWidget {
     }
 
     if (counts.isEmpty) {
-      return NeuContainer(
+      return ThemedContainer(
+        type: ContainerType.neu,
         radius: 28,
         padding: const EdgeInsets.all(24),
         child: Center(
@@ -452,7 +457,8 @@ class InsightsScreen extends StatelessWidget {
         counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     int total = counts.values.fold(0, (sum, val) => sum + val);
 
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 28,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -524,7 +530,8 @@ class InsightsScreen extends StatelessWidget {
     }
 
     if (moodCounts.isEmpty) {
-      return NeuContainer(
+      return ThemedContainer(
+        type: ContainerType.neu,
         radius: 24,
         padding: const EdgeInsets.all(24),
         child: Center(
@@ -565,7 +572,8 @@ class InsightsScreen extends StatelessWidget {
 
     final maxVal = sorted.first.value.toDouble();
 
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 24,
       padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
       child: Column(
@@ -746,7 +754,8 @@ class _DailyInsightCard extends StatelessWidget {
     final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
     final tip = _tips[dayOfYear % _tips.length];
 
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 28,
       padding: const EdgeInsets.all(20),
       child: InkWell(

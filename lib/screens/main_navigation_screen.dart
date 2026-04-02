@@ -38,43 +38,54 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.frameColor,
-      extendBody: true, // Crucial for floating bar
-      drawer: const SharedDrawer(),
-      body: Container(
-        decoration: AppTheme.getBackgroundDecoration(context),
-        child: IndexedStack(index: _selectedIndex, children: _screens),
+    return PopScope(
+      canPop: _selectedIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_selectedIndex != 0) {
+          _onItemTapped(0);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppTheme.frameColor,
+        extendBody: true, // Crucial for floating bar
+        drawer: const SharedDrawer(),
+        body: Container(
+          decoration: AppTheme.getBackgroundDecoration(context),
+          child: IndexedStack(index: _selectedIndex, children: _screens),
+        ),
+        bottomNavigationBar: _buildBottomBar(),
       ),
-      bottomNavigationBar: _buildBottomBar(),
     );
   }
 
   Widget _buildBottomBar() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: Container(
-          height: 64,
-          decoration: AppTheme.glassDecoration(radius: 28, opacity: 0.08),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(child: _bottomNavItem(0, Icons.home_rounded, 'Home')),
-              Expanded(
-                child: _bottomNavItem(
-                  1,
-                  Icons.calendar_month_rounded,
-                  'Calendar',
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Container(
+            height: 64,
+            decoration: AppTheme.glassDecoration(radius: 28, opacity: 0.08),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(child: _bottomNavItem(0, Icons.home_rounded, 'Home')),
+                Expanded(
+                  child: _bottomNavItem(
+                    1,
+                    Icons.calendar_month_rounded,
+                    'Calendar',
+                  ),
                 ),
-              ),
-              _logButton(),
-              Expanded(
-                child: _bottomNavItem(2, Icons.person_rounded, 'Profile'),
-              ),
-            ],
+                _logButton(),
+                Expanded(
+                  child: _bottomNavItem(2, Icons.person_rounded, 'Profile'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -137,20 +148,42 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                    icon,
-                    color:
-                        isSelected
-                            ? AppTheme.accentPink
-                            : AppTheme.textSecondary,
-                    size: 26,
-                  )
-                  .animate(target: isSelected ? 1 : 0)
-                  .scale(
-                    begin: const Offset(1, 1),
-                    end: const Offset(1.2, 1.2),
-                    duration: 300.ms,
-                  ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (isSelected)
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: AppTheme.accentPink.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                    ).animate().scale(
+                      duration: 400.ms,
+                      curve: Curves.easeOutBack,
+                    ),
+                  Icon(
+                        icon,
+                        color:
+                            isSelected
+                                ? AppTheme.accentPink
+                                : AppTheme.textSecondary,
+                        size: 26,
+                      )
+                      .animate(target: isSelected ? 1 : 0)
+                      .scale(
+                        begin: const Offset(1, 1),
+                        end: const Offset(1.2, 1.2),
+                        duration: 300.ms,
+                      )
+                      .shimmer(
+                        delay: 400.ms,
+                        duration: 1200.ms,
+                        color: Colors.white24,
+                      ),
+                ],
+              ),
               const SizedBox(height: 4),
               if (isSelected)
                 Container(

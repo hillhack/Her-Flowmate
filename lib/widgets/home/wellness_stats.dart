@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../services/prediction_service.dart';
 import '../../services/storage_service.dart';
 import '../../utils/app_theme.dart';
-import '../glass_container.dart';
+import '../themed_container.dart';
 
 class SleepCard extends StatelessWidget {
   final PredictionService pred;
@@ -27,7 +27,9 @@ class SleepCard extends StatelessWidget {
     final tip = sleepTips[phase] ?? 'Aim for 7–9h for hormonal balance.';
 
     String quality = '—';
-    Color qualityColor = AppTheme.textSecondary;
+    Color qualityColor = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.6);
     if (hasData) {
       if (sleepHours >= AppConstants.greatSleepHours) {
         quality = 'Great';
@@ -41,7 +43,8 @@ class SleepCard extends StatelessWidget {
       }
     }
 
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       radius: 24,
       padding: const EdgeInsets.all(18),
       child: Column(
@@ -56,7 +59,7 @@ class SleepCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -70,7 +73,7 @@ class SleepCard extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.textDark,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 if (hasData)
@@ -78,7 +81,9 @@ class SleepCard extends StatelessWidget {
                     text: 'h',
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: AppTheme.textSecondary,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
               ],
@@ -105,7 +110,9 @@ class SleepCard extends StatelessWidget {
             tip,
             style: GoogleFonts.inter(
               fontSize: 10,
-              color: AppTheme.textSecondary,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
               height: 1.4,
             ),
             maxLines: 3,
@@ -117,7 +124,7 @@ class SleepCard extends StatelessWidget {
               'Log in daily check-in ✏️',
               style: GoogleFonts.inter(
                 fontSize: 10,
-                color: AppTheme.accentPink,
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -167,15 +174,18 @@ class StreakCard extends StatelessWidget {
       emoji = '⭐';
     } else if (streak >= 1) {
       streakLabel = 'Keep it up';
-      streakColor = AppTheme.accentPink;
+      streakColor = Theme.of(context).colorScheme.primary;
       emoji = '✨';
     } else {
       streakLabel = 'Start today';
-      streakColor = AppTheme.textSecondary;
+      streakColor = Theme.of(
+        context,
+      ).colorScheme.onSurface.withValues(alpha: 0.6);
       emoji = '📅';
     }
 
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       radius: 24,
       padding: const EdgeInsets.all(18),
       child: Column(
@@ -190,7 +200,7 @@ class StreakCard extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -211,7 +221,9 @@ class StreakCard extends StatelessWidget {
                   text: ' days',
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: AppTheme.textSecondary,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -243,7 +255,9 @@ class StreakCard extends StatelessWidget {
                     : 30 - (streak % 30)} days',
             style: GoogleFonts.inter(
               fontSize: 10,
-              color: AppTheme.textSecondary,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
               height: 1.4,
             ),
             maxLines: 2,

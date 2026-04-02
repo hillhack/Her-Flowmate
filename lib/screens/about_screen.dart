@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 import '../widgets/brand_widgets.dart';
 import 'feedback_screen.dart';
 
@@ -31,7 +31,8 @@ class AboutAppScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(24),
                 child: Row(
                   children: [
-                    NeuContainer(
+                    ThemedContainer(
+                      type: ContainerType.neu,
                       padding: const EdgeInsets.all(10),
                       radius: 18,
                       style: NeuStyle.convex,
@@ -103,7 +104,8 @@ class AboutAppScreen extends StatelessWidget {
 
                       const SizedBox(height: 32),
                       // Description
-                      NeuContainer(
+                      ThemedContainer(
+                        type: ContainerType.neu,
                         radius: 28,
                         padding: const EdgeInsets.all(24),
                         child: Text(
@@ -216,14 +218,16 @@ class AboutAppScreen extends StatelessWidget {
     String sub,
     VoidCallback onTap,
   ) {
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 24,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            NeuContainer(
+            ThemedContainer(
+              type: ContainerType.neu,
               padding: const EdgeInsets.all(12),
               radius: 16,
               style: NeuStyle.convex,

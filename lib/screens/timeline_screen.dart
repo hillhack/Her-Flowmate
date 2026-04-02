@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class TimelineScreen extends StatelessWidget {
   const TimelineScreen({super.key});
@@ -24,7 +24,8 @@ class TimelineScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const NeuContainer(
+            child: const ThemedContainer(
+              type: ContainerType.neu,
               radius: 12,
               padding: EdgeInsets.zero,
               child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -207,7 +208,8 @@ class _TimelineRow extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 24),
               child:
                   isToday
-                      ? NeuContainer(
+                      ? ThemedContainer(
+                        type: ContainerType.neu,
                         radius: 20,
                         onTap: () {},
                         padding: const EdgeInsets.symmetric(

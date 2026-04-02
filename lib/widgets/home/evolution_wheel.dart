@@ -21,7 +21,9 @@ class EvolutionWheel extends StatelessWidget {
         painter: _WheelPainter(
           progress: progress.clamp(0.0, 1.0),
           activeColor: activeColor,
-          trackColor: Colors.white.withOpacity(0.08),
+          trackColor: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.08),
         ),
       ),
     );
@@ -46,23 +48,25 @@ class _WheelPainter extends CustomPainter {
     const strokeWidth = 14.0;
 
     // 1. Draw Track
-    final trackPaint = Paint()
-      ..color = trackColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
+    final trackPaint =
+        Paint()
+          ..color = trackColor
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawCircle(center, radius, trackPaint);
 
     if (progress <= 0) return;
 
     // 2. Draw Glow Layer (Subtle)
-    final glowPaint = Paint()
-      ..color = activeColor.withOpacity(0.2)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth + 8
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    final glowPaint =
+        Paint()
+          ..color = activeColor.withValues(alpha: 0.2)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth + 8
+          ..strokeCap = StrokeCap.round
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
 
     final sweepAngle = 2 * math.pi * progress;
     const startAngle = -math.pi / 2;
@@ -76,19 +80,20 @@ class _WheelPainter extends CustomPainter {
     );
 
     // 3. Draw Active Progress with Gradient
-    final activePaint = Paint()
-      ..shader = SweepGradient(
-        colors: [
-          activeColor.withOpacity(0.6),
-          activeColor,
-          activeColor,
-        ],
-        stops: const [0.0, 0.5, 1.0],
-        transform: const GradientRotation(startAngle),
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
+    final activePaint =
+        Paint()
+          ..shader = SweepGradient(
+            colors: [
+              activeColor.withValues(alpha: 0.6),
+              activeColor,
+              activeColor,
+            ],
+            stops: const [0.0, 0.5, 1.0],
+            transform: const GradientRotation(startAngle),
+          ).createShader(Rect.fromCircle(center: center, radius: radius))
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -101,6 +106,7 @@ class _WheelPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _WheelPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.activeColor != activeColor;
+    return oldDelegate.progress != progress ||
+        oldDelegate.activeColor != activeColor;
   }
 }

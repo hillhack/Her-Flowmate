@@ -3,8 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/daily_log.dart';
 import '../../services/storage_service.dart';
-import '../../utils/app_theme.dart';
-import '../glass_container.dart';
+import '../themed_container.dart';
 import '../info_widgets.dart';
 
 class WaterIntakeCard extends StatelessWidget {
@@ -23,7 +22,8 @@ class WaterIntakeCard extends StatelessWidget {
     final water = log?.waterIntake ?? 0;
     final goal = storage.hydrationGoal;
 
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       padding: const EdgeInsets.all(20),
       radius: 24,
       child: Column(
@@ -57,7 +57,9 @@ class WaterIntakeCard extends StatelessWidget {
                       style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w900,
-                        color: AppTheme.textSecondary,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -66,7 +68,8 @@ class WaterIntakeCard extends StatelessWidget {
               ),
               Row(
                 children: [
-                  GlassContainer(
+                  ThemedContainer(
+                    type: ContainerType.glass,
                     onTap: () {
                       HapticFeedback.lightImpact();
                       _removeWater(context);
@@ -82,7 +85,8 @@ class WaterIntakeCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  GlassContainer(
+                  ThemedContainer(
+                    type: ContainerType.glass,
                     onTap: () {
                       HapticFeedback.lightImpact();
                       _addWater(context);
@@ -126,7 +130,7 @@ class WaterIntakeCard extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.w700,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],

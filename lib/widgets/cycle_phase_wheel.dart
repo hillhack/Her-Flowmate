@@ -1,8 +1,8 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import 'glass_container.dart';
+import 'themed_container.dart';
 
 class CyclePhaseWheel extends StatelessWidget {
   final int currentCycleDay;
@@ -20,77 +20,95 @@ class CyclePhaseWheel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double progress =
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final progress =
         cycleLength > 0 ? currentCycleDay / cycleLength.clamp(1, 999) : 0.0;
-    final accentColor = AppTheme.phaseColor(currentPhase);
+    final accentColor = colorScheme.phaseColor(currentPhase);
+    final textColor = colorScheme.onSurface;
+    final secondaryTextColor = textColor.withValues(alpha: 0.7);
 
-    return RepaintBoundary(
-      child: GlassContainer(
-        width: 300,
-        height: 300,
-        radius: 150,
-        blur: 20,
-        opacity: 0.1,
-        borderColor: accentColor.withValues(alpha: 0.2),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // Inner decorative ring
-            Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  width: 2,
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxSize = min(constraints.maxWidth * 0.9, 300.0);
+        final innerSize = maxSize * 0.82; // Adjusted ratio for better spacing
+
+        return Semantics(
+          label:
+              'Cycle phase: $currentPhase, day $currentCycleDay of $cycleLength, $daysUntilNextPeriod days until next period',
+          child: RepaintBoundary(
+            child: ThemedContainer(
+              type: ContainerType.glass,
+              width: maxSize,
+              height: maxSize,
+              radius: maxSize / 2,
+              blur: kIsWeb ? 0 : 20,
+              opacity: 0.1,
+              borderColor: accentColor.withValues(alpha: 0.2),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Inner decorative ring
+                  Container(
+                    width: innerSize,
+                    height: innerSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: colorScheme.outline.withValues(alpha: 0.15),
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                  // Progress arc
+                  CustomPaint(
+                    size: Size(innerSize, innerSize),
+                    painter: _ArcPainter(
+                      progress: progress,
+                      color: accentColor,
+                      strokeWidth: 12,
+                    ),
+                  ),
+                  // Content
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        currentPhase,
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: accentColor,
+                          fontWeight: FontWeight.w800,
+                          fontSize: maxSize * 0.08, // Dynamic font size
+                        ),
+                      ),
+                      SizedBox(height: maxSize * 0.02),
+                      Text(
+                        "Day $currentCycleDay / $cycleLength",
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: textColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: maxSize * 0.05,
+                        ),
+                      ),
+                      SizedBox(height: maxSize * 0.01),
+                      Text(
+                        daysUntilNextPeriod >= 0
+                            ? "Next in $daysUntilNextPeriod d"
+                            : "Late by ${daysUntilNextPeriod.abs()} d",
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: secondaryTextColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: maxSize * 0.045,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-
-            // Progress arc
-            CustomPaint(
-              size: const Size(260, 260),
-              painter: _ArcPainter(progress: progress, color: accentColor),
-            ),
-
-            // Content
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  currentPhase,
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: accentColor,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Day $currentCycleDay / $cycleLength",
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    color: AppTheme.textDark,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  daysUntilNextPeriod >= 0
-                      ? "Next in $daysUntilNextPeriod d"
-                      : "Late by ${daysUntilNextPeriod.abs()} d",
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -98,30 +116,33 @@ class CyclePhaseWheel extends StatelessWidget {
 class _ArcPainter extends CustomPainter {
   final double progress;
   final Color color;
+  final double strokeWidth;
 
-  _ArcPainter({required this.progress, required this.color});
+  const _ArcPainter({
+    required this.progress,
+    required this.color,
+    this.strokeWidth = 12,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
-    final radius =
-        size.width / 2 - 13.0; // Align with the center of the 260px ring
-
+    // Align the stroke inside the radius to stay within the bounds of innerSize
+    final radius = (size.width / 2) - (strokeWidth / 2);
     final rect = Rect.fromCircle(center: center, radius: radius);
-
     final paint =
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 12
+          ..strokeWidth = strokeWidth
           ..strokeCap = StrokeCap.round
           ..color = color;
-
-    // Background track for the arc? No, keep it clean Neumorphic.
 
     canvas.drawArc(rect, -pi / 2, 2 * pi * progress, false, paint);
   }
 
   @override
   bool shouldRepaint(covariant _ArcPainter old) =>
-      old.progress != progress || old.color != color;
+      old.progress != progress ||
+      old.color != color ||
+      old.strokeWidth != strokeWidth;
 }

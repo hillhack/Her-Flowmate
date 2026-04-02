@@ -4,8 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
-import 'glass_container.dart';
-import 'neu_container.dart';
+import 'themed_container.dart';
 
 class CycleTimeline extends StatelessWidget {
   final int currentDay;
@@ -31,7 +30,9 @@ class CycleTimeline extends StatelessWidget {
               'Cycle Timeline',
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: AppTheme.textSecondary,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -39,7 +40,7 @@ class CycleTimeline extends StatelessWidget {
               'Day $currentDay of $cycleLength',
               style: GoogleFonts.inter(
                 fontSize: 14,
-                color: AppTheme.textDark,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -128,7 +129,8 @@ class _HormoneGraphState extends State<HormoneGraph> {
   Widget build(BuildContext context) {
     final cycleLen = widget.pred.averageCycleLength;
 
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       padding: const EdgeInsets.all(24),
       radius: 32,
       child: Column(
@@ -143,12 +145,14 @@ class _HormoneGraphState extends State<HormoneGraph> {
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.textDark,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 Icon(
                   Icons.auto_graph_rounded,
-                  color: AppTheme.accentPink.withValues(alpha: 0.5),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.5),
                   size: 20,
                 ),
               ],
@@ -156,7 +160,6 @@ class _HormoneGraphState extends State<HormoneGraph> {
             const SizedBox(height: 24),
           ],
           if (selectedDay != null) ...[
-            const SizedBox(height: 8),
             Row(
               children: [
                 Text(
@@ -164,15 +167,17 @@ class _HormoneGraphState extends State<HormoneGraph> {
                   style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: AppTheme.accentPink,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close_rounded,
                     size: 18,
-                    color: AppTheme.textSecondary,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                   onPressed: () => setState(() => selectedDay = null),
                 ),
@@ -187,7 +192,9 @@ class _HormoneGraphState extends State<HormoneGraph> {
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
                     getTooltipColor:
-                        (_) => AppTheme.bgColor.withValues(alpha: 0.9),
+                        (_) => Theme.of(
+                          context,
+                        ).colorScheme.surface.withValues(alpha: 0.9),
                     maxContentWidth: 200,
                     getTooltipItems: (touchedSpots) {
                       return touchedSpots.map((spot) {
@@ -205,7 +212,7 @@ class _HormoneGraphState extends State<HormoneGraph> {
                         return LineTooltipItem(
                           'Day $day: ${phase.displayName}\n',
                           GoogleFonts.inter(
-                            color: AppTheme.textDark,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.w800,
                             fontSize: 13,
                           ),
@@ -214,7 +221,9 @@ class _HormoneGraphState extends State<HormoneGraph> {
                               text:
                                   '${biology['hormoneActivity']}\n\n${biology['energy']}',
                               style: GoogleFonts.inter(
-                                color: AppTheme.textSecondary,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.7),
                                 fontWeight: FontWeight.w500,
                                 fontSize: 11,
                               ),
@@ -325,7 +334,9 @@ class _HormoneGraphState extends State<HormoneGraph> {
                   e.key,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: AppTheme.textSecondary,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -351,7 +362,8 @@ class HormoneFocusWidget extends StatelessWidget {
 
       if (highest == null || lowest == null) return const SizedBox.shrink();
 
-      return NeuContainer(
+      return ThemedContainer(
+            type: ContainerType.neu,
             padding: const EdgeInsets.all(28),
             radius: 36,
             style: NeuStyle.convex,
@@ -379,6 +391,7 @@ class HormoneFocusWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 _focusRow(
+                  context,
                   'Highest',
                   highest['name'],
                   highest['desc'],
@@ -387,10 +400,12 @@ class HormoneFocusWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 _focusRow(
+                  context,
                   'Lowest',
                   lowest['name'],
                   lowest['desc'],
-                  AppTheme.hormoneColors[lowest['name']] ?? AppTheme.accentPink,
+                  AppTheme.hormoneColors[lowest['name']] ??
+                      Theme.of(context).colorScheme.primary,
                   Icons.trending_down_rounded,
                 ),
               ],
@@ -406,6 +421,7 @@ class HormoneFocusWidget extends StatelessWidget {
   }
 
   Widget _focusRow(
+    BuildContext context,
     String label,
     String name,
     String desc,
@@ -434,7 +450,9 @@ class HormoneFocusWidget extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppTheme.textSecondary,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   Text(
@@ -452,8 +470,10 @@ class HormoneFocusWidget extends StatelessWidget {
                 desc,
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: AppTheme.textSecondary,
-                  fontWeight: FontWeight.w500,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                  fontWeight: FontWeight.w600,
                   height: 1.3,
                 ),
               ),
@@ -474,7 +494,8 @@ class PhaseHealthTipsWidget extends StatelessWidget {
     final phase = pred.phaseDisplayName;
     final tips = AppTheme.getPhaseHealthTips(phase);
 
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       padding: const EdgeInsets.all(32),
       radius: 40,
       style: NeuStyle.convex,
@@ -517,18 +538,21 @@ class PhaseHealthTipsWidget extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           _tipCategory(
+            context,
             'Physical & Exercise',
             Icons.fitness_center_rounded,
             tips.exercise,
           ),
           const SizedBox(height: 24),
           _tipCategory(
+            context,
             'Optimal Diet',
             Icons.restaurant_menu_rounded,
             tips.diet,
           ),
           const SizedBox(height: 24),
           _tipCategory(
+            context,
             'Key Nutrients',
             Icons.health_and_safety_rounded,
             tips.nutrients,
@@ -538,7 +562,12 @@ class PhaseHealthTipsWidget extends StatelessWidget {
     );
   }
 
-  Widget _tipCategory(String title, IconData icon, List<String> items) {
+  Widget _tipCategory(
+    BuildContext context,
+    String title,
+    IconData icon,
+    List<String> items,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -551,7 +580,9 @@ class PhaseHealthTipsWidget extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 12,
                 fontWeight: FontWeight.w900,
-                color: AppTheme.textSecondary,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
                 letterSpacing: 1.2,
               ),
             ),
@@ -581,7 +612,7 @@ class PhaseHealthTipsWidget extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          color: AppTheme.textDark,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),

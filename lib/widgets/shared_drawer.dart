@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/brand_widgets.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 import '../widgets/period_health_widgets.dart';
 import '../screens/history_screen.dart';
 import '../screens/education_hub_screen.dart';
@@ -239,7 +239,8 @@ class SharedDrawer extends StatelessWidget {
     required String title,
     required VoidCallback onTap,
   }) {
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       margin: const EdgeInsets.only(bottom: 8),
       radius: 20,
       onTap: () {

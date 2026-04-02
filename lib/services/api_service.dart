@@ -11,9 +11,9 @@ class ApiService {
       BaseStorageService.instance.prefs.getString(tokenKey);
 
   static Map<String, String> get headers => {
-        'Content-Type': 'application/json',
-        if (token != null) 'Authorization': 'Bearer $token',
-      };
+    'Content-Type': 'application/json',
+    if (token != null) 'Authorization': 'Bearer $token',
+  };
 
   static Future<void> saveToken(String? value) async {
     if (value == null) {
@@ -23,7 +23,10 @@ class ApiService {
     }
   }
 
-  static Future<http.Response> post(String endpoint, Map<String, dynamic> body) async {
+  static Future<http.Response> post(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
     final url = Uri.parse('$baseUrl$endpoint');
     debugPrint('API POST: $url');
     try {
@@ -44,10 +47,7 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     debugPrint('API GET: $url');
     try {
-      final response = await http.get(
-        url,
-        headers: headers,
-      );
+      final response = await http.get(url, headers: headers);
       _logResponse(response);
       return response;
     } catch (e) {
@@ -56,7 +56,10 @@ class ApiService {
     }
   }
 
-  static Future<http.Response> put(String endpoint, Map<String, dynamic> body) async {
+  static Future<http.Response> put(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
     final url = Uri.parse('$baseUrl$endpoint');
     debugPrint('API PUT: $url');
     try {

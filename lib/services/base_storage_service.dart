@@ -24,7 +24,8 @@ class BaseStorageService extends ChangeNotifier {
     // Register adapters
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(PeriodLogAdapter());
     if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(DailyLogAdapter());
-    if (!Hive.isAdapterRegistered(3)) Hive.registerAdapter(AppointmentAdapter());
+    if (!Hive.isAdapterRegistered(3))
+      Hive.registerAdapter(AppointmentAdapter());
     if (!Hive.isAdapterRegistered(10)) Hive.registerAdapter(UserAdapter());
 
     _isInitialized = true;

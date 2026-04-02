@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../models/daily_log.dart';
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class DailyCheckinScreen extends StatefulWidget {
   const DailyCheckinScreen({super.key});
@@ -120,7 +120,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
       body: Container(
         decoration: BoxDecoration(
           color: isDark ? AppTheme.darkSurface : AppTheme.frameColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
         ),
         padding: const EdgeInsets.only(top: 16),
         child: ClipRRect(
@@ -171,7 +171,8 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   // ── Date ────────────────────────────────────────────
                   _stepLabel(context, '📅', 'Date'),
                   const SizedBox(height: 16),
-                  NeuContainer(
+                  ThemedContainer(
+                    type: ContainerType.neu,
                     radius: 24,
                     onTap: () async {
                       final date = await showDatePicker(

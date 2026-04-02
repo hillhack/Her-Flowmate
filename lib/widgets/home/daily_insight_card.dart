@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utils/app_theme.dart';
 import '../../services/prediction_service.dart';
-import '../glass_container.dart';
+import '../themed_container.dart';
 
 class DailyInsightCard extends StatelessWidget {
   final PredictionService pred;
@@ -14,7 +14,8 @@ class DailyInsightCard extends StatelessWidget {
     final healthTips = AppTheme.getPhaseHealthTips(phase);
     final bio = pred.getPhaseBiology(pred.currentCycleDay);
 
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       radius: 32,
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -42,7 +43,9 @@ class DailyInsightCard extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w900,
-                  color: AppTheme.textSecondary,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                   letterSpacing: 1.2,
                 ),
               ),
@@ -54,7 +57,7 @@ class DailyInsightCard extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
@@ -62,17 +65,21 @@ class DailyInsightCard extends StatelessWidget {
             bio['hormoneActivity'] ?? '',
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: AppTheme.textSecondary,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.7),
               height: 1.5,
             ),
           ),
           const SizedBox(height: 16),
           _buildTipRow(
+            context,
             Icons.restaurant_rounded,
             'Nutrition: ${healthTips.diet.first}',
           ),
           const SizedBox(height: 8),
           _buildTipRow(
+            context,
             Icons.fitness_center_rounded,
             'Activity: ${healthTips.exercise.first}',
           ),
@@ -81,10 +88,10 @@ class DailyInsightCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTipRow(IconData icon, String text) {
+  Widget _buildTipRow(BuildContext context, IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: AppTheme.accentPink),
+        Icon(icon, size: 16, color: Theme.of(context).colorScheme.primary),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
@@ -92,7 +99,7 @@ class DailyInsightCard extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

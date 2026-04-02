@@ -37,60 +37,66 @@ class CycleCoreRing extends StatelessWidget {
           ),
 
           // Inner Content Card
-          ThemedContainer(
-            type: ContainerType.glass,
-            radius: ringSize / 2,
-            padding: EdgeInsets.zero,
-            onTap: () {
-              final biology = pred.getPhaseBiology(day);
-              final phase = pred.phaseDisplayName;
-              final symptoms = AppTheme.getPhaseSymptoms(phase);
+          RepaintBoundary(
+            child: ThemedContainer(
+              type: ContainerType.glass,
+              radius: ringSize / 2,
+              padding: EdgeInsets.zero,
+              onTap: () {
+                final biology = pred.getPhaseBiology(day);
+                final phase = pred.phaseDisplayName;
+                final symptoms = AppTheme.getPhaseSymptoms(phase);
 
-              showGlassInfoPopup(
-                context,
-                title: '$phase Phase',
-                explanation:
-                    '${biology['hormoneActivity']}\n\n${biology['energy']}\n\n${biology['mood']}',
-                tip: 'Common symptoms: ${symptoms.join(", ")}',
-              );
-            },
-            child: SizedBox(
-              width: innerSize,
-              height: innerSize,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      phaseName.toUpperCase(),
-                      style: GoogleFonts.poppins(
-                        fontSize: (ringSize * 0.085).clamp(14.0, 18.0),
-                        fontWeight: FontWeight.w900,
-                        color: AppTheme.getPhaseColor(pred.currentPhase),
-                        letterSpacing: 1.2,
+                showGlassInfoPopup(
+                  context,
+                  title: '$phase Phase',
+                  explanation:
+                      '${biology['hormoneActivity']}\n\n${biology['energy']}\n\n${biology['mood']}',
+                  tip: 'Common symptoms: ${symptoms.join(", ")}',
+                );
+              },
+              child: SizedBox(
+                width: innerSize,
+                height: innerSize,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        phaseName.toUpperCase(),
+                        style: GoogleFonts.poppins(
+                          fontSize: (ringSize * 0.085).clamp(14.0, 18.0),
+                          fontWeight: FontWeight.w900,
+                          color: AppTheme.getPhaseColor(pred.currentPhase),
+                          letterSpacing: 1.2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    _ChanceBadge(chance: pred.currentConceptionChance),
-                    const SizedBox(height: 16),
-                    _buildMiniInfo(
-                      label: 'NEXT PERIOD',
-                      value:
-                          pred.nextPeriodDate != null
-                              ? DateFormat('MMM d').format(pred.nextPeriodDate!)
-                              : '--',
-                    ),
-                    const SizedBox(height: 8),
-                    _buildMiniInfo(
-                      label: 'OVULATION',
-                      value:
-                          pred.daysUntilOvulation == 0
-                              ? 'Today'
-                              : (pred.daysUntilOvulation > 0
-                                  ? 'in ${pred.daysUntilOvulation}d'
-                                  : '--'),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      _ChanceBadge(chance: pred.currentConceptionChance),
+                      const SizedBox(height: 16),
+                      _buildMiniInfo(
+                        context,
+                        label: 'NEXT PERIOD',
+                        value:
+                            pred.nextPeriodDate != null
+                                ? DateFormat(
+                                  'MMM d',
+                                ).format(pred.nextPeriodDate!)
+                                : '--',
+                      ),
+                      const SizedBox(height: 8),
+                      _buildMiniInfo(
+                        context,
+                        label: 'OVULATION',
+                        value:
+                            pred.daysUntilOvulation == 0
+                                ? 'Today'
+                                : (pred.daysUntilOvulation > 0
+                                    ? 'in ${pred.daysUntilOvulation}d'
+                                    : '--'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -100,7 +106,11 @@ class CycleCoreRing extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniInfo({required String label, required String value}) {
+  Widget _buildMiniInfo(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -109,7 +119,9 @@ class CycleCoreRing extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 9,
             fontWeight: FontWeight.w900,
-            color: AppTheme.textSecondary.withOpacity(0.7),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.6),
             letterSpacing: 0.8,
           ),
         ),
@@ -118,7 +130,7 @@ class CycleCoreRing extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w800,
-            color: AppTheme.textDark,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
@@ -135,20 +147,24 @@ class _ChanceBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppTheme.accentPink.withOpacity(0.1),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.favorite_rounded, size: 10, color: AppTheme.accentPink),
+          Icon(
+            Icons.favorite_rounded,
+            size: 10,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           const SizedBox(width: 4),
           Text(
             '$chance% Chance',
             style: GoogleFonts.inter(
               fontSize: 11,
               fontWeight: FontWeight.w800,
-              color: AppTheme.accentPink,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         ],

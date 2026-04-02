@@ -8,7 +8,7 @@ import 'dart:math';
 import '../services/storage_service.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/themed_container.dart';
 
 class PartnerSyncScreen extends StatefulWidget {
   const PartnerSyncScreen({super.key});
@@ -149,7 +149,8 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                   ),
                 ).animate().fadeIn(delay: 300.ms),
                 const SizedBox(height: 40),
-                GlassContainer(
+                ThemedContainer(
+                  type: ContainerType.glass,
                   padding: const EdgeInsets.all(32),
                   radius: 32,
                   child: Column(
@@ -255,7 +256,8 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                   ),
                 ).animate().fadeIn(delay: 500.ms),
                 const SizedBox(height: 16),
-                GlassContainer(
+                ThemedContainer(
+                  type: ContainerType.glass,
                   padding: const EdgeInsets.all(24),
                   radius: 28,
                   child: Column(

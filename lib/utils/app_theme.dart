@@ -13,7 +13,9 @@ abstract final class AppTheme {
   static const Color primaryPink200 = Color(0xFFFFC1D6);
   static const Color primaryPink300 = Color(0xFFFF9CBA);
   static const Color primaryPink400 = Color(0xFFFF7BA4);
-  static const Color primaryPink500 = Color(0xFFFF5D8C); // Vibrant pink (primary)
+  static const Color primaryPink500 = Color(
+    0xFFFF5D8C,
+  ); // Vibrant pink (primary)
   static const Color primaryPink600 = Color(0xFFE64980);
   static const Color primaryPink700 = Color(0xFFC33774);
   static const Color primaryPink800 = Color(0xFFA13668);
@@ -118,7 +120,9 @@ abstract final class AppTheme {
       opacity: isDark ? opacity * 0.8 : opacity,
       showBorder: true,
       borderColor:
-          isDark ? Colors.white.withOpacity(0.1) : accentPink.withOpacity(0.2),
+          isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : accentPink.withValues(alpha: 0.2),
     );
   }
 
@@ -347,7 +351,8 @@ abstract final class AppTheme {
     );
   }
 
-  static TextTheme textTheme(BuildContext context) => Theme.of(context).textTheme;
+  static TextTheme textTheme(BuildContext context) =>
+      Theme.of(context).textTheme;
 
   // ── Theme Definitions ──────────────────────────────────────────────────────
 
@@ -355,14 +360,13 @@ abstract final class AppTheme {
     return ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: lightBackground,
-      colorScheme: ColorScheme.light(
+      colorScheme: const ColorScheme.light(
         primary: lightPrimary,
         secondary: lightSecondary,
         surface: lightSurface,
         onSurface: lightOnSurface,
         onPrimary: lightOnPrimary,
         error: lightError,
-        background: lightBackground,
       ),
       textTheme: GoogleFonts.poppinsTextTheme().copyWith(
         headlineLarge: GoogleFonts.poppins(
@@ -400,17 +404,17 @@ abstract final class AppTheme {
       primaryColorDark: primaryPink700,
       canvasColor: lightSurface,
       shadowColor: shadowDarkColor,
-      indicatorColor: accentColor,
+      tabBarTheme: const TabBarThemeData(indicatorColor: accentColor),
       splashFactory: InkRipple.splashFactory,
       unselectedWidgetColor: textSecondary,
-      disabledColor: textSecondary.withOpacity(0.5),
-      dialogBackgroundColor: lightSurface,
-      dividerColor: shadowMidColor.withOpacity(0.2),
+      disabledColor: textSecondary.withValues(alpha: 0.5),
+      dialogTheme: const DialogThemeData(backgroundColor: lightSurface),
+      dividerColor: shadowMidColor.withValues(alpha: 0.2),
       cardTheme: CardThemeData(
         color: lightSurface,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        shadowColor: shadowDarkColor.withOpacity(0.2),
+        shadowColor: shadowDarkColor.withValues(alpha: 0.2),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -429,16 +433,14 @@ abstract final class AppTheme {
 
   static ThemeData get darkTheme {
     return ThemeData.dark().copyWith(
-      useMaterial3: true,
       scaffoldBackgroundColor: darkBackground,
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
         primary: darkPrimary,
         secondary: darkSecondary,
         surface: darkSurface,
         onSurface: darkOnSurface,
         onPrimary: darkOnPrimary,
         error: darkError,
-        background: darkBackground,
       ),
       textTheme: GoogleFonts.poppinsTextTheme().copyWith(
         headlineLarge: GoogleFonts.poppins(
@@ -476,8 +478,8 @@ abstract final class AppTheme {
       primaryColorDark: primaryPink900,
       canvasColor: darkSurface,
       shadowColor: darkNeuDark,
-      indicatorColor: darkPrimary,
-      dividerColor: darkNeuLight.withOpacity(0.2),
+      tabBarTheme: const TabBarThemeData(indicatorColor: darkPrimary),
+      dividerColor: darkNeuLight.withValues(alpha: 0.2),
       cardTheme: CardThemeData(
         color: darkCard,
         elevation: 0,
@@ -504,7 +506,8 @@ abstract final class AppTheme {
   static double h2(BuildContext context) => adaptiveFontSize(context, 22);
   static double h3(BuildContext context) => adaptiveFontSize(context, 18);
   static double bodySize(BuildContext context) => adaptiveFontSize(context, 16);
-  static double labelSize(BuildContext context) => adaptiveFontSize(context, 12);
+  static double labelSize(BuildContext context) =>
+      adaptiveFontSize(context, 12);
 
   // Aliases for backward compatibility
   static double body(BuildContext context) => bodySize(context);
@@ -530,7 +533,11 @@ abstract final class AppTheme {
     switch (phase) {
       case 'Menstrual':
         return (
-          exercise: ['Gentle Yoga', 'Light Walking', 'Symptom Relief Stretches'],
+          exercise: [
+            'Gentle Yoga',
+            'Light Walking',
+            'Symptom Relief Stretches',
+          ],
           diet: ['Warm Herbal Soups', 'Magnesium-Rich Oats', 'Ginger Tea'],
           nutrients: ['Iron (rebuild)', 'Magnesium (cramps)', 'Vitamin C'],
         );
@@ -542,13 +549,25 @@ abstract final class AppTheme {
         );
       case 'Ovulation':
         return (
-          exercise: ['HIIT Sessions', 'High Intensity Cardio', 'Social Workouts'],
-          diet: ['Rainbow Salads', 'Cold Berries', 'Anti-inflammatory Crucifers'],
+          exercise: [
+            'HIIT Sessions',
+            'High Intensity Cardio',
+            'Social Workouts',
+          ],
+          diet: [
+            'Rainbow Salads',
+            'Cold Berries',
+            'Anti-inflammatory Crucifers',
+          ],
           nutrients: ['Folate (cell health)', 'Amino Acids', 'Vitamin B'],
         );
       case 'Luteal':
         return (
-          exercise: ['Steady-state Pilates', 'Mindful Resistance', 'Long Stretches'],
+          exercise: [
+            'Steady-state Pilates',
+            'Mindful Resistance',
+            'Long Stretches',
+          ],
           diet: ['Complex Root Veggies', 'Dark Chocolate (70%+)', 'Omega Fats'],
           nutrients: ['Vitamin B6 (mood)', 'Magnesium (sleep)', 'Omega-3'],
         );
@@ -590,16 +609,10 @@ extension CustomTextTheme on TextTheme {
     letterSpacing: -0.2,
   );
 
-  TextStyle get bodySemiBold => GoogleFonts.inter(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    height: 1.4,
-  );
+  TextStyle get bodySemiBold =>
+      GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, height: 1.4);
 
-  TextStyle get body => GoogleFonts.inter(
-    fontSize: 14,
-    height: 1.5,
-  );
+  TextStyle get body => GoogleFonts.inter(fontSize: 14, height: 1.5);
 
   TextStyle get caption => GoogleFonts.inter(
     fontSize: 12,
@@ -608,3 +621,24 @@ extension CustomTextTheme on TextTheme {
   );
 }
 
+// ── Theme Extensions ─────────────────────────────────────────────────────────
+extension PhaseColors on ColorScheme {
+  Color phaseColor(String phase) {
+    switch (phase) {
+      case 'Menstrual' || 'Period':
+        return primary;
+      case 'Follicular':
+        return secondary;
+      case 'Ovulation' || 'Ovulatory':
+        return tertiaryContainer.withValues(alpha: 0.8) == Colors.transparent
+            ? primary
+            : (brightness == Brightness.light
+                ? const Color(0xFFBA68C8)
+                : const Color(0xFFCE93D8));
+      case 'Luteal':
+        return primary.withValues(alpha: 0.7);
+      default:
+        return primary;
+    }
+  }
+}

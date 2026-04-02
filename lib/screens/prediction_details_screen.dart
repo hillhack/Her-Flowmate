@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/themed_container.dart';
 
 class PredictionDetailsScreen extends StatelessWidget {
   const PredictionDetailsScreen({super.key});
@@ -15,7 +15,8 @@ class PredictionDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const GlassContainer(
+          icon: const ThemedContainer(
+            type: ContainerType.glass,
             padding: EdgeInsets.all(8),
             radius: 12,
             child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -84,7 +85,8 @@ class PredictionDetailsScreen extends StatelessWidget {
     String hormones,
     Color color,
   ) {
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       padding: const EdgeInsets.all(24),
       radius: 32,
       child: Column(

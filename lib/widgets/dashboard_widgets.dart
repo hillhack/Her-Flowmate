@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
 import 'info_widgets.dart';
-import 'glass_container.dart';
+import 'themed_container.dart';
 
 class PhaseCard extends StatelessWidget {
   final String phaseName;
@@ -12,7 +12,8 @@ class PhaseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       radius: 32,
       child: Padding(
         padding: const EdgeInsets.all(28),
@@ -84,7 +85,8 @@ class StatusRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       radius: 32,
       child: Padding(
         padding: const EdgeInsets.all(28),
@@ -167,7 +169,8 @@ class FertilityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassContainer(
+    return ThemedContainer(
+      type: ContainerType.glass,
       radius: 32,
       child: Padding(
         padding: const EdgeInsets.all(28),
@@ -199,7 +202,8 @@ class FertilityCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                GlassContainer(
+                ThemedContainer(
+                  type: ContainerType.glass,
                   radius: 16,
                   padding: const EdgeInsets.all(12),
                   borderColor: Colors.white.withValues(alpha: 0.5),

@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/themed_container.dart';
 import 'about_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -54,7 +54,8 @@ class ProfileScreen extends StatelessWidget {
                               alignment: Alignment.centerLeft,
                               child: Builder(
                                 builder:
-                                    (context) => GlassContainer(
+                                    (context) => ThemedContainer(
+                                      type: ContainerType.glass,
                                       padding: const EdgeInsets.all(10),
                                       radius: 18,
                                       onTap:
@@ -100,7 +101,8 @@ class ProfileScreen extends StatelessWidget {
                               Center(
                                     child: Stack(
                                       children: [
-                                        GlassContainer(
+                                        ThemedContainer(
+                                          type: ContainerType.glass,
                                           padding: const EdgeInsets.all(6),
                                           radius: avatarRadius,
                                           opacity: 0.1,
@@ -203,7 +205,8 @@ class ProfileScreen extends StatelessWidget {
                                 isSmallScreen: isSmallScreen,
                               ),
                               SizedBox(height: isSmallScreen ? 12 : 16),
-                              GlassContainer(
+                              ThemedContainer(
+                                type: ContainerType.glass,
                                 width: double.infinity,
                                 radius: isSmallScreen ? 24 : 32,
                                 padding: const EdgeInsets.symmetric(
@@ -252,7 +255,8 @@ class ProfileScreen extends StatelessWidget {
                                 isSmallScreen: isSmallScreen,
                               ),
                               SizedBox(height: isSmallScreen ? 12 : 16),
-                              GlassContainer(
+                              ThemedContainer(
+                                type: ContainerType.glass,
                                 width: double.infinity,
                                 radius: isSmallScreen ? 24 : 32,
                                 padding: const EdgeInsets.symmetric(
@@ -365,7 +369,8 @@ class ProfileScreen extends StatelessWidget {
                                 isSmallScreen: isSmallScreen,
                               ),
                               SizedBox(height: isSmallScreen ? 12 : 16),
-                              GlassContainer(
+                              ThemedContainer(
+                                type: ContainerType.glass,
                                 width: double.infinity,
                                 radius: isSmallScreen ? 24 : 32,
                                 padding: const EdgeInsets.symmetric(
@@ -487,7 +492,8 @@ class ProfileScreen extends StatelessWidget {
                                 isSmallScreen: isSmallScreen,
                               ),
                               SizedBox(height: isSmallScreen ? 12 : 16),
-                              GlassContainer(
+                              ThemedContainer(
+                                type: ContainerType.glass,
                                 width: double.infinity,
                                 radius: isSmallScreen ? 24 : 32,
                                 padding: const EdgeInsets.symmetric(
@@ -527,7 +533,8 @@ class ProfileScreen extends StatelessWidget {
               child: Container(
                 color: Colors.black.withValues(alpha: 0.3),
                 child: Center(
-                  child: GlassContainer(
+                  child: ThemedContainer(
+                    type: ContainerType.glass,
                     radius: 24,
                     padding: const EdgeInsets.all(24),
                     child: Column(

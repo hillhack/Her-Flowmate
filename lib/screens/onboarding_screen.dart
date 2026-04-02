@@ -505,7 +505,10 @@ class _GoalPage extends StatelessWidget {
           type: isSelected ? ContainerType.elevated : ContainerType.neu,
           padding: const EdgeInsets.all(20),
           radius: 24,
-          border: isSelected ? Border.all(color: AppTheme.accentPink, width: 2) : null,
+          border:
+              isSelected
+                  ? Border.all(color: AppTheme.accentPink, width: 2)
+                  : null,
           child: Row(
             children: [
               Container(

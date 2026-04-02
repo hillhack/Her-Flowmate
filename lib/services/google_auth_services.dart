@@ -86,13 +86,13 @@ class GoogleAuthService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         debugPrint('Backend Auth Success: $data');
-        
+
         // Save the token if provided by backend (usually 'token' or 'access_token')
         final String? backendToken = data['token'] ?? data['access_token'];
         if (backendToken != null) {
           await ApiService.saveToken(backendToken);
         }
-        
+
         return data as Map<String, dynamic>;
       } else {
         debugPrint(

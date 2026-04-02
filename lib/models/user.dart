@@ -30,22 +30,22 @@ class User extends HiveObject {
   });
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'age': age,
-        'goal': goal,
-        'imagePath': imagePath,
-        'weight': weight,
-        'height': height,
-      };
+    'name': name,
+    'age': age,
+    'goal': goal,
+    'imagePath': imagePath,
+    'weight': weight,
+    'height': height,
+  };
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        name: json['name'] as String,
-        age: json['age'] as int,
-        goal: json['goal'] as String,
-        imagePath: json['imagePath'] as String?,
-        weight: (json['weight'] as num?)?.toDouble(),
-        height: (json['height'] as num?)?.toDouble(),
-      );
+    name: json['name'] as String,
+    age: json['age'] as int,
+    goal: json['goal'] as String,
+    imagePath: json['imagePath'] as String?,
+    weight: (json['weight'] as num?)?.toDouble(),
+    height: (json['height'] as num?)?.toDouble(),
+  );
 
   User copyWith({
     String? name,
@@ -54,15 +54,14 @@ class User extends HiveObject {
     String? imagePath,
     double? weight,
     double? height,
-  }) =>
-      User(
-        name: name ?? this.name,
-        age: age ?? this.age,
-        goal: goal ?? this.goal,
-        imagePath: imagePath ?? this.imagePath,
-        weight: weight ?? this.weight,
-        height: height ?? this.height,
-      );
+  }) => User(
+    name: name ?? this.name,
+    age: age ?? this.age,
+    goal: goal ?? this.goal,
+    imagePath: imagePath ?? this.imagePath,
+    weight: weight ?? this.weight,
+    height: height ?? this.height,
+  );
 
   bool validate() {
     if (name.trim().isEmpty) return false;

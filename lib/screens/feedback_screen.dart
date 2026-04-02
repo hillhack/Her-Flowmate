@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../utils/app_theme.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/themed_container.dart';
 import '../widgets/brand_widgets.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -70,7 +70,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const GlassContainer(
+            child: const ThemedContainer(
+              type: ContainerType.glass,
               radius: 12,
               padding: EdgeInsets.zero,
               child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -96,7 +97,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               children: [
                 // Icon Header
                 Center(
-                  child: const GlassContainer(
+                  child: const ThemedContainer(
+                    type: ContainerType.glass,
                     radius: 40,
                     child: Padding(
                       padding: EdgeInsets.all(32),
@@ -150,7 +152,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 const SizedBox(height: 40),
 
                 // Input Field
-                GlassContainer(
+                ThemedContainer(
+                  type: ContainerType.glass,
                   radius: 24,
                   opacity: 0.1,
                   child: Padding(
@@ -176,7 +179,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 const SizedBox(height: 40),
 
                 // Submit Button
-                GlassContainer(
+                ThemedContainer(
+                  type: ContainerType.glass,
                   radius: 20,
                   child: ElevatedButton.icon(
                     onPressed: _sendFeedback,

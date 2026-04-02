@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import 'glass_container.dart';
+import 'themed_container.dart';
 
 class HerFramedButton extends StatelessWidget {
   final Widget? icon;
@@ -23,7 +23,8 @@ class HerFramedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 11),
-      child: GlassContainer(
+      child: ThemedContainer(
+        type: ContainerType.glass,
         radius: 50,
         onTap: onTap,
         child: Padding(
@@ -47,7 +48,8 @@ class HerFramedButton extends StatelessWidget {
               if (onInfoTap != null)
                 GestureDetector(
                   onTap: onInfoTap,
-                  child: GlassContainer(
+                  child: ThemedContainer(
+                    type: ContainerType.glass,
                     width: 28,
                     height: 28,
                     radius: 50,

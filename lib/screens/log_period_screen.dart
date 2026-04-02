@@ -129,12 +129,21 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                         lastDate: DateTime.now(),
                         builder:
                             (ctx, child) => Theme(
-                              data: ThemeData.light().copyWith(
-                                colorScheme: const ColorScheme.light(
-                                  primary: AppTheme.accentPink,
+                              data: Theme.of(context).copyWith(
+                                colorScheme: Theme.of(
+                                  context,
+                                ).colorScheme.copyWith(
+                                  primary:
+                                      Theme.of(context).colorScheme.primary,
                                   onPrimary: Colors.white,
-                                  surface: AppTheme.frameColor,
-                                  onSurface: AppTheme.textDark,
+                                  surface:
+                                      isDark
+                                          ? AppTheme.darkSurface
+                                          : AppTheme.frameColor,
+                                  onSurface:
+                                      isDark
+                                          ? AppTheme.darkTextPrimary
+                                          : AppTheme.textDark,
                                 ),
                               ),
                               child: child!,
@@ -146,9 +155,9 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                       padding: const EdgeInsets.all(20),
                       child: Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.calendar_today_rounded,
-                            color: AppTheme.accentPink,
+                            color: Theme.of(context).colorScheme.primary,
                             size: 24,
                           ),
                           const SizedBox(width: 14),
@@ -171,9 +180,9 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                           ),
                           const Spacer(),
                           if (_selectedDate != null)
-                            const Icon(
+                            Icon(
                               Icons.check_circle_rounded,
-                              color: AppTheme.accentPink,
+                              color: Theme.of(context).colorScheme.primary,
                               size: 22,
                             ),
                         ],
@@ -266,9 +275,12 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                 child: ThemedContainer(
                                   type: ContainerType.glass,
                                   radius: 16,
-                                  border: isSelected
-                                      ? Border.all(color: AppTheme.accentPink)
-                                      : null,
+                                  border:
+                                      isSelected
+                                          ? Border.all(
+                                            color: AppTheme.accentPink,
+                                          )
+                                          : null,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 16,
@@ -323,9 +335,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                             child: ThemedContainer(
                               type: ContainerType.glass,
                               radius: 12,
-                              border: isSelected
-                                  ? Border.all(color: AppTheme.accentPink)
-                                  : null,
+                              border:
+                                  isSelected
+                                      ? Border.all(color: AppTheme.accentPink)
+                                      : null,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
@@ -377,9 +390,12 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                   type: ContainerType.glass,
                                   radius: 20,
                                   width: 64,
-                                  border: isSelected
-                                      ? Border.all(color: AppTheme.accentPink)
-                                      : null,
+                                  border:
+                                      isSelected
+                                          ? Border.all(
+                                            color: AppTheme.accentPink,
+                                          )
+                                          : null,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -478,7 +494,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                             color:
                                 _selectedDate == null
                                     ? AppTheme.textSecondary
-                                    : AppTheme.accentPink,
+                                    : Theme.of(context).colorScheme.primary,
                           ),
                           const SizedBox(width: 12),
                           Text(
@@ -489,7 +505,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                               color:
                                   _selectedDate == null
                                       ? AppTheme.textSecondary
-                                      : AppTheme.accentPink,
+                                      : Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ],
@@ -545,9 +561,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
     return ThemedContainer(
       type: ContainerType.glass,
       radius: 18,
-      border: isActive
-          ? Border.all(color: AppTheme.accentPink.withValues(alpha: 0.3))
-          : null,
+      border:
+          isActive
+              ? Border.all(color: AppTheme.accentPink.withValues(alpha: 0.3))
+              : null,
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(12),

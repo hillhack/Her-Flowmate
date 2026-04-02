@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../utils/app_theme.dart';
 import '../widgets/delight_widgets.dart';
-import '../widgets/glass_container.dart';
+import '../widgets/themed_container.dart';
 
 class PhaseDetailsScreen extends StatelessWidget {
   final String phaseName;
@@ -24,7 +24,8 @@ class PhaseDetailsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const GlassContainer(
+            child: const ThemedContainer(
+              type: ContainerType.glass,
               radius: 12,
               padding: EdgeInsets.zero,
               child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
@@ -49,7 +50,8 @@ class PhaseDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header Card
-                GlassContainer(
+                ThemedContainer(
+                  type: ContainerType.glass,
                   radius: 40,
                   child: Padding(
                     padding: const EdgeInsets.all(32),
@@ -141,7 +143,8 @@ class PhaseDetailsScreen extends StatelessWidget {
   Widget _buildTipItem(String tip, Color accentColor) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: GlassContainer(
+      child: ThemedContainer(
+        type: ContainerType.glass,
         radius: 20,
         child: Padding(
           padding: const EdgeInsets.all(16),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../utils/app_theme.dart';
-import '../glass_container.dart';
+import '../themed_container.dart';
 
 class InsightBubble extends StatelessWidget {
   final String icon;
@@ -23,33 +22,30 @@ class InsightBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        GestureDetector(
+        ThemedContainer(
+          type: ContainerType.glass,
+          width: 68,
+          height: 68,
+          radius: 34,
+          padding: EdgeInsets.zero,
+          opacity: isExpanded ? 0.25 : 0.1,
+          borderColor:
+              isExpanded ? color.withValues(alpha: 0.5) : Colors.white24,
           onTap: () {
             HapticFeedback.selectionClick();
             onTap();
           },
-          child: GlassContainer(
-            width: 68,
-            height: 68,
-            radius: 34,
-            padding: EdgeInsets.zero,
-            opacity: isExpanded ? 0.25 : 0.1,
-            borderColor:
-                isExpanded ? color.withValues(alpha: 0.5) : Colors.white24,
-            child: Center(
-              child: Text(
-                icon,
-                style: TextStyle(
-                  fontSize: 28,
-                  shadows: [
-                    if (isExpanded)
-                      Shadow(
-                        color: color.withValues(alpha: 0.5),
-                        blurRadius: 10,
-                      ),
-                  ],
-                ),
+          child: Center(
+            child: Text(
+              icon,
+              style: TextStyle(
+                fontSize: 28,
+                shadows: [
+                  if (isExpanded)
+                    Shadow(color: color.withValues(alpha: 0.5), blurRadius: 10),
+                ],
               ),
             ),
           ),
@@ -60,7 +56,12 @@ class InsightBubble extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 10,
             fontWeight: isExpanded ? FontWeight.w900 : FontWeight.w700,
-            color: isExpanded ? AppTheme.textDark : AppTheme.textSecondary,
+            color:
+                isExpanded
+                    ? Theme.of(context).colorScheme.onSurface
+                    : Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
             letterSpacing: 0.5,
           ),
         ),

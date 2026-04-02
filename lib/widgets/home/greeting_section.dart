@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/storage_service.dart';
-import '../../utils/app_theme.dart';
 
 class GreetingSection extends StatelessWidget {
   final StorageService storage;
@@ -22,6 +21,9 @@ class GreetingSection extends StatelessWidget {
       emoji = '🌙';
     }
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +35,7 @@ class GreetingSection extends StatelessWidget {
               style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: AppTheme.textSecondary,
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
                 letterSpacing: 0.5,
               ),
             ),
@@ -45,7 +47,7 @@ class GreetingSection extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 28,
             fontWeight: FontWeight.w900,
-            color: AppTheme.textDark,
+            color: colorScheme.onSurface,
             height: 1.0,
             letterSpacing: -0.5,
           ),

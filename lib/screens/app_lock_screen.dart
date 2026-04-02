@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import '../widgets/neu_container.dart';
+import '../widgets/themed_container.dart';
 
 class AppLockScreen extends StatefulWidget {
   final VoidCallback onUnlocked;
@@ -89,7 +89,8 @@ class _AppLockScreenState extends State<AppLockScreen> {
                 if (_isAuthenticating)
                   const CircularProgressIndicator(color: AppTheme.accentPink)
                 else
-                  NeuContainer(
+                  ThemedContainer(
+                    type: ContainerType.neu,
                     onTap: _authenticate,
                     radius: 30,
                     padding: const EdgeInsets.symmetric(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
-import 'neu_container.dart';
+import 'themed_container.dart';
 
 class PeriodHealthModal extends StatelessWidget {
   const PeriodHealthModal({super.key});
@@ -14,7 +14,8 @@ class PeriodHealthModal extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
       ),
       padding: const EdgeInsets.only(top: 16),
-      child: NeuContainer(
+      child: ThemedContainer(
+        type: ContainerType.neu,
         radius: 40,
         child: SafeArea(
           child: SingleChildScrollView(
@@ -58,7 +59,8 @@ class PeriodHealthModal extends StatelessWidget {
                 // Period Color Section
                 _buildSectionTitle('🩸', 'Period Color'),
                 const SizedBox(height: 16),
-                NeuContainer(
+                ThemedContainer(
+                  type: ContainerType.neu,
                   radius: 28,
                   padding: const EdgeInsets.all(8),
                   child: ClipRRect(
@@ -87,7 +89,8 @@ class PeriodHealthModal extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 48),
-                NeuContainer(
+                ThemedContainer(
+                  type: ContainerType.neu,
                   radius: 20,
                   onTap: () => Navigator.pop(context),
                   child: Padding(
@@ -131,7 +134,8 @@ class PeriodHealthModal extends StatelessWidget {
   }
 
   Widget _buildInfoCard(String text) {
-    return NeuContainer(
+    return ThemedContainer(
+      type: ContainerType.neu,
       radius: 24,
       padding: const EdgeInsets.all(20),
       style: NeuStyle.concave,

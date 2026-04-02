@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../services/prediction_service.dart';
-import '../../utils/app_theme.dart';
 import '../info_widgets.dart';
 
 class PredictiveChips extends StatelessWidget {
@@ -20,13 +19,15 @@ class PredictiveChips extends StatelessWidget {
       Duration(days: avgLen - 14),
     );
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final chips = <_ChipData>[];
 
     chips.add(
       _ChipData(
         icon: Icons.favorite_rounded,
         label: 'Conception $chance%',
-        color: AppTheme.accentPink,
+        color: colorScheme.primary,
         explanation: 'Your current estimated chance of conception is $chance%.',
         tip:
             chance > 20
@@ -40,7 +41,7 @@ class PredictiveChips extends StatelessWidget {
         _ChipData(
           icon: Icons.wb_sunny_rounded,
           label: 'Ovulation in ${daysToOvulation}d',
-          color: AppTheme.accentPurple,
+          color: colorScheme.secondary,
           explanation:
               'Ovulation is estimated to occur in $daysToOvulation days.',
           tip: 'This is usually your highest phase of energy and fertility.',
@@ -53,7 +54,7 @@ class PredictiveChips extends StatelessWidget {
         _ChipData(
           icon: Icons.calendar_today_rounded,
           label: 'Period in ${daysToPeriod}d',
-          color: AppTheme.textSecondary,
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
           explanation:
               'Your next period is predicted to start in $daysToPeriod days.',
           tip: 'Log any PMS symptoms to improve future predictions.',
@@ -67,7 +68,7 @@ class PredictiveChips extends StatelessWidget {
         _ChipData(
           icon: Icons.auto_awesome_rounded,
           label: peakIn == 0 ? 'Peak today!' : 'Peak in ${peakIn}d',
-          color: AppTheme.accentPink,
+          color: colorScheme.primary,
           explanation: 'Your fertility peak is very close.',
           tip:
               'Track your basal body temperature and cervical mucus for higher accuracy.',

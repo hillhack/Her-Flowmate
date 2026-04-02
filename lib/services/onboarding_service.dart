@@ -23,10 +23,17 @@ class OnboardingService extends ChangeNotifier {
       _base.prefs.getBool('hasCompletedOnboarding') ?? false;
   bool get isLoggedIn => _base.prefs.getBool('isLoggedIn') ?? false;
 
-  String get userName => user?.name ?? _base.prefs.getString('userName') ?? 'Guest';
-  String get userGoal => user?.goal ?? _base.prefs.getString('userGoal') ?? 'track_cycle';
-  int? get userAge => user?.age ?? (_base.prefs.containsKey('userAge') ? _base.prefs.getInt('userAge') : null);
-  String? get userImagePath => user?.imagePath ?? _base.prefs.getString('userImagePath');
+  String get userName =>
+      user?.name ?? _base.prefs.getString('userName') ?? 'Guest';
+  String get userGoal =>
+      user?.goal ?? _base.prefs.getString('userGoal') ?? 'track_cycle';
+  int? get userAge =>
+      user?.age ??
+      (_base.prefs.containsKey('userAge')
+          ? _base.prefs.getInt('userAge')
+          : null);
+  String? get userImagePath =>
+      user?.imagePath ?? _base.prefs.getString('userImagePath');
   bool get isDarkMode => _base.prefs.getBool('isDarkMode') ?? false;
 
   Future<void> saveUser(User newUser) async {
@@ -37,9 +44,10 @@ class OnboardingService extends ChangeNotifier {
   Future<void> completeLogin(bool loggedIn, [String name = '']) async {
     await _base.prefs.setBool('hasCompletedLogin', true);
     await _base.prefs.setBool('isLoggedIn', loggedIn);
-    
+
     if (loggedIn && name.isNotEmpty) {
-      final currentUser = user ?? User(name: name, age: 25, goal: 'track_cycle');
+      final currentUser =
+          user ?? User(name: name, age: 25, goal: 'track_cycle');
       await saveUser(currentUser.copyWith(name: name));
     }
     notifyListeners();
@@ -47,7 +55,7 @@ class OnboardingService extends ChangeNotifier {
 
   Future<void> completeOnboarding(String goal, String name, {int? age}) async {
     await _base.prefs.setBool('hasCompletedOnboarding', true);
-    
+
     final currentUser = User(
       name: name.isNotEmpty ? name : 'Guest',
       age: age ?? 25,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_theme.dart';
 
 class AppLoadingIndicator extends StatelessWidget {
@@ -32,42 +33,37 @@ class AppErrorBanner extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
 
-  const AppErrorBanner({
-    super.key,
-    required this.message,
-    this.onRetry,
-  });
+  const AppErrorBanner({super.key, required this.message, this.onRetry});
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Container(
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.lightError.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.lightError.withOpacity(0.3)),
+        color: AppTheme.lightError.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.lightError.withValues(alpha: 0.2)),
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, color: AppTheme.lightError),
+          const Icon(
+            Icons.error_outline_rounded,
+            color: AppTheme.lightError,
+            size: 20,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
-              style: AppTheme.outfit(
-                context: context,
-                fontSize: 14,
-                color: isDark ? Colors.white70 : Colors.black87,
+              style: GoogleFonts.inter(
+                color: AppTheme.lightError,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
               ),
             ),
           ),
           if (onRetry != null)
-            TextButton(
-              onPressed: onRetry,
-              child: const Text('RETRY'),
-            ),
+            TextButton(onPressed: onRetry, child: const Text('RETRY')),
         ],
       ),
     );

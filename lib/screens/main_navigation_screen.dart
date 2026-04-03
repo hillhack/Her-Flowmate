@@ -186,8 +186,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               const SizedBox(height: 4),
               if (isSelected)
                 Container(
-                  width: 4,
-                  height: 4,
+                  width: 8,
+                  height: 8,
                   decoration: const BoxDecoration(
                     color: AppTheme.accentPink,
                     shape: BoxShape.circle,
@@ -229,7 +229,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             children: [
               Container(
                 width: 40,
-                height: 4,
+                height: 8,
                 decoration: BoxDecoration(
                   color: AppTheme.textDark.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(2),

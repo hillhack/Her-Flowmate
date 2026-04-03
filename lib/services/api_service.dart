@@ -30,11 +30,9 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     debugPrint('API POST: $url');
     try {
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: jsonEncode(body),
-      );
+      final response = await http
+          .post(url, headers: headers, body: jsonEncode(body))
+          .timeout(const Duration(seconds: 30));
       _logResponse(response);
       return response;
     } catch (e) {
@@ -47,7 +45,9 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     debugPrint('API GET: $url');
     try {
-      final response = await http.get(url, headers: headers);
+      final response = await http
+          .get(url, headers: headers)
+          .timeout(const Duration(seconds: 30));
       _logResponse(response);
       return response;
     } catch (e) {
@@ -63,11 +63,9 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
     debugPrint('API PUT: $url');
     try {
-      final response = await http.put(
-        url,
-        headers: headers,
-        body: jsonEncode(body),
-      );
+      final response = await http
+          .put(url, headers: headers, body: jsonEncode(body))
+          .timeout(const Duration(seconds: 30));
       _logResponse(response);
       return response;
     } catch (e) {

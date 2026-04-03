@@ -3,6 +3,8 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import '../models/daily_log.dart';
 import 'base_storage_service.dart';
 import '../utils/constants.dart';
+import 'api_service.dart';
+import 'dart:convert';
 
 class HealthTrackerService extends ChangeNotifier {
   static const String dailyBoxName = 'daily_logs';
@@ -71,5 +73,36 @@ class HealthTrackerService extends ChangeNotifier {
       day = day.subtract(const Duration(days: 1));
     }
     return streak;
+  }
+
+  // ── Backend Sync ──────────────────────────────────────────────────────────
+
+  Future<bool> uploadLogs() async {
+    try {
+      final logs = getDailyLogs();
+      final response = await ApiService.post('/daily-logs/sync', {
+        'logs': logs.map((l) => l.toJson()).toList(),
+      });
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Error uploading daily logs: $e');
+      return false;
+    }
+  }
+
+  Future<void> fetchLogs() async {
+    try {
+      final response = await ApiService.get('/daily-logs');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final remoteLogs = data.map((json) => DailyLog.fromJson(json)).toList();
+
+        await _dailyBox.clear();
+        await _dailyBox.addAll(remoteLogs);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error fetching daily logs: $e');
+    }
   }
 }

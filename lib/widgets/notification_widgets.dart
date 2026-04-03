@@ -74,7 +74,7 @@ class NotificationPanel extends StatelessWidget {
             Center(
               child: Container(
                 width: 40,
-                height: 4,
+                height: 8,
                 decoration: BoxDecoration(
                   color: AppTheme.textSecondary.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),

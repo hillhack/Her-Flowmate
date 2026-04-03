@@ -3,6 +3,8 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import '../models/period_log.dart';
 import 'notification_service.dart';
 import '../utils/constants.dart';
+import 'api_service.dart';
+import 'dart:convert';
 
 class PeriodLogService extends ChangeNotifier {
   static const String boxName = 'period_logs';
@@ -113,6 +115,41 @@ class PeriodLogService extends ChangeNotifier {
       await NotificationService().schedulePeriodReminder(nextDate);
     } catch (e) {
       debugPrint('Error updating reminders: $e');
+    }
+  }
+
+  // ── Backend Sync ──────────────────────────────────────────────────────────
+
+  Future<bool> uploadLogs() async {
+    try {
+      final logs = getLogs();
+      final response = await ApiService.post('/period-logs/sync', {
+        'logs': logs.map((l) => l.toJson()).toList(),
+      });
+      return response.statusCode == 200;
+    } catch (e) {
+      debugPrint('Error uploading logs: $e');
+      return false;
+    }
+  }
+
+  Future<void> fetchLogs() async {
+    try {
+      final response = await ApiService.get('/period-logs');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final remoteLogs =
+            data.map((json) => PeriodLog.fromJson(json)).toList();
+
+        // Simple merge: Clear local and replace with remote for now
+        // A more complex merge would check dates to avoid duplicates
+        await _box.clear();
+        await _box.addAll(remoteLogs);
+        _cachedLogs = null;
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error fetching logs: $e');
     }
   }
 }

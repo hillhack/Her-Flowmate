@@ -77,6 +77,22 @@ class Appointment extends HiveObject {
   });
 
   WellnessCategory get category => WellnessCategory.values[typeIndex];
+
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'date': date.toIso8601String(),
+    'location': location,
+    'notes': notes,
+    'typeIndex': typeIndex,
+  };
+
+  factory Appointment.fromJson(Map<String, dynamic> json) => Appointment(
+    title: json['title'] as String,
+    date: DateTime.parse(json['date'] as String),
+    location: json['location'] as String?,
+    notes: json['notes'] as String?,
+    typeIndex: json['typeIndex'] as int,
+  );
 }
 
 class AppointmentAdapter extends TypeAdapter<Appointment> {

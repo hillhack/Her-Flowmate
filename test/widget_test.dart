@@ -24,6 +24,12 @@ class FakeStorageService extends StorageService {
 
   @override
   String get userName => customName;
+
+  @override
+  bool get isHighPerformanceMode => true;
+
+  @override
+  bool get isDarkMode => false;
 }
 
 void main() {

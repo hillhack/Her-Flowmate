@@ -9,8 +9,6 @@ class GoogleAuthService {
   // NOT the Android Client ID.
   static final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
-  // We specify scopes here as suggested by the teammate, although
-  // with GSI the scopes are often handled via the configuration.
   static const List<String> _scopes = ['email', 'profile'];
 
   static bool _isInitialized = false;
@@ -23,13 +21,12 @@ class GoogleAuthService {
     try {
       if (kIsWeb) {
         // On Web, we MUST call initialize to complete the plugin's internal _initialized future.
-        // It uses the clientId from the meta tag in index.html by default.
         await _googleSignIn.initialize();
       } else {
         // On Mobile, we need to initialize with the serverClientId
         await _googleSignIn.initialize(
           serverClientId:
-              '174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com',
+              '536054439823-f54c3aanjfp2ilrfr8nkef4e243lcnrj.apps.googleusercontent.com',
         );
       }
       _isInitialized = true;
@@ -81,7 +78,7 @@ class GoogleAuthService {
     String token,
   ) async {
     try {
-      final response = await ApiService.post('/auth', {'token': token});
+      final response = await ApiService.post('/auth/google', {'token': token});
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

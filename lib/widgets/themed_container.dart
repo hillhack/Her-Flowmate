@@ -129,21 +129,23 @@ class ThemedContainer extends StatelessWidget {
                     : null),
             boxShadow:
                 boxShadow ??
-                [
-                  BoxShadow(
-                    color: theme.shadowColor.withValues(
-                      alpha: isDark ? 0.3 : 0.1,
-                    ),
-                    offset: const Offset(4, 4),
-                    blurRadius: 8,
-                    spreadRadius: 1,
-                  ),
-                  BoxShadow(
-                    color: isDark ? Colors.black12 : Colors.white,
-                    offset: const Offset(-2, -2),
-                    blurRadius: 4,
-                  ),
-                ],
+                (isHighPerf
+                    ? [
+                      BoxShadow(
+                        color: theme.shadowColor.withValues(
+                          alpha: isDark ? 0.3 : 0.1,
+                        ),
+                        offset: const Offset(4, 4),
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                      ),
+                      BoxShadow(
+                        color: isDark ? Colors.black12 : Colors.white,
+                        offset: const Offset(-2, -2),
+                        blurRadius: 4,
+                      ),
+                    ]
+                    : []),
           ),
           child: child,
         );
@@ -160,13 +162,21 @@ class ThemedContainer extends StatelessWidget {
             border: border,
             boxShadow:
                 boxShadow ??
-                [
-                  BoxShadow(
-                    color: theme.shadowColor.withValues(alpha: 0.08),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+                (isHighPerf
+                    ? [
+                      BoxShadow(
+                        color: theme.shadowColor.withValues(alpha: 0.08),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                      ),
+                    ]
+                    : [
+                      BoxShadow(
+                        color: theme.shadowColor.withValues(alpha: 0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]),
           ),
           child: child,
         );

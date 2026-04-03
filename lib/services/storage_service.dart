@@ -142,18 +142,27 @@ class StorageService extends ChangeNotifier {
 
     _setLoading(true);
     try {
-      // 1. Try to fetch existing profile from backend
+      // 1. Sync User Profile
       final remoteUser = await UserService.getUserProfile();
-
       if (remoteUser != null) {
-        // Sync remote to local
         await onboarding.saveUser(remoteUser);
       } else if (onboarding.user != null) {
-        // Local exists but remote doesn't (or error), try to push local to remote
         await UserService.updateUserProfile(onboarding.user!);
       }
+
+      // 2. Sync Period Logs
+      await periodLog.fetchLogs();
+      await periodLog.uploadLogs();
+
+      // 3. Sync Daily logs (Health Tracker)
+      await healthTracker.fetchLogs();
+      await healthTracker.uploadLogs();
+
+      // 4. Sync Appointments
+      await appointment.fetchAppointments();
+      await appointment.uploadAppointments();
     } catch (e) {
-      debugPrint('Sync Error: $e');
+      debugPrint('Full Sync Error: $e');
     } finally {
       _setLoading(false);
     }

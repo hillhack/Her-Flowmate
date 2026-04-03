@@ -57,6 +57,36 @@ class DailyLog extends HiveObject {
     this.basalBodyTemperature,
     this.stepsCount,
   });
+
+  Map<String, dynamic> toJson() => {
+    'date': date.toIso8601String(),
+    'moods': moods,
+    'symptoms': symptoms,
+    'waterIntake': waterIntake,
+    'notes': notes,
+    'flowIntensity': flowIntensity,
+    'physicalActivity': physicalActivity,
+    'sleepHours': sleepHours,
+    'energyLevel': energyLevel,
+    'stressLevel': stressLevel,
+    'basalBodyTemperature': basalBodyTemperature,
+    'stepsCount': stepsCount,
+  };
+
+  factory DailyLog.fromJson(Map<String, dynamic> json) => DailyLog(
+    date: DateTime.parse(json['date'] as String),
+    moods: (json['moods'] as List?)?.cast<String>(),
+    symptoms: (json['symptoms'] as List?)?.cast<String>(),
+    waterIntake: json['waterIntake'] as int?,
+    notes: json['notes'] as String?,
+    flowIntensity: json['flowIntensity'] as String?,
+    physicalActivity: (json['physicalActivity'] as List?)?.cast<String>(),
+    sleepHours: (json['sleepHours'] as num?)?.toDouble(),
+    energyLevel: json['energyLevel'] as int?,
+    stressLevel: json['stressLevel'] as int?,
+    basalBodyTemperature: (json['basalBodyTemperature'] as num?)?.toDouble(),
+    stepsCount: json['stepsCount'] as int?,
+  );
 }
 
 class DailyLogAdapter extends TypeAdapter<DailyLog> {

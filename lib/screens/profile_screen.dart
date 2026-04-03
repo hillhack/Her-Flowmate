@@ -476,6 +476,30 @@ class ProfileScreen extends StatelessWidget {
                                     _buildDivider(),
                                     _buildSettingsTile(
                                       context,
+                                      Icons.sync_rounded,
+                                      'Sync with Cloud',
+                                      'Update logs and profile',
+                                      () async {
+                                        await storage.syncUserWithBackend();
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Cloud sync completed! ☁️',
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      isSmallScreen: isSmallScreen,
+                                    ),
+                                    _buildDivider(),
+                                    _buildSettingsTile(
+                                      context,
                                       Icons.delete_sweep_rounded,
                                       'Clear All Data',
                                       'Permanently erase logs',
@@ -922,10 +946,10 @@ class ProfileScreen extends StatelessWidget {
       children: [
         Container(
           width: 40,
-          height: 4,
+          height: 8,
           decoration: BoxDecoration(
             color: AppTheme.textDark.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
         const SizedBox(height: 24),
@@ -1338,10 +1362,10 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Container(
                   width: 40,
-                  height: 4,
+                  height: 8,
                   decoration: BoxDecoration(
                     color: AppTheme.textDark.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
                 const SizedBox(height: 32),

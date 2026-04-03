@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
+import '../services/storage_service.dart';
 
 /// A reusable skeleton loader for a card structure.
 class SkeletonCard extends StatelessWidget {
@@ -103,17 +105,32 @@ class _SkeletonPulseState extends State<_SkeletonPulse>
 
   @override
   Widget build(BuildContext context) {
+    final isHighPerf = context.select<StorageService, bool>(
+      (s) => s.isHighPerformanceMode,
+    );
+
+    if (!isHighPerf) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(100),
+        ),
+      );
+    }
+
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        return Opacity(opacity: _animation.value, child: child);
+        // Performance Fix: Avoid Opacity widget (saveLayer) on small elements
+        // as it triggers GraphicBuffer allocation errors on some Android drivers.
+        // Animating the color alpha is significantly more efficient.
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: _animation.value * 0.4),
+            borderRadius: BorderRadius.circular(100),
+          ),
+        );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(100),
-        ),
-      ),
     );
   }
 }

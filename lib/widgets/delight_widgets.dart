@@ -118,7 +118,7 @@ class FloatingSparkles extends StatelessWidget {
           children: List.generate(count, (index) {
             final x = random.nextDouble();
             final y = random.nextDouble();
-            final size = 3.0 + random.nextDouble() * 4.0;
+            final size = 6.0 + random.nextDouble() * 4.0;
             final duration = 4 + random.nextInt(4);
 
             final sparkle = Container(
@@ -130,12 +130,13 @@ class FloatingSparkles extends StatelessWidget {
               ),
             );
 
-            if (kIsWeb)
+            if (kIsWeb) {
               return Positioned(
                 left: MediaQuery.of(context).size.width * x,
                 top: MediaQuery.of(context).size.height * y,
                 child: sparkle,
               );
+            }
 
             return Positioned(
               left: MediaQuery.of(context).size.width * x,

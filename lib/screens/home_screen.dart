@@ -163,16 +163,36 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ThemedContainer(
-          type: ContainerType.glass,
-          radius: 18,
-          padding: const EdgeInsets.all(10),
-          onTap: () => Scaffold.of(context).openDrawer(),
-          child: Icon(
-            Icons.menu_rounded,
-            color: Theme.of(context).colorScheme.onSurface,
-            size: 26,
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ThemedContainer(
+              type: ContainerType.glass,
+              radius: 18,
+              padding: const EdgeInsets.all(10),
+              onTap: () => Scaffold.of(context).openDrawer(),
+              child: Icon(
+                Icons.menu_rounded,
+                color: Theme.of(context).colorScheme.onSurface,
+                size: 26,
+              ),
+            ),
+            if (storage.isLoading) ...[
+              const SizedBox(width: 12),
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.6),
+                  ),
+                ),
+              ).animate().fadeIn(),
+            ],
+          ],
         ),
         _buildCurrentModeBadge(storage),
       ],

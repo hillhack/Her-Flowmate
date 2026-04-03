@@ -1065,7 +1065,7 @@ class _ProgressBar extends StatelessWidget {
       builder: (context, constraints) {
         final double factor = (current + 1) / total;
         return Container(
-          height: 10,
+          height: 12,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Theme.of(

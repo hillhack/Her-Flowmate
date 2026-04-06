@@ -132,7 +132,7 @@ class _ModernBentoDashboardState extends State<ModernBentoDashboard> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: bubbles.map((b) => Expanded(child: b)).toList(),

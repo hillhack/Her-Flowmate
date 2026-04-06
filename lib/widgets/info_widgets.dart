@@ -58,7 +58,7 @@ void showGlassInfoPopup(
                   Center(
                     child: Container(
                       width: 48,
-                      height: 6,
+                      height: 8,
                       decoration: BoxDecoration(
                         color: colorScheme.onSurface.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(3),

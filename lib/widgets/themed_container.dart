@@ -135,7 +135,7 @@ class ThemedContainer extends StatelessWidget {
                         color: theme.shadowColor.withValues(
                           alpha: isDark ? 0.3 : 0.1,
                         ),
-                        offset: const Offset(4, 4),
+                        offset: const Offset(5, 5),
                         blurRadius: 8,
                         spreadRadius: 1,
                       ),

@@ -36,67 +36,64 @@ class CycleCoreRing extends StatelessWidget {
             activeColor: AppTheme.phaseColor(phaseName),
           ),
 
-          // Inner Content Card
-          RepaintBoundary(
-            child: ThemedContainer(
-              type: ContainerType.glass,
-              radius: ringSize / 2,
-              padding: EdgeInsets.zero,
-              onTap: () {
-                final biology = pred.getPhaseBiology(day);
-                final phase = pred.phaseDisplayName;
-                final symptoms = AppTheme.getPhaseSymptoms(phase);
+          ThemedContainer(
+            type: ContainerType.glass,
+            radius: ringSize / 2,
+            padding: EdgeInsets.zero,
+            onTap: () {
+              final biology = pred.getPhaseBiology(day);
+              final phase = pred.phaseDisplayName;
+              final symptoms = AppTheme.getPhaseSymptoms(phase);
 
-                showGlassInfoPopup(
-                  context,
-                  title: '$phase Phase',
-                  explanation:
-                      '${biology['hormoneActivity']}\n\n${biology['energy']}\n\n${biology['mood']}',
-                  tip: 'Common symptoms: ${symptoms.join(", ")}',
-                );
-              },
-              child: SizedBox(
-                width: innerSize,
-                height: innerSize,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        phaseName.toUpperCase(),
-                        style: GoogleFonts.poppins(
-                          fontSize: (ringSize * 0.085).clamp(14.0, 18.0),
-                          fontWeight: FontWeight.w900,
-                          color: AppTheme.getPhaseColor(pred.currentPhase),
-                          letterSpacing: 1.2,
-                        ),
+              showGlassInfoPopup(
+                context,
+                title: '$phase Phase',
+                explanation:
+                    '${biology['hormoneActivity']}\n\n${biology['energy']}\n\n${biology['mood']}',
+                tip: 'Common symptoms: ${symptoms.join(", ")}',
+              );
+            },
+            child: SizedBox(
+              width: innerSize,
+              height: innerSize,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      phaseName.toUpperCase(),
+                      style: GoogleFonts.poppins(
+                        fontSize: (ringSize * 0.085).clamp(14.0, 18.0),
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.getPhaseColor(pred.currentPhase),
+                        letterSpacing: 1.2,
                       ),
-                      const SizedBox(height: 8),
-                      _ChanceBadge(chance: pred.currentConceptionChance),
-                      const SizedBox(height: 16),
-                      _buildMiniInfo(
-                        context,
-                        label: 'NEXT PERIOD',
-                        value:
-                            pred.nextPeriodDate != null
-                                ? DateFormat(
-                                  'MMM d',
-                                ).format(pred.nextPeriodDate!)
-                                : '--',
-                      ),
-                      const SizedBox(height: 8),
-                      _buildMiniInfo(
-                        context,
-                        label: 'OVULATION',
-                        value:
-                            pred.daysUntilOvulation == 0
-                                ? 'Today'
-                                : (pred.daysUntilOvulation > 0
-                                    ? 'in ${pred.daysUntilOvulation}d'
-                                    : '--'),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 8),
+                    _ChanceBadge(chance: pred.currentConceptionChance),
+                    const SizedBox(height: 16),
+                    _buildMiniInfo(
+                      context,
+                      label: 'NEXT PERIOD',
+                      value:
+                          pred.nextPeriodDate != null
+                              ? DateFormat(
+                                'MMM d',
+                              ).format(pred.nextPeriodDate!)
+                              : '--',
+                    ),
+                    const SizedBox(height: 8),
+                    _buildMiniInfo(
+                      context,
+                      label: 'OVULATION',
+                      value:
+                          pred.daysUntilOvulation == 0
+                              ? 'Today'
+                              : (pred.daysUntilOvulation > 0
+                                  ? 'in ${pred.daysUntilOvulation}d'
+                                  : '--'),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -145,7 +142,7 @@ class _ChanceBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),

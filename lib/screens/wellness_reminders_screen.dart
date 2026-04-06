@@ -143,7 +143,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                       decoration: isPast ? TextDecoration.lineThrough : null,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
                   Row(
                     children: [
                       const Icon(
@@ -151,7 +151,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                         size: 12,
                         color: AppTheme.textSecondary,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 5),
                       Text(
                         DateFormat('MMM d, h:mm a').format(reminder.date),
                         style: GoogleFonts.inter(

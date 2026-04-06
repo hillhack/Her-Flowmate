@@ -517,7 +517,7 @@ class PhaseHealthTipsWidget extends StatelessWidget {
                         letterSpacing: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     Text(
                       '$phase Phase Tips',
                       style: GoogleFonts.poppins(

@@ -183,7 +183,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                       ),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 5),
               if (isSelected)
                 Container(
                   width: 8,

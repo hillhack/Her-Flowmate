@@ -51,7 +51,7 @@ class PhaseCard extends StatelessWidget {
                 color: AppTheme.textDark,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 5),
             Text(
               AppTheme.phaseTip(phaseName).headline,
               style: GoogleFonts.inter(
@@ -191,7 +191,7 @@ class FertilityCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     Text(
                       'High probability today',
                       style: GoogleFonts.poppins(

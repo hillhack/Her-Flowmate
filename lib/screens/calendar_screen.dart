@@ -425,7 +425,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Column(
       children: [
         Text(emoji, style: const TextStyle(fontSize: 24)),
-        const SizedBox(height: 4),
+        const SizedBox(height: 5),
         Text(
           label,
           style: GoogleFonts.inter(
@@ -653,8 +653,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             Positioned(
               bottom: 4,
               child: Container(
-                width: 5,
-                height: 5,
+                width: 8,
+                height: 8,
                 decoration: BoxDecoration(
                   color: AppTheme.phaseColors['Ovulation'],
                   shape: BoxShape.circle,
@@ -721,10 +721,10 @@ class _DailyLogSheet extends StatelessWidget {
             children: [
               Container(
                 width: 44,
-                height: 6,
+                height: 8,
                 decoration: BoxDecoration(
                   color: AppTheme.shadowDark,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
               const SizedBox(height: 24),
@@ -974,7 +974,7 @@ class _DailyLogSheet extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 5),
                       Text(
                         statusText,
                         style: GoogleFonts.poppins(
@@ -1068,7 +1068,7 @@ class _DailyLogSheet extends StatelessWidget {
                                     color: AppTheme.accentPink,
                                   ),
                                 ),
-                                const SizedBox(width: 4),
+                                const SizedBox(width: 5),
                                 const Text(
                                   '🦋',
                                   style: TextStyle(fontSize: 12),

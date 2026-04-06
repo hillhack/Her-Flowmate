@@ -66,7 +66,7 @@ class GlassInsightCard extends StatelessWidget {
             ),
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 5),
             Text(
               subtitle!,
               style: GoogleFonts.inter(

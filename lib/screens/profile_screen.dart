@@ -678,7 +678,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       if (onTap != null) ...[
-                        const SizedBox(width: 4),
+                        const SizedBox(width: 5),
                         const Icon(
                           Icons.chevron_right_rounded,
                           color: AppTheme.textSecondary,
@@ -698,8 +698,8 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildDivider() {
     return Divider(
-      height: 1,
-      thickness: 1,
+      height: 8,
+      thickness: 2,
       color: AppTheme.shadowDark.withValues(alpha: 0.05),
       indent: 64,
       endIndent: 24,

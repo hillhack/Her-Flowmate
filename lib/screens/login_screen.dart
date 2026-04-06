@@ -332,10 +332,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Container(
                     width: 40,
-                    height: 8,
+                    height: 10,
                     decoration: BoxDecoration(
                       color: AppTheme.textDark.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                 ),

@@ -173,7 +173,7 @@ abstract final class AppTheme {
   }
 
   // ── Spacing System ────────────────────────────────────────────────────────
-  static const double spacingXs = 4.0;
+  static const double spacingXs = 5.0;
   static const double spacingSm = 8.0;
   static const double spacingMd = 16.0;
   static const double spacingLg = 24.0;

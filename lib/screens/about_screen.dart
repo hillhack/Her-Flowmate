@@ -170,7 +170,7 @@ class AboutAppScreen extends StatelessWidget {
                               color: AppTheme.textSecondary,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 5),
                           Text(
                             '© 2026 Her-Flowmate Team',
                             style: GoogleFonts.inter(

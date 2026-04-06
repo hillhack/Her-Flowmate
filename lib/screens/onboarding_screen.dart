@@ -541,7 +541,7 @@ class _GoalPage extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 5),
                     Text(
                       subtitle,
                       style: textTheme.bodyMedium?.copyWith(

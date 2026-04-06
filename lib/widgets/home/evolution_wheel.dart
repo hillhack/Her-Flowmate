@@ -15,16 +15,14 @@ class EvolutionWheel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: CustomPaint(
-        size: Size(size, size),
-        painter: _WheelPainter(
-          progress: progress.clamp(0.0, 1.0),
-          activeColor: activeColor,
-          trackColor: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.08),
-        ),
+    return CustomPaint(
+      size: Size(size, size),
+      painter: _WheelPainter(
+        progress: progress.clamp(0.0, 1.0),
+        activeColor: activeColor,
+        trackColor: Theme.of(
+          context,
+        ).colorScheme.onSurface.withValues(alpha: 0.08),
       ),
     );
   }

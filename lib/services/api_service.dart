@@ -32,7 +32,7 @@ class ApiService {
     try {
       final response = await http
           .post(url, headers: headers, body: jsonEncode(body))
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(minutes: 3));
       _logResponse(response);
       return response;
     } catch (e) {
@@ -47,7 +47,7 @@ class ApiService {
     try {
       final response = await http
           .get(url, headers: headers)
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(minutes: 3));
       _logResponse(response);
       return response;
     } catch (e) {
@@ -65,7 +65,7 @@ class ApiService {
     try {
       final response = await http
           .put(url, headers: headers, body: jsonEncode(body))
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(minutes: 3));
       _logResponse(response);
       return response;
     } catch (e) {

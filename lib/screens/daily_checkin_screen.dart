@@ -659,7 +659,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
 
                   // ── Energy Level ──────────────────────────────────────────
                   _stepLabel(context, '⚡', 'Energy Level'),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
                   Text(
                     '1 = Exhausted  ·  5 = Super Energetic',
                     style: GoogleFonts.inter(
@@ -678,7 +678,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
 
                   // ── Stress Level ──────────────────────────────────────────
                   _stepLabel(context, '🧘', 'Stress Level'),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
                   Text(
                     '1 = Very Calm  ·  5 = Very Stressed',
                     style: GoogleFonts.inter(

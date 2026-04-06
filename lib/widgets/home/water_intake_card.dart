@@ -112,13 +112,13 @@ class WaterIntakeCard extends StatelessWidget {
               return Expanded(
                 child: Container(
                   margin: const EdgeInsets.only(right: 2),
-                  height: 6,
+                  height: 8,
                   decoration: BoxDecoration(
                     color:
                         filled
                             ? Colors.blueAccent
                             : Colors.blueAccent.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                 ),
               );

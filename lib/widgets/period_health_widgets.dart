@@ -27,7 +27,7 @@ class PeriodHealthModal extends StatelessWidget {
                 Center(
                   child: Container(
                     width: 48,
-                    height: 6,
+                    height: 8,
                     decoration: BoxDecoration(
                       color: AppTheme.textSecondary.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(3),

@@ -76,10 +76,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                   Center(
                     child: Container(
                       width: 48,
-                      height: 6,
+                      height: 8,
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                   ),
@@ -403,7 +403,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                         entry.value,
                                         style: const TextStyle(fontSize: 26),
                                       ),
-                                      const SizedBox(height: 4),
+                                      const SizedBox(height: 5),
                                       Text(
                                         entry.key,
                                         style: GoogleFonts.inter(

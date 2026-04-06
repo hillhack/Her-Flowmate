@@ -145,7 +145,7 @@ class InsightsScreen extends StatelessWidget {
                   color: AppTheme.textDark,
                 ),
               ).animate().fadeIn(delay: 800.ms),
-              const SizedBox(height: 4),
+              const SizedBox(height: 5),
               Text(
                 'Last 30 days',
                 style: GoogleFonts.inter(
@@ -237,7 +237,7 @@ class InsightsScreen extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 5),
                 Text(
                   '$score',
                   style: GoogleFonts.outfit(
@@ -702,7 +702,7 @@ class InsightsScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 5),
                       Text(
                         '${entry.key} (${entry.value})',
                         style: GoogleFonts.inter(
@@ -776,7 +776,7 @@ class _DailyInsightCard extends StatelessWidget {
                       color: AppTheme.accentPink,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
                   Text(
                     tip,
                     style: GoogleFonts.inter(

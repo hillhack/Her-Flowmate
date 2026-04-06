@@ -26,7 +26,7 @@ class GoogleAuthService {
         // On Mobile, we need to initialize with the serverClientId
         await _googleSignIn.initialize(
           serverClientId:
-              '536054439823-f54c3aanjfp2ilrfr8nkef4e243lcnrj.apps.googleusercontent.com',
+              '174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com',
         );
       }
       _isInitialized = true;

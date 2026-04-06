@@ -123,7 +123,7 @@ class PeriodLogService extends ChangeNotifier {
   Future<bool> uploadLogs() async {
     try {
       final logs = getLogs();
-      final response = await ApiService.post('/period-logs/sync', {
+      final response = await ApiService.post('/logs/periods', {
         'logs': logs.map((l) => l.toJson()).toList(),
       });
       return response.statusCode == 200;
@@ -135,9 +135,10 @@ class PeriodLogService extends ChangeNotifier {
 
   Future<void> fetchLogs() async {
     try {
-      final response = await ApiService.get('/period-logs');
+      final response = await ApiService.get('/logs/periods');
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final decoded = jsonDecode(response.body);
+        final List<dynamic> data = decoded is List ? decoded : [];
         final remoteLogs =
             data.map((json) => PeriodLog.fromJson(json)).toList();
 

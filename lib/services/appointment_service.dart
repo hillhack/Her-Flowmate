@@ -4,8 +4,7 @@ import '../models/appointment.dart';
 import 'notification_service.dart';
 import 'base_storage_service.dart';
 import '../utils/constants.dart';
-import 'api_service.dart';
-import 'dart:convert';
+
 
 class AppointmentService extends ChangeNotifier {
   static const String appointmentBoxName = 'appointments';
@@ -62,32 +61,11 @@ class AppointmentService extends ChangeNotifier {
   // ── Backend Sync ──────────────────────────────────────────────────────────
 
   Future<bool> uploadAppointments() async {
-    try {
-      final appts = getAllAppointments();
-      final response = await ApiService.post('/appointments/sync', {
-        'appointments': appts.map((a) => a.toJson()).toList(),
-      });
-      return response.statusCode == 200;
-    } catch (e) {
-      debugPrint('Error uploading appointments: $e');
-      return false;
-    }
+    // /appointments endpoint not available on backend — local-only
+    return true;
   }
 
   Future<void> fetchAppointments() async {
-    try {
-      final response = await ApiService.get('/appointments');
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        final remoteAppts =
-            data.map((json) => Appointment.fromJson(json)).toList();
-
-        await _appointmentBox.clear();
-        await _appointmentBox.addAll(remoteAppts);
-        notifyListeners();
-      }
-    } catch (e) {
-      debugPrint('Error fetching appointments: $e');
-    }
+    // /appointments endpoint not available on backend — local-only
   }
 }

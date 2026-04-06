@@ -1,31 +1,44 @@
 {
   "project_info": {
-    "project_number": "1234567890",
-    "project_id": "her-flowmate-stub",
-    "storage_bucket": "her-flowmate-stub.appspot.com"
+    "project_number": "236563075553",
+    "project_id": "herflowmate-bf7e1",
+    "storage_bucket": "herflowmate-bf7e1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1234567890:android:abcdef123456",
+        "mobilesdk_app_id": "1:236563075553:android:6391eda6a50715982102a0",
         "android_client_info": {
           "package_name": "com.herflowmate.her_flowmate"
         }
       },
       "oauth_client": [
         {
-          "client_id": "stub-client-id.apps.googleusercontent.com",
+          "client_id": "174435969771-fdiqil6jjd4smbqp50s1bin53dr9e5nc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.herflowmate.her_flowmate",
+            "certificate_hash": "a1b0dacd5b2bec2d4afd8fcea61de4c484730392"
+          }
+        },
+        {
+          "client_id": "174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "stub-api-key"
+          "current_key": "AIzaSyBpc2jM2AGOwrD2dUNVlltKf0ZLTTpNrYU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

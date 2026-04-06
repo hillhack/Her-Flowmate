@@ -61,6 +61,8 @@ dependencies:
   printing: ^5.13.2
   local_auth: ^2.3.0
   flutter_timezone: ^3.0.1
+  firebase_core: ^4.6.0
+  firebase_auth: ^6.3.0
 
 dev_dependencies:
   flutter_test:

@@ -80,7 +80,7 @@ class HealthTrackerService extends ChangeNotifier {
   Future<bool> uploadLogs() async {
     try {
       final logs = getDailyLogs();
-      final response = await ApiService.post('/daily-logs/sync', {
+      final response = await ApiService.post('/logs/daily', {
         'logs': logs.map((l) => l.toJson()).toList(),
       });
       return response.statusCode == 200;
@@ -92,9 +92,10 @@ class HealthTrackerService extends ChangeNotifier {
 
   Future<void> fetchLogs() async {
     try {
-      final response = await ApiService.get('/daily-logs');
+      final response = await ApiService.get('/logs/daily');
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final decoded = jsonDecode(response.body);
+        final List<dynamic> data = decoded is List ? decoded : [];
         final remoteLogs = data.map((json) => DailyLog.fromJson(json)).toList();
 
         await _dailyBox.clear();

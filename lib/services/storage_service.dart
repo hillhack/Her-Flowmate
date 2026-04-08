@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'base_storage_service.dart';
@@ -202,7 +203,7 @@ class StorageService extends ChangeNotifier {
                 },
               )
               .toList();
-      return list.toString(); // Simplified for now
+      return jsonEncode(list);
     } finally {
       _setLoading(false);
     }

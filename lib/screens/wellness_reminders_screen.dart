@@ -31,7 +31,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
         title: Text('Wellness Goals', style: AppTheme.playfair(fontSize: 24)),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+          icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -41,7 +41,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
           color: Colors.transparent,
           child:
               reminders.isEmpty
-                  ? _buildEmptyState(context)
+                  ? _buildEmptyState(context, storage)
                   : ListView.builder(
                     padding: const EdgeInsets.all(24),
                     itemCount: reminders.length,
@@ -70,7 +70,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context, StorageService storage) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +82,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -94,6 +94,25 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
               style: GoogleFonts.inter(
                 color: AppTheme.textSecondary,
                 fontSize: 14,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () => _showAddReminderSheet(context, storage),
+            icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+            label: Text(
+              'Add a Goal',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.accentPink,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
               ),
             ),
           ),
@@ -421,12 +440,21 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (titleController.text.isEmpty) return;
+                            if (titleController.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please enter a goal title.'),
+                                  backgroundColor: Colors.redAccent,
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                              return;
+                            }
                             storage.saveAppointment(
                               Appointment(
-                                title: titleController.text,
+                                title: titleController.text.trim(),
                                 date: selectedDate,
-                                notes: notesController.text,
+                                notes: notesController.text.trim(),
                                 typeIndex: selectedCat.index,
                               ),
                             );

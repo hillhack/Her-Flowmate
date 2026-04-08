@@ -8,6 +8,7 @@ import '../services/storage_service.dart';
 import '../models/daily_log.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
+import 'log_period_screen.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -105,8 +106,26 @@ class HistoryScreen extends StatelessWidget {
                                           gridData: const FlGridData(
                                             show: false,
                                           ),
-                                          titlesData: const FlTitlesData(
-                                            show: false,
+                                          titlesData: FlTitlesData(
+                                            show: true,
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                getTitlesWidget: (value, meta) {
+                                                  if (value.toInt() >= 0 && value.toInt() < logs.length) {
+                                                    final date = logs[value.toInt()].startDate;
+                                                    return Padding(
+                                                      padding: const EdgeInsets.only(top: 8),
+                                                      child: Text(DateFormat('Md').format(date), style: const TextStyle(fontSize: 10)),
+                                                    );
+                                                  }
+                                                  return const SizedBox();
+                                                },
+                                              ),
+                                            ),
+                                            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
                                           ),
                                           borderData: FlBorderData(show: false),
                                           lineBarsData: [
@@ -175,6 +194,28 @@ class HistoryScreen extends StatelessWidget {
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                       color: AppTheme.textSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 24),
+                                  ElevatedButton.icon(
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => const LogPeriodScreen()),
+                                    ),
+                                    icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
+                                    label: Text(
+                                      'Log your first period',
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppTheme.accentPink,
+                                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -248,6 +289,19 @@ class HistoryScreen extends StatelessWidget {
                                                       color: AppTheme.textDark,
                                                     ),
                                                   ),
+                                                  if (log.flowIntensity != null) ...[
+                                                    const SizedBox(width: 8),
+                                                    Container(
+                                                      width: 8,
+                                                      height: 8,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color: log.flowIntensity == 'Heavy' ? Colors.redAccent :
+                                                               log.flowIntensity == 'Medium' ? AppTheme.accentPink :
+                                                               AppTheme.primaryPink300,
+                                                      ),
+                                                    ),
+                                                  ],
                                                   if (dailyLog != null) ...[
                                                     const SizedBox(width: 8),
                                                     Container(

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import '../services/storage_service.dart';
 import '../services/prediction_service.dart';
 import '../models/period_log.dart';
@@ -324,6 +325,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                           );
                           return GestureDetector(
                             onTap: () {
+                              HapticFeedback.lightImpact();
                               setState(() {
                                 if (isSelected) {
                                   _selectedSymptoms.remove(symptom);
@@ -382,10 +384,10 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(right: 16.0),
                               child: GestureDetector(
-                                onTap:
-                                    () => setState(
-                                      () => _selectedMood = entry.key,
-                                    ),
+                                onTap: () {
+                                  HapticFeedback.lightImpact();
+                                  setState(() => _selectedMood = entry.key);
+                                },
                                 child: ThemedContainer(
                                   type: ContainerType.glass,
                                   radius: 20,
@@ -441,17 +443,39 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                         _selectedDate == null
                             ? () {}
                             : () async {
-                              final dateWithTime = DateTime(
-                                _selectedDate!.year,
-                                _selectedDate!.month,
-                                _selectedDate!.day,
-                                _isAM ? 8 : 20,
-                              );
-                              final duration =
-                                  int.tryParse(
-                                    _durationController.text.trim(),
-                                  ) ??
-                                  5;
+                                HapticFeedback.mediumImpact();
+                                if (_selectedDate!.isAfter(DateTime.now())) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Cannot log a period in the future.'),
+                                      backgroundColor: Colors.redAccent,
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                final durationText = _durationController.text.trim();
+                                if (durationText.isNotEmpty) {
+                                  int? parsedDuration = int.tryParse(durationText);
+                                  if (parsedDuration != null && parsedDuration > 10) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Duration exceeds normal limits. Please verify.'),
+                                        backgroundColor: Colors.orangeAccent,
+                                        behavior: SnackBarBehavior.floating,
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                }
+                                final dateWithTime = DateTime(
+                                  _selectedDate!.year,
+                                  _selectedDate!.month,
+                                  _selectedDate!.day,
+                                  _isAM ? 8 : 20,
+                                );
+                                final duration =
+                                    int.tryParse(durationText) ?? 5;
                               final log = PeriodLog(
                                 startDate: dateWithTime,
                                 duration: duration,

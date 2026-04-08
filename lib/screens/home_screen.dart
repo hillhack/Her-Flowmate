@@ -1,5 +1,7 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,8 @@ import '../widgets/home/greeting_section.dart';
 import '../widgets/themed_container.dart';
 import '../widgets/info_widgets.dart';
 import '../widgets/skeleton_widgets.dart';
+import '../widgets/common/neu_card.dart';
+import '../widgets/common/primary_button.dart';
 import 'log_period_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,7 +28,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late ConfettiController _confettiController;
-  bool _isLocalLoading = true;
 
   // Expansion logic moved to ModernBentoDashboard Widget
 
@@ -36,11 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkFirstTimeInfo();
-      Future.delayed(const Duration(milliseconds: 800), () {
-        if (mounted) {
-          setState(() => _isLocalLoading = false);
-        }
-      });
     });
   }
 
@@ -76,15 +74,18 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(decoration: AppTheme.getBackgroundDecoration(context)),
           RefreshIndicator(
             color: Theme.of(context).colorScheme.primary,
-            onRefresh: () async => setState(() {}),
+            onRefresh: () async {
+              final s = context.read<StorageService>();
+              await s.syncUserWithBackend();
+            },
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppTheme.spacingLg,
-                  80,
-                  AppTheme.spacingLg,
-                  100,
+                padding: EdgeInsets.fromLTRB(
+                  AppResponsive.pad(context),
+                  MediaQuery.of(context).padding.top + AppDesignTokens.space16,
+                  AppResponsive.pad(context),
+                  MediaQuery.of(context).padding.bottom + AppDesignTokens.space64,
                 ),
                 child: Column(
                   children: [
@@ -92,23 +93,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: AppTheme.spacingXl),
                     GreetingSection(storage: storage),
                     const SizedBox(height: AppTheme.spacingXl),
-                    if (_isLocalLoading)
-                      _buildSkeletonDashboard()
-                    else if (storage.userGoal == 'pregnant')
-                      Semantics(
-                        label: 'Pregnancy Dashboard',
-                        child: PregnancyDashboard(storage: storage),
-                      )
-                    else if (storage.userGoal == 'conceive')
-                      Semantics(
-                        label: 'Conception Dashboard',
-                        child: TTCDashboard(storage: storage, pred: pred),
-                      )
-                    else
-                      Semantics(
-                        label: 'Cycle Tracking Dashboard',
-                        child: _buildCycleDashboard(context, storage, pred),
-                      ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(0.0, 0.05),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: storage.isLoading
+                          ? _buildSkeletonDashboard()
+                          : _getDashboard(context, storage, pred),
+                    ),
                     const SizedBox(height: AppTheme.spacingLg),
                     _buildMedicalDisclaimer(),
                   ],
@@ -116,47 +118,93 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
           IgnorePointer(
             child: Align(
               alignment: Alignment.topCenter,
-              child: ConfettiWidget(
-                confettiController: _confettiController,
-                blastDirectionality: BlastDirectionality.explosive,
-                shouldLoop: false,
-                colors: [
-                  Theme.of(context).colorScheme.primary,
-                  AppTheme.primaryPink700,
-                  Colors.blueAccent,
-                ],
+              child: Semantics(
+                excludeSemantics: true,
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  shouldLoop: false,
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    AppTheme.primaryPink700,
+                    Colors.blueAccent,
+                  ],
+                ),
               ),
             ),
           ),
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton:
-          _isLocalLoading || storage.userGoal == 'pregnant'
+          storage.isLoading || storage.userGoal == 'pregnant'
               ? null
-              : FloatingActionButton.extended(
-                onPressed:
-                    () => showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => const LogPeriodScreen(),
+              : Semantics(
+                  label: 'Log an event',
+                  button: true,
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: const LogPeriodScreen(),
+                        ),
+                      );
+                    },
+                    label: Text(
+                      'Log Event',
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
                     ),
-                label: Text(
-                  'Log Event',
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                  ),
+                    icon: const Icon(Icons.add_rounded),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 4,
+                  ).animate().scale(delay: 1.seconds, curve: Curves.bounceOut),
                 ),
-                icon: const Icon(Icons.add_rounded),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Colors.white,
-                elevation: 4,
-              ).animate().scale(delay: 1.seconds, curve: Curves.bounceOut),
     );
+  }
+
+  Widget _getDashboard(BuildContext context, StorageService storage, PredictionService pred) {
+    try {
+      Widget dashboardWidget;
+      if (storage.userGoal == 'pregnant') {
+        dashboardWidget = PregnancyDashboard(storage: storage);
+      } else if (storage.userGoal == 'conceive') {
+        dashboardWidget = TTCDashboard(storage: storage, pred: pred);
+      } else {
+        dashboardWidget = _buildCycleDashboard(context, storage, pred);
+      }
+      return Semantics(
+        key: ValueKey(storage.userGoal),
+        label: '${storage.userGoal} dashboard',
+        child: dashboardWidget,
+      );
+    } catch (e) {
+      return Center(
+        child: ThemedContainer(
+          type: ContainerType.glass,
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            'Cannot load dashboard right now.\nEnsure syncing is working.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildTopRow(BuildContext context, StorageService storage) {
@@ -166,32 +214,42 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ThemedContainer(
-              type: ContainerType.glass,
-              radius: 18,
-              padding: const EdgeInsets.all(10),
-              onTap: () => Scaffold.of(context).openDrawer(),
-              child: Icon(
-                Icons.menu_rounded,
-                color: Theme.of(context).colorScheme.onSurface,
-                size: 26,
+            Semantics(
+              label: 'Open navigation drawer',
+              button: true,
+              child: ThemedContainer(
+                type: ContainerType.glass,
+                radius: 18,
+                padding: const EdgeInsets.all(10),
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  Scaffold.of(context).openDrawer();
+                },
+                child: Icon(
+                  Icons.menu_rounded,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  size: 26,
+                ),
               ),
             ),
-            if (storage.isLoading) ...[
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.6),
-                  ),
-                ),
-              ).animate().fadeIn(),
-            ],
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: storage.isLoading
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+                          ),
+                        ),
+                      ),
+                    ).animate().fadeIn()
+                  : const SizedBox(width: 28), // Keeps layout stable
+            ),
           ],
         ),
         _buildCurrentModeBadge(storage),
@@ -206,36 +264,43 @@ class _HomeScreenState extends State<HomeScreen> {
             ? 'Conceive'
             : (mode == 'pregnant' ? 'Pregnancy' : 'Period Tracking');
 
-    return ThemedContainer(
-      type: ContainerType.glass,
-      radius: 20,
-      onTap: () => _showModeSelectionSheet(context, storage),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.favorite_rounded,
-            color: Theme.of(context).colorScheme.primary,
-            size: 16,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            modeLabel,
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Theme.of(context).colorScheme.onSurface,
+    return Semantics(
+      label: 'Selected mode: $modeLabel. Tap to change.',
+      button: true,
+      child: ThemedContainer(
+        type: ContainerType.glass,
+        radius: 20,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          _showModeSelectionSheet(context, storage);
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.favorite_rounded,
+              color: Theme.of(context).colorScheme.primary,
+              size: 16,
             ),
-          ),
-          Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: Theme.of(
-              context,
-            ).colorScheme.onSurface.withValues(alpha: 0.6),
-            size: 20,
-          ),
-        ],
+            const SizedBox(width: 8),
+            Text(
+              modeLabel,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+              size: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -294,14 +359,16 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isSelected,
   ) {
     return ThemedContainer(
-      type: ContainerType.glass,
+      type: ContainerType.simple,
       radius: 16,
       onTap: () {
+        HapticFeedback.lightImpact();
         storage.updateUserGoal(goal);
         Navigator.pop(context);
-        setState(() {});
+        // no setState needed; Provider will trigger rebuild
       },
       padding: const EdgeInsets.all(16),
+      color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05) : Colors.transparent,
       border:
           isSelected
               ? Border.all(
@@ -362,45 +429,80 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildNewUserContent(BuildContext context, StorageService storage) {
     return ThemedContainer(
       type: ContainerType.neu,
-      padding: const EdgeInsets.all(32),
-      radius: 40,
+      padding: const EdgeInsets.all(24),
+      radius: 32,
       child: Column(
         children: [
           Icon(
             Icons.auto_awesome_rounded,
             color: Theme.of(context).colorScheme.primary,
-            size: 48,
+            size: 40,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Text(
             'Ready to start?',
             style: GoogleFonts.poppins(
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
               color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          const SizedBox(height: 32),
-          ThemedContainer(
-            type: ContainerType.glass,
-            onTap:
-                () => showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => const LogPeriodScreen(),
-                ),
-            radius: 20,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Text(
-                'Log First Period',
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w800,
-                  color: Theme.of(context).colorScheme.primary,
+          const SizedBox(height: 8),
+          Text(
+            'Tracking your cycle regularly improves predictions and uncovers personalized health insights.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: 13,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Expanded(
+                child: NeumorphicCard(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Icon(Icons.calendar_month_rounded, size: 24, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(height: 8),
+                      Text('Log often', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: NeumorphicCard(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Icon(Icons.insights_rounded, size: 24, color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(height: 8),
+                      Text('Get insights', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          PrimaryButton(
+            label: 'Log First Period',
+            icon: Icons.add_rounded,
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: const LogPeriodScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -432,15 +534,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildMedicalDisclaimer() {
-    return Center(
-      child: Text(
-        'This is an estimate and should not be considered medical advice.',
-        style: GoogleFonts.inter(
-          fontSize: 10,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-          fontStyle: FontStyle.italic,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: ThemedContainer(
+        type: ContainerType.glass,
+        radius: 12,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(
+              Icons.info_outline_rounded,
+              size: 16,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Estimates are not medical advice. Consult a healthcare professional for concerns.',
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                ),
+              ),
+            ),
+          ],
         ),
-        textAlign: TextAlign.center,
       ),
     );
   }

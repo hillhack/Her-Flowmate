@@ -38,6 +38,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   );
   DateTime? _conceptionDate;
 
+  String? _nameError;
+  String? _ageError;
+  String? _weeksError;
+  String? _dateError;
+
   late int _currentPage;
   static const int _totalPages = 3;
   late String _selectedGoal;
@@ -65,30 +70,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _next() {
+    setState(() {
+      _nameError = null;
+      _ageError = null;
+      _weeksError = null;
+      _dateError = null;
+    });
+
     if (_currentPage == 0 && _selectedGoal.isEmpty) return;
     if (_currentPage == 1) {
       if (_nameController.text.trim().isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter your name to continue.')),
-        );
+        setState(() => _nameError = 'Please enter your name.');
         return;
       }
 
       final ageStr = _ageController.text.trim();
       if (ageStr.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter your age to continue.')),
-        );
+        setState(() => _ageError = 'Please enter your age.');
         return;
       }
 
       final age = int.tryParse(ageStr);
       if (age == null || age < 10 || age > 100) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter a valid age between 10 and 100.'),
-          ),
-        );
+        setState(() => _ageError = 'Please enter a valid age between 10 and 100.');
         return;
       }
     }
@@ -96,27 +100,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       if (_selectedGoal == 'pregnant') {
         if (_pregnancyInputMode == 'weeks' &&
             _weeksController.text.trim().isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please enter how many weeks pregnant you are.'),
-            ),
-          );
+          setState(() => _weeksError = 'Please enter how many weeks pregnant you are.');
           return;
         }
         if (_pregnancyInputMode == 'date' && _conceptionDate == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please select your conception date.'),
-            ),
-          );
+          setState(() => _dateError = 'Please select your conception date.');
           return;
         }
       } else if (_lastPeriodStart == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please select your last period start date.'),
-          ),
-        );
+        setState(() => _dateError = 'Please select your last period start date.');
         return;
       }
     }
@@ -301,7 +293,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               _InfoPage(
                                 nameController: _nameController,
                                 ageController: _ageController,
-                                onChanged: () => setState(() {}),
+                                nameError: _nameError,
+                                ageError: _ageError,
+                                onChanged: () {
+                                  if (_nameError != null || _ageError != null) {
+                                    setState(() {
+                                      _nameError = null;
+                                      _ageError = null;
+                                    });
+                                  }
+                                  setState(() {});
+                                },
                                 isSmall: isSmall,
                                 horizontalPadding: horizontalPadding,
                               ).animate().fadeIn(duration: 400.ms),
@@ -313,17 +315,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 conceptionDate: _conceptionDate,
                                 isAM: _isAM,
                                 pregnancyInputMode: _pregnancyInputMode,
-                                onWeeksChanged: () => setState(() {}),
+                                weeksError: _weeksError,
+                                dateError: _dateError,
+                                onWeeksChanged: () {
+                                  if (_weeksError != null) setState(() => _weeksError = null);
+                                  setState(() {});
+                                },
                                 onDurationChanged: () => setState(() {}),
                                 onDateChanged:
-                                    (d) => setState(() => _lastPeriodStart = d),
+                                    (d) {
+                                      if (_dateError != null) setState(() => _dateError = null);
+                                      setState(() => _lastPeriodStart = d);
+                                    },
                                 onConceptionDateChanged:
-                                    (d) => setState(() => _conceptionDate = d),
+                                    (d) {
+                                      if (_dateError != null) setState(() => _dateError = null);
+                                      setState(() => _conceptionDate = d);
+                                    },
                                 onAMPMChanged:
                                     (val) => setState(() => _isAM = val),
                                 onInputModeChanged:
                                     (mode) => setState(
-                                      () => _pregnancyInputMode = mode,
+                                      () {
+                                        _pregnancyInputMode = mode;
+                                        _weeksError = null;
+                                        _dateError = null;
+                                      }
                                     ),
                                 isSmall: isSmall,
                                 horizontalPadding: horizontalPadding,
@@ -565,11 +582,15 @@ class _InfoPage extends StatelessWidget {
   final TextEditingController ageController;
   final VoidCallback onChanged;
   final bool isSmall;
+  final String? nameError;
+  final String? ageError;
   final double horizontalPadding;
 
   const _InfoPage({
     required this.nameController,
     required this.ageController,
+    this.nameError,
+    this.ageError,
     required this.onChanged,
     required this.isSmall,
     required this.horizontalPadding,
@@ -605,6 +626,7 @@ class _InfoPage extends StatelessWidget {
             'Enter name...',
             icon: Icons.person_outline_rounded,
             isRequired: true,
+            errorText: nameError,
             onChanged: (v) => onChanged(),
           ),
           const SizedBox(height: 24),
@@ -616,6 +638,7 @@ class _InfoPage extends StatelessWidget {
             icon: Icons.cake_outlined,
             isNumeric: true,
             isRequired: true,
+            errorText: ageError,
             onChanged: (v) => onChanged(),
           ),
         ],
@@ -631,6 +654,7 @@ class _InfoPage extends StatelessWidget {
     IconData? icon,
     bool isNumeric = false,
     bool isRequired = false,
+    String? errorText,
     required Function(String) onChanged,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -675,6 +699,18 @@ class _InfoPage extends StatelessWidget {
             ),
           ),
         ),
+        if (errorText != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8, left: 16),
+            child: Text(
+              errorText,
+              style: const TextStyle(
+                color: AppTheme.accentPink,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ).animate().fadeIn().slideY(begin: -0.2),
+          ),
       ],
     );
   }
@@ -688,6 +724,8 @@ class _PeriodPage extends StatelessWidget {
   final DateTime? conceptionDate;
   final bool isAM;
   final String pregnancyInputMode;
+  final String? weeksError;
+  final String? dateError;
   final VoidCallback onWeeksChanged;
   final VoidCallback onDurationChanged;
   final Function(DateTime) onDateChanged;
@@ -705,6 +743,8 @@ class _PeriodPage extends StatelessWidget {
     required this.conceptionDate,
     required this.isAM,
     required this.pregnancyInputMode,
+    this.weeksError,
+    this.dateError,
     required this.onWeeksChanged,
     required this.onDurationChanged,
     required this.onDateChanged,

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import '../services/storage_service.dart';
 import '../models/daily_log.dart';
 import '../utils/app_theme.dart';
@@ -277,12 +278,14 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                         _allMoods.entries.map((e) {
                           final isSel = _selectedMoods.contains(e.key);
                           return GestureDetector(
-                            onTap:
-                                () => setState(() {
-                                  isSel
-                                      ? _selectedMoods.remove(e.key)
-                                      : _selectedMoods.add(e.key);
-                                }),
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              setState(() {
+                                isSel
+                                    ? _selectedMoods.remove(e.key)
+                                    : _selectedMoods.add(e.key);
+                              });
+                            },
                             child: AnimatedContainer(
                               duration: const Duration(milliseconds: 300),
                               padding: const EdgeInsets.symmetric(
@@ -361,6 +364,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                               final isSel = _selectedSymptoms.contains(sym);
                               return GestureDetector(
                                 onTap: () {
+                                  HapticFeedback.lightImpact();
                                   setState(() {
                                     isSel
                                         ? _selectedSymptoms.remove(sym)
@@ -438,10 +442,12 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                                   final isSel = _selectedFlow == flowStr;
                                   return Expanded(
                                     child: GestureDetector(
-                                      onTap:
-                                          () => setState(
-                                            () => _selectedFlow = flowStr,
-                                          ),
+                                      onTap: () {
+                                        HapticFeedback.lightImpact();
+                                        setState(
+                                          () => _selectedFlow = flowStr,
+                                        );
+                                      },
                                       child: AnimatedContainer(
                                         duration: const Duration(
                                           milliseconds: 300,
@@ -521,6 +527,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                           final isSel = _selectedActivities.contains(act);
                           return GestureDetector(
                             onTap: () {
+                              HapticFeedback.lightImpact();
                               setState(() {
                                 isSel
                                     ? _selectedActivities.remove(act)
@@ -767,6 +774,7 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
                   // ── Save Button ─────────────────────────────────────────────
                   GestureDetector(
                     onTap: () async {
+                      HapticFeedback.mediumImpact();
                       await context.read<StorageService>().saveDailyLog(
                         DailyLog(
                           date: _selectedDate,
@@ -893,7 +901,10 @@ class _DailyCheckinScreenState extends State<DailyCheckinScreen> {
         final level = i + 1;
         final isSelected = current == level;
         return GestureDetector(
-          onTap: () => onTap(level),
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onTap(level);
+          },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             width: 56,

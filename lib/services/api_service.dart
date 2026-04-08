@@ -4,7 +4,10 @@ import 'package:http/http.dart' as http;
 import 'base_storage_service.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://her-flowmate-backend.onrender.com';
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://her-flowmate-backend.onrender.com',
+  );
   static const String tokenKey = 'auth_token';
 
   static String? get token =>

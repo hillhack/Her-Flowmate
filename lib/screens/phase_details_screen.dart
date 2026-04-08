@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../utils/app_theme.dart';
 import '../widgets/delight_widgets.dart';
-import '../widgets/themed_container.dart';
+import '../widgets/common/app_back_button.dart';
+import '../widgets/common/neu_card.dart';
 
 class PhaseDetailsScreen extends StatelessWidget {
   final String phaseName;
@@ -20,22 +21,14 @@ class PhaseDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const ThemedContainer(
-              type: ContainerType.glass,
-              radius: 12,
-              padding: EdgeInsets.zero,
-              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
-            ),
-          ),
+        leading: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: AppBackButton(),
         ),
         title: Text(
           'Phase Details',
           style: GoogleFonts.poppins(
-            color: AppTheme.textDark,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -50,65 +43,61 @@ class PhaseDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Header Card
-                ThemedContainer(
-                  type: ContainerType.glass,
-                  radius: 40,
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.15),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const SparkleEffect(
-                            trigger: true,
-                            child: Icon(
-                              Icons.auto_awesome_rounded,
-                              color: Colors.white,
-                              size: 48,
-                            ),
-                          ),
-                        ).animate().scale(
-                          duration: 600.ms,
-                          curve: Curves.easeOutBack,
+                NeumorphicCard(
+                  padding: const EdgeInsets.all(AppDesignTokens.space32),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(AppDesignTokens.space20),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.15),
+                          shape: BoxShape.circle,
                         ),
-                        const SizedBox(height: 24),
-                        Text(
-                          phaseName,
-                          style: GoogleFonts.poppins(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            color: AppTheme.textDark,
+                        child: const SparkleEffect(
+                          trigger: false,
+                          child: Icon(
+                            Icons.auto_awesome_rounded,
+                            color: Colors.white,
+                            size: 48,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          details.oneLiner,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            color: color,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ).animate().scale(
+                        duration: 600.ms,
+                        curve: Curves.easeOutBack,
+                      ),
+                      const SizedBox(height: AppDesignTokens.space24),
+                      Text(
+                        phaseName,
+                        style: GoogleFonts.poppins(
+                          fontSize: AppDesignTokens.displaySize - 4,
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: AppDesignTokens.space8),
+                      Text(
+                        details.oneLiner,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                          fontSize: AppDesignTokens.bodyLargeSize,
+                          color: color,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
                 const SizedBox(height: 32),
 
                 // Description
-                _buildSectionTitle('What\'s happening?'),
-                const SizedBox(height: 12),
+                _buildSectionTitle(context, 'What\'s happening?'),
+                const SizedBox(height: AppDesignTokens.space12),
                 Text(
                   details.description,
                   style: GoogleFonts.inter(
-                    fontSize: 15,
-                    color: AppTheme.textDark.withValues(alpha: 0.8),
+                    fontSize: AppDesignTokens.bodySize + 1,
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
                     height: 1.6,
                   ),
                 ).animate().fadeIn(delay: 200.ms),
@@ -116,9 +105,9 @@ class PhaseDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // Tips
-                _buildSectionTitle('Self-Care Tips'),
-                const SizedBox(height: 16),
-                ...details.tips.map((tip) => _buildTipItem(tip, color)),
+                _buildSectionTitle(context, 'Self-Care Tips'),
+                const SizedBox(height: AppDesignTokens.space16),
+                ...details.tips.map((tip) => _buildTipItem(context, tip, color)),
 
                 const SizedBox(height: 40),
               ],
@@ -129,45 +118,41 @@ class PhaseDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: GoogleFonts.poppins(
-        fontSize: 20,
+        fontSize: AppDesignTokens.titleSize,
         fontWeight: FontWeight.w700,
-        color: AppTheme.textDark,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
 
-  Widget _buildTipItem(String tip, Color accentColor) {
+  Widget _buildTipItem(BuildContext context, String tip, Color accentColor) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: ThemedContainer(
-        type: ContainerType.glass,
-        radius: 20,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(
-                Icons.check_circle_outline_rounded,
-                color: accentColor,
-                size: 20,
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Text(
-                  tip,
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: AppTheme.textDark.withValues(alpha: 0.8),
-                    fontWeight: FontWeight.w500,
-                  ),
+      padding: const EdgeInsets.only(bottom: AppDesignTokens.space12),
+      child: NeumorphicCard(
+        padding: const EdgeInsets.all(AppDesignTokens.space16),
+        child: Row(
+          children: [
+            Icon(
+              Icons.check_circle_outline_rounded,
+              color: accentColor,
+              size: 20,
+            ),
+            const SizedBox(width: AppDesignTokens.space12),
+            Expanded(
+              child: Text(
+                tip,
+                style: GoogleFonts.inter(
+                  fontSize: AppDesignTokens.bodySize,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.1);

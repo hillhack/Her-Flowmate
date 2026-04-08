@@ -15,18 +15,18 @@ class PredictionDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const ThemedContainer(
+          icon: ThemedContainer(
             type: ContainerType.glass,
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             radius: 12,
-            child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+            child: Icon(Icons.arrow_back_rounded, color: Theme.of(context).colorScheme.onSurface),
           ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Cycle Phases',
           style: GoogleFonts.poppins(
-            color: AppTheme.textDark,
+            color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w800,
             fontSize: 20,
           ),
@@ -40,35 +40,43 @@ class PredictionDetailsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             children: [
               _buildPhaseSection(
+                context,
                 'Menstrual Phase',
                 'Day 1 - 5',
                 'The uterus sheds its lining because pregnancy did not occur in the previous cycle. This marks the beginning of a new cycle.',
                 'Low Estrogen & Progesterone',
                 AppTheme.phaseColors['Menstrual']!,
+                Icons.water_drop_rounded,
               ),
               const SizedBox(height: 24),
               _buildPhaseSection(
+                context,
                 'Follicular Phase',
                 'Day 6 - 13',
                 'Your body prepares for ovulation. Ovaries develop follicles, and estrogen levels rise, thickening the uterine lining.',
                 'Rising Estrogen',
                 AppTheme.phaseColors['Follicular']!,
+                Icons.local_florist_rounded,
               ),
               const SizedBox(height: 24),
               _buildPhaseSection(
+                context,
                 'Ovulation Phase',
                 'Day 14',
                 'An egg is released from the ovary. It survives for 12-24 hours. This is the peak of fertility.',
                 'Peak Estrogen & LH Surge',
                 AppTheme.phaseColors['Ovulation']!,
+                Icons.egg_alt_rounded,
               ),
               const SizedBox(height: 24),
               _buildPhaseSection(
+                context,
                 'Luteal Phase',
                 'Day 15 - 28',
                 'Progesterone increases to support a potential pregnancy. If fertilization doesn\'t occur, hormone levels drop, leading to the next period.',
                 'High Progesterone',
                 AppTheme.phaseColors['Luteal']!,
+                Icons.nights_stay_rounded,
               ),
               const SizedBox(height: 48),
             ],
@@ -79,11 +87,13 @@ class PredictionDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildPhaseSection(
+    BuildContext context,
     String name,
     String days,
     String description,
     String hormones,
     Color color,
+    IconData icon,
   ) {
     return ThemedContainer(
       type: ContainerType.glass,
@@ -100,14 +110,14 @@ class PredictionDetailsScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: const Icon(
-                  Icons.biotech_rounded,
+                child: Icon(
+                  icon,
                   color: Colors.white,
                   size: 20,
                 ),

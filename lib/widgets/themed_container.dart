@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
+import '../utils/app_theme.dart';
 
 enum ContainerType { glass, neu, elevated, simple }
 
@@ -129,23 +130,7 @@ class ThemedContainer extends StatelessWidget {
                     : null),
             boxShadow:
                 boxShadow ??
-                (isHighPerf
-                    ? [
-                      BoxShadow(
-                        color: theme.shadowColor.withValues(
-                          alpha: isDark ? 0.3 : 0.1,
-                        ),
-                        offset: const Offset(5, 5),
-                        blurRadius: 8,
-                        spreadRadius: 1,
-                      ),
-                      BoxShadow(
-                        color: isDark ? Colors.black12 : Colors.white,
-                        offset: const Offset(-2, -2),
-                        blurRadius: 4,
-                      ),
-                    ]
-                    : []),
+                AppDesignTokens.neuShadow(context),
           ),
           child: child,
         );
@@ -162,21 +147,13 @@ class ThemedContainer extends StatelessWidget {
             border: border,
             boxShadow:
                 boxShadow ??
-                (isHighPerf
-                    ? [
-                      BoxShadow(
-                        color: theme.shadowColor.withValues(alpha: 0.08),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ]
-                    : [
-                      BoxShadow(
-                        color: theme.shadowColor.withValues(alpha: 0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]),
+                [
+                  BoxShadow(
+                    color: theme.shadowColor.withValues(alpha: isHighPerf ? 0.08 : 0.05),
+                    blurRadius: isHighPerf ? 15 : 4,
+                    offset: Offset(0, isHighPerf ? 8 : 2),
+                  ),
+                ],
           ),
           child: child,
         );

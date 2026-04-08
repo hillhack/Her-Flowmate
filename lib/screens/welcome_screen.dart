@@ -94,12 +94,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const SizedBox(height: 48),
-                        BrandLogo(
-                              size: isSmall ? 110 : 150,
-                              imagePath: 'assets/images/feature_graphic.png',
-                              showName: true,
-                              nameFontSize: 42,
-                            )
+                        Hero(
+                          tag: 'brand_logo',
+                          child: BrandLogo(
+                            size: isSmall ? 110 : 150,
+                            imagePath: 'assets/images/feature_graphic.png',
+                            showName: true,
+                            nameFontSize: 42,
+                          ),
+                        )
                             .animate()
                             .fadeIn(duration: 800.ms)
                             .scale(

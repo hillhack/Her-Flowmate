@@ -10,6 +10,7 @@ import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
 import 'about_screen.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -132,14 +133,15 @@ class ProfileScreen extends StatelessWidget {
                                                       : null,
                                               child:
                                                   storage.userImagePath == null
-                                                      ? Icon(
-                                                        Icons.person_rounded,
-                                                        size:
-                                                            isSmallScreen
-                                                                ? 40
-                                                                : 52,
-                                                        color:
-                                                            AppTheme.accentPink,
+                                                      ? Text(
+                                                        storage.userName.isNotEmpty
+                                                            ? storage.userName[0].toUpperCase()
+                                                            : 'G',
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: isSmallScreen ? 20 : 26,
+                                                          fontWeight: FontWeight.w800,
+                                                          color: AppTheme.primaryPink700,
+                                                        ),
                                                       )
                                                       : null,
                                             ),
@@ -269,7 +271,35 @@ class ProfileScreen extends StatelessWidget {
                                       Icons.notifications_active_rounded,
                                       'Notifications',
                                       'Enabled',
-                                      () {},
+                                      () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          backgroundColor: Colors.transparent,
+                                          builder: (ctx) => ThemedContainer(
+                                            type: ContainerType.glass,
+                                            padding: const EdgeInsets.all(24),
+                                            radius: 32,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const Icon(Icons.notifications_active_rounded, size: 48, color: AppTheme.accentPink),
+                                                const SizedBox(height: 16),
+                                                Text(
+                                                  'Coming Soon!',
+                                                  style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  'Notification settings will be available in the next update.',
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.inter(color: AppTheme.textSecondary),
+                                                ),
+                                                const SizedBox(height: 24),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
                                       isSmallScreen: isSmallScreen,
                                     ),
                                     _buildDivider(),
@@ -505,6 +535,7 @@ class ProfileScreen extends StatelessWidget {
                                       'Permanently erase logs',
                                       () => _confirmDelete(context, storage),
                                       isSmallScreen: isSmallScreen,
+                                      isDanger: true,
                                     ),
                                   ],
                                 ),
@@ -538,6 +569,16 @@ class ProfileScreen extends StatelessWidget {
                                         ),
                                       ),
                                       isSmallScreen: isSmallScreen,
+                                    ),
+                                    _buildDivider(),
+                                    _buildSettingsTile(
+                                      context,
+                                      Icons.logout_rounded,
+                                      'Sign Out',
+                                      '',
+                                      () => _confirmSignOut(context, storage),
+                                      isSmallScreen: isSmallScreen,
+                                      isDanger: true,
                                     ),
                                   ],
                                 ),
@@ -594,10 +635,10 @@ class ProfileScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: Text(
-          title,
+          title.toUpperCase(),
           style: GoogleFonts.poppins(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
             color: AppTheme.textSecondary,
           ),
         ),
@@ -612,6 +653,7 @@ class ProfileScreen extends StatelessWidget {
     String value,
     VoidCallback? onTap, {
     bool isSmallScreen = false,
+    bool isDanger = false,
   }) {
     return Material(
       color: Colors.transparent,
@@ -631,12 +673,14 @@ class ProfileScreen extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(isSmallScreen ? 8 : 10),
                   decoration: BoxDecoration(
-                    color: AppTheme.accentPink.withValues(alpha: 0.1),
+                    color: isDanger 
+                        ? Colors.redAccent.withValues(alpha: 0.1) 
+                        : AppTheme.accentPink.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     icon,
-                    color: AppTheme.accentPink,
+                    color: isDanger ? Colors.redAccent : AppTheme.accentPink,
                     size: isSmallScreen ? 18 : 20,
                   ),
                 ),
@@ -649,8 +693,9 @@ class ProfileScreen extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color:
-                          Theme.of(context).brightness == Brightness.dark
+                      color: isDanger
+                          ? Colors.redAccent
+                          : Theme.of(context).brightness == Brightness.dark
                               ? AppTheme.darkTextPrimary
                               : AppTheme.textDark,
                     ),
@@ -1324,6 +1369,99 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         child: Text(
                           'Erase Data',
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+    );
+  }
+
+  void _confirmSignOut(BuildContext context, StorageService storage) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder:
+          (ctx) => Container(
+            padding: EdgeInsets.fromLTRB(
+              24,
+              24,
+              24,
+              MediaQuery.of(ctx).padding.bottom + 24,
+            ),
+            decoration: const BoxDecoration(
+              color: AppTheme.frameColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildBottomSheetHeader('Sign Out?'),
+                const SizedBox(height: 16),
+                Text(
+                  'Are you sure you want to sign out?',
+                  style: GoogleFonts.inter(
+                    color: AppTheme.textSecondary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.inter(
+                            color: AppTheme.textSecondary,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Navigator.pop(ctx);
+                          await storage.logout();
+                          if (context.mounted) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (_) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          'Sign Out',
                           style: GoogleFonts.inter(
                             color: Colors.white,
                             fontWeight: FontWeight.w800,

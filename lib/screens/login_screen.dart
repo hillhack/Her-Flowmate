@@ -6,13 +6,15 @@ import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
 import '../services/storage_service.dart';
 import '../services/google_auth_services.dart';
-import '../widgets/delight_widgets.dart';
 import '../widgets/themed_container.dart';
 import 'legal_screen.dart';
 import 'onboarding_screen.dart';
 import 'main_navigation_screen.dart';
 import '../widgets/brand_widgets.dart';
 import '../widgets/google_auth_button.dart';
+import '../widgets/common/primary_button.dart';
+import '../widgets/common/neu_card.dart';
+import '../widgets/common/app_back_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,27 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Center(
+        leading: const Center(
           child: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Semantics(
-              button: true,
-              label: 'Go back',
-              child: Tooltip(
-                message: 'Back',
-                child: ThemedContainer(
-                  type: ContainerType.glass,
-                  radius: 14,
-                  padding: const EdgeInsets.all(12),
-                  onTap: _isLoading ? null : () => Navigator.of(context).pop(),
-                  child: Icon(
-                    Icons.arrow_back_rounded,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    size: 24,
-                  ),
-                ),
-              ),
-            ),
+            padding: EdgeInsets.only(left: 12),
+            child: AppBackButton(),
           ),
         ),
       ),
@@ -64,195 +49,212 @@ class _LoginScreenState extends State<LoginScreen> {
                 builder: (context, constraints) {
                   final bool isSmall = constraints.maxWidth < 360;
 
-                  return SingleChildScrollView(
+                  return CustomScrollView(
                     physics: const BouncingScrollPhysics(),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isSmall ? 16 : 24,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BrandLogo(
-                              size: isSmall ? 80 : 100,
-                              imagePath: 'assets/images/feature_graphic.png',
-                              showName: true,
-                              nameFontSize: AppTheme.adaptiveFontSize(
-                                context,
-                                32,
-                              ),
-                            ).animate().fadeIn(duration: 500.ms).scale(),
-                            const SizedBox(height: AppTheme.spacingSm),
-                            Text(
-                              'Your Personal Health Sanctuary',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium?.copyWith(
-                                color: Theme.of(
+                    slivers: [
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isSmall ? 16 : 24,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Hero(
+                                tag: 'brand_logo_login',
+                                child: BrandLogo(
+                                  size: isSmall ? 80 : 100,
+                                  imagePath: 'assets/images/feature_graphic.png',
+                                  showName: true,
+                                  nameFontSize: AppTheme.adaptiveFontSize(
+                                    context,
+                                    32,
+                                  ),
+                                ),
+                              ).animate().fadeIn(duration: 500.ms).scale(),
+                              const SizedBox(height: AppTheme.spacingSm),
+                              Text(
+                                'Your Personal Health Sanctuary',
+                                style: Theme.of(
                                   context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.7),
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Sign in to sync your health data securely.',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(
-                              height:
-                                  isSmall
-                                      ? AppTheme.spacingLg
-                                      : AppTheme.spacingXl,
-                            ),
-                            ThemedContainer(
-                              type: ContainerType.glass,
-                              radius: 32,
-                              padding: EdgeInsets.all(isSmall ? 20 : 32),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Semantics(
-                                    label: 'Sign in with Google',
-                                    button: true,
-                                    child: GoogleAuthButton(
-                                      onTap:
-                                          _isLoading
-                                              ? null
-                                              : () =>
-                                                  _handleLogin(context, true),
-                                    ),
-                                  ).animate().fadeIn(delay: 400.ms),
-                                  const SizedBox(
-                                    height: AppTheme.spacingMedium,
-                                  ),
-                                  Semantics(
-                                    label: 'Continue as guest',
-                                    button: true,
-                                    child: _AuthButton(
-                                      label: 'Continue as Guest',
-                                      icon: Icons.person_outline_rounded,
-                                      isPrimary: false,
-                                      isLoading: false,
-                                      onTap:
-                                          _isLoading
-                                              ? null
-                                              : () =>
-                                                  _handleLogin(context, false),
-                                      isSmall: isSmall,
-                                    ),
-                                  ).animate().fadeIn(delay: 500.ms),
-                                ],
+                              const SizedBox(height: 8),
+                              Text(
+                                'Sign in to sync your health data securely.',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                            SizedBox(
-                              height:
-                                  isSmall
-                                      ? AppTheme.spacingXlarge
-                                      : AppTheme.spacingHuge,
-                            ),
-                            ThemedContainer(
-                              type: ContainerType.glass,
-                              radius: 20,
-                              padding: EdgeInsets.all(isSmall ? 16 : 24),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.lock_rounded,
-                                        size: isSmall ? 16 : 18,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                              SizedBox(
+                                height:
+                                    isSmall
+                                        ? AppTheme.spacingLg
+                                        : AppTheme.spacingXl,
+                              ),
+                              ThemedContainer(
+                                type: ContainerType.neu,
+                                radius: 32,
+                                padding: EdgeInsets.all(isSmall ? 20 : 32),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Semantics(
+                                      label: 'Sign in with Google',
+                                      button: true,
+                                      child: GoogleAuthButton(
+                                        onTap:
+                                            _isLoading
+                                                ? null
+                                                : () =>
+                                                    _handleLogin(context, true),
                                       ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'Privacy Assured',
-                                        style: AppTheme.outfit(
-                                          context: context,
-                                          fontSize: isSmall ? 14 : 15,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Your data is private, encrypted, and stays with you.',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.7),
+                                    ).animate().fadeIn(delay: 400.ms),
+                                    const SizedBox(
+                                      height: AppTheme.spacingMedium,
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
+                                    Semantics(
+                                      label: 'Continue as guest',
+                                      button: true,
+                                      child: PrimaryButton(
+                                        label: 'Continue as Guest',
+                                        icon: Icons.person_outline_rounded,
+                                        isSecondary: true,
+                                        isLoading: false,
+                                        onTap: _isLoading
+                                            ? null
+                                            : () => _handleLogin(context, false),
+                                      ),
+                                    ).animate().fadeIn(delay: 500.ms),
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 32),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 24),
-                              child: Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 12,
-                                runSpacing: 12,
-                                children: [
-                                  _FooterLink(
-                                    label: 'Terms',
-                                    onTap:
-                                        () => _showLegalDialog(
-                                          context,
-                                          'Terms of Service',
-                                          'By using Her-Flowmate, you agree to our terms of service...',
-                                        ),
-                                  ),
-                                  _Bullet(),
-                                  _FooterLink(
-                                    label: 'Privacy',
-                                    onTap:
-                                        () => _showLegalDialog(
-                                          context,
-                                          'Privacy Policy',
-                                          'Your privacy is our top priority. We do not sell your data...',
-                                        ),
-                                  ),
-                                  _Bullet(),
-                                  _FooterLink(
-                                    label: 'Support',
-                                    onTap:
-                                        () => _showLegalDialog(
-                                          context,
-                                          'Support',
-                                          'Need help? Contact us at support@herflowmate.app',
-                                        ),
-                                  ),
-                                ],
+                              SizedBox(
+                                height:
+                                    isSmall
+                                        ? AppTheme.spacingXlarge
+                                        : AppTheme.spacingHuge,
                               ),
-                            ).animate().fadeIn(delay: 800.ms),
-                          ],
+                              ThemedContainer(
+                                type: ContainerType.neu,
+                                radius: 20,
+                                padding: EdgeInsets.all(isSmall ? 16 : 24),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.lock_rounded,
+                                          size: isSmall ? 16 : 18,
+                                          color:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Privacy Assured',
+                                          style: AppTheme.outfit(
+                                            context: context,
+                                            fontSize: isSmall ? 14 : 15,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Your data is private, encrypted, and stays with you.',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.7),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 24),
+                                child: Wrap(
+                                  alignment: WrapAlignment.center,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    _FooterLink(
+                                      label: 'Terms',
+                                      onTap:
+                                          () => _showLegalDialog(
+                                            context,
+                                            'Terms of Service',
+                                            'By using Her-Flowmate, you agree to our terms of service...',
+                                          ),
+                                    ),
+                                    _Bullet(),
+                                    _FooterLink(
+                                      label: 'Privacy',
+                                      onTap:
+                                          () => _showLegalDialog(
+                                            context,
+                                            'Privacy Policy',
+                                            'Your privacy is our top priority. We do not sell your data...',
+                                          ),
+                                    ),
+                                    _Bullet(),
+                                    _FooterLink(
+                                      label: 'Support',
+                                      onTap:
+                                          () => _showLegalDialog(
+                                            context,
+                                            'Support',
+                                            'Need help? Contact us at support@herflowmate.app',
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ).animate().fadeIn(delay: 800.ms),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   );
                 },
               ),
             ),
             if (_isLoading)
               Container(
-                color: Colors.black.withValues(alpha: 0.2),
-                child: const Center(child: CircularProgressIndicator()),
+                color: Colors.black.withValues(alpha: 0.3),
+                child: Center(
+                  child: NeumorphicCard(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Authenticating...',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn().scale(curve: Curves.easeOutBack),
+                ),
               ),
           ],
         ),
@@ -498,82 +500,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     }
-  }
-}
-
-class _AuthButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool isPrimary;
-  final VoidCallback? onTap;
-  final bool isSmall;
-  final bool isLoading;
-
-  const _AuthButton({
-    required this.label,
-    required this.icon,
-    required this.isPrimary,
-    required this.onTap,
-    this.isSmall = false,
-    this.isLoading = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return ShimmerButton(
-      onTap: onTap,
-      radius: 24,
-      child: ThemedContainer(
-        type: isPrimary ? ContainerType.elevated : ContainerType.neu,
-        radius: 24,
-        color: isPrimary ? colorScheme.primary.withValues(alpha: 0.1) : null,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: isSmall ? 18 : 22,
-            horizontal: isSmall ? 16 : 24,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (isLoading)
-                SizedBox(
-                  width: isSmall ? 22 : 26,
-                  height: isSmall ? 22 : 26,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      colorScheme.primary,
-                    ),
-                  ),
-                )
-              else
-                Icon(
-                  icon,
-                  color:
-                      isPrimary
-                          ? colorScheme.primary
-                          : colorScheme.primary.withValues(alpha: 0.7),
-                  size: isSmall ? 22 : 26,
-                ),
-              SizedBox(width: isSmall ? 12 : 16),
-              Flexible(
-                child: Text(
-                  label,
-                  style: AppTheme.outfit(
-                    context: context,
-                    fontSize: isSmall ? 15 : 17,
-                    fontWeight: FontWeight.w700,
-                  ).copyWith(letterSpacing: 0.3),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

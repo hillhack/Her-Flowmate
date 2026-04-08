@@ -10,7 +10,7 @@ import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
 import '../widgets/delight_widgets.dart';
 import '../widgets/notification_widgets.dart';
-import 'prediction_details_screen.dart';
+import 'insights_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -133,7 +133,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                       titleTextStyle: GoogleFonts.poppins(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w800,
-                                        color: AppTheme.textDark,
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                       leftChevronPadding: const EdgeInsets.all(
                                         12,
@@ -241,7 +241,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     child: ThemedContainer(
                                       type: ContainerType.neu,
                                       radius: 20,
-                                      onTap: () {},
+                                      onTap: () {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Note taking is coming soon!'),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                      },
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                           vertical: 16,
@@ -382,7 +389,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const PredictionDetailsScreen(),
+                      builder: (_) => const InsightsScreen(),
                     ),
                   ),
               child: Text(
@@ -534,9 +541,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: isSmallScreen ? 10 : 12,
-            height: isSmallScreen ? 10 : 12,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            width: isSmallScreen ? 14 : 16,
+            height: isSmallScreen ? 14 : 16,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: color.withValues(alpha: 0.5),
+                width: 1,
+              ),
+            ),
           ),
           SizedBox(width: isSmallScreen ? 4 : 8),
           Text(
@@ -669,17 +683,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           if (storage.getDailyLog(day) != null)
             Positioned(
-              top: 2,
-              right: 2,
+              bottom: 2,
               child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
                   shape: BoxShape.circle,
-                ),
-                child: Text(
-                  storage.getDailyLog(day)?.moods?.first ?? '📝',
-                  style: const TextStyle(fontSize: 8),
                 ),
               ),
             ),

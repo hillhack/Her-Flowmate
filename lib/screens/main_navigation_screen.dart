@@ -11,6 +11,7 @@ import 'wellness_reminders_screen.dart';
 import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
+import '../widgets/common/neu_card.dart';
 import '../widgets/shared_drawer.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
+  PageController _pageController = PageController(initialPage: 0, keepPage: true);
 
   static const List<Widget> _screens = <Widget>[
     HomeScreen(),
@@ -29,15 +31,29 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     ProfileScreen(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void _onItemTapped(int index) {
     if (_selectedIndex != index) {
       HapticFeedback.lightImpact();
       setState(() => _selectedIndex = index);
+      _pageController.jumpToPage(index);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.width > 600;
+
     return PopScope(
       canPop: _selectedIndex == 0,
       onPopInvokedWithResult: (didPop, result) {
@@ -52,24 +68,35 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         drawer: const SharedDrawer(),
         body: Container(
           decoration: AppTheme.getBackgroundDecoration(context),
-          child: IndexedStack(index: _selectedIndex, children: _screens),
+          child: PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: _screens,
+          ),
         ),
         floatingActionButton: _logButton(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        bottomNavigationBar: _buildBottomBar(),
+        floatingActionButtonLocation: isTablet ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.endDocked,
+        bottomNavigationBar: _buildBottomBar(isTablet),
       ),
     );
   }
 
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar(bool isTablet) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 0, 80, 16), // Space for FAB
+      bottom: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppResponsive.pad(context), 
+          0, 
+          isTablet ? AppResponsive.pad(context) : AppResponsive.pad(context) + 72, 
+          bottomPadding + AppDesignTokens.space16,
+        ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(20),
           child: Container(
-            height: 64,
-            decoration: AppTheme.glassDecoration(radius: 28, opacity: 0.08),
+            height: kBottomNavigationBarHeight,
+            decoration: AppTheme.glassDecoration(radius: 20, opacity: 0.08),
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -101,7 +128,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
       child: Semantics(
-        label: 'Log dynamic health data',
+        label: 'Open quick actions menu',
         button: true,
         child: FloatingActionButton(
           onPressed: () {
@@ -110,16 +137,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              barrierColor: Colors.black.withValues(alpha: 0.2),
+              barrierColor: Colors.black.withValues(alpha: 0.5),
               builder: (context) => _buildAddMenu(context),
             );
           },
-          elevation: 8,
-          backgroundColor: Colors.transparent,
-          splashColor: Colors.white24,
+          elevation: 4,
           shape: const CircleBorder(),
-          // Use Ink to ensure gradient fills the FAB and splash matches shape
-          child: Ink(
+          clipBehavior: Clip.antiAlias,
+          child: Container(
             width: 56,
             height: 56,
             decoration: const BoxDecoration(
@@ -142,59 +167,45 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         label: '$label Tab',
         selected: isSelected,
         button: true,
-        child: SizedBox(
-          height: 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (isSelected)
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: AppTheme.accentPink.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                    ).animate().scale(
-                      duration: 400.ms,
-                      curve: Curves.easeOutBack,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                if (isSelected)
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      color: AppTheme.accentPink.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
                     ),
-                  Icon(
-                        icon,
-                        color:
-                            isSelected
-                                ? AppTheme.accentPink
-                                : AppTheme.textSecondary,
-                        size: 26,
-                      )
-                      .animate(target: isSelected ? 1 : 0)
-                      .scale(
-                        begin: const Offset(1, 1),
-                        end: const Offset(1.2, 1.2),
-                        duration: 300.ms,
-                      )
-                      .shimmer(
-                        delay: 400.ms,
-                        duration: 1200.ms,
-                        color: Colors.white24,
-                      ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              if (isSelected)
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: AppTheme.accentPink,
-                    shape: BoxShape.circle,
+                  ).animate().scale(
+                    duration: 400.ms,
+                    curve: Curves.easeOutBack,
                   ),
-                ).animate().scale(duration: 200.ms, curve: Curves.elasticOut),
-            ],
-          ),
+                Icon(
+                  icon,
+                  color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+                  size: 24,
+                ).animate(target: isSelected ? 1 : 0).scale(
+                  begin: const Offset(1, 1),
+                  end: const Offset(1.1, 1.1),
+                  duration: 300.ms,
+                ),
+              ],
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -206,173 +217,195 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
-      child: Container(
-        decoration: BoxDecoration(
-          color:
-              isDark
-                  ? AppTheme.darkSurface.withValues(alpha: 0.9)
-                  : Colors.white.withValues(
-                    alpha: 0.95,
-                  ), // High opacity for stability
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: SingleChildScrollView(
+        child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
-          border: Border.all(
-            color: isDark ? Colors.white12 : Colors.white,
-            width: 1.5,
-          ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 8,
-                decoration: BoxDecoration(
-                  color: AppTheme.textDark.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(2),
-                ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark ? AppTheme.darkSurface.withValues(alpha: 0.95) : Colors.white.withValues(alpha: 0.95),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+              border: Border.all(
+                color: isDark ? Colors.white12 : Colors.white,
+                width: 1.5,
               ),
-              const SizedBox(height: 32),
-              if (isPregnant) ...[
-                _menuItem(
-                  '📝',
-                  'Daily Check-in',
-                  'Log symptoms and moods',
-                  0,
-                  () => _openSheet(const DailyCheckinScreen()),
-                ),
-                const SizedBox(height: 12),
-                _menuItem(
-                  '🧘',
-                  'Wellness Goals',
-                  'Manage your wellness',
-                  1,
-                  () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const WellnessRemindersScreen(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-                _menuItem(
-                  '👣',
-                  'Kick Counter',
-                  'Track baby\'s movements',
-                  2,
-                  () => _showComingSoon(context, 'Kick Counter'),
-                ),
-                const SizedBox(height: 12),
-                _menuItem(
-                  '⚖️',
-                  'Weight Log',
-                  'Track your pregnancy weight',
-                  2,
-                  () => _showComingSoon(context, 'Weight Log'),
-                ),
-              ] else ...[
-                _menuItem(
-                  '🩸',
-                  'Log Period',
-                  'Track your cycle start/end',
-                  0,
-                  () => _openSheet(const LogPeriodScreen()),
-                ),
-                const SizedBox(height: 16),
-                _menuItem(
-                  '📝',
-                  'Daily Check-in',
-                  'Log symptoms and moods',
-                  1,
-                  () => _openSheet(const DailyCheckinScreen()),
-                ),
-              ],
-              const SizedBox(height: 20),
-            ],
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: AppTheme.textDark.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  if (isPregnant) ...[
+                    _menuItem(
+                      '📝',
+                      'Daily Check-in',
+                      'Log symptoms and moods',
+                      0,
+                      onTap: () => _openSheet(const DailyCheckinScreen()),
+                    ),
+                    const SizedBox(height: 12),
+                    _menuItem(
+                      '🧘',
+                      'Wellness Goals',
+                      'Manage your wellness',
+                      1,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const WellnessRemindersScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    _menuItem(
+                      '👣',
+                      'Kick Counter',
+                      'Track baby\'s movements',
+                      2,
+                      isSoon: true,
+                    ),
+                    const SizedBox(height: 12),
+                    _menuItem(
+                      '⚖️',
+                      'Weight Log',
+                      'Track your pregnancy weight',
+                      3,
+                      isSoon: true,
+                    ),
+                  ] else ...[
+                    _menuItem(
+                      '🩸',
+                      'Log Period',
+                      'Track your cycle start/end',
+                      0,
+                      onTap: () => _openSheet(const LogPeriodScreen()),
+                    ),
+                    const SizedBox(height: 16),
+                    _menuItem(
+                      '📝',
+                      'Daily Check-in',
+                      'Log symptoms and moods',
+                      1,
+                      onTap: () => _openSheet(const DailyCheckinScreen()),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  void _showComingSoon(BuildContext context, String feature) {
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$feature feature coming soon! 🚀'),
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
   void _openSheet(Widget screen) {
     Navigator.pop(context);
-    Future.delayed(200.ms, () {
-      if (mounted) {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) => screen,
-        );
-      }
-    });
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => screen,
+    );
   }
 
   Widget _menuItem(
     String emoji,
     String title,
     String sub,
-    int idx,
-    VoidCallback onTap,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: AppTheme.glassDecoration(radius: 24, opacity: 0.4),
-        child: Row(
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 28)),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color:
-                          isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
+    int idx, {
+    VoidCallback? onTap,
+    bool isSoon = false,
+  }) {
+    final content = NeumorphicCard(
+      padding: const EdgeInsets.all(AppDesignTokens.space20),
+      child: Row(
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 28)),
+          const SizedBox(width: AppDesignTokens.space16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: GoogleFonts.poppins(
+                          fontSize: AppDesignTokens.bodyLargeSize,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          decoration: isSoon ? TextDecoration.lineThrough : null,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
+                    if (isSoon) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentPink.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          'Soon',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.accentPink,
+                          ),
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
+                Text(
+                  sub,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: AppTheme.textSecondary,
                   ),
-                  Text(
-                    sub,
-                    style: GoogleFonts.inter(
-                      fontSize: 13,
-                      color: AppTheme.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
+          if (!isSoon)
             const Icon(
               Icons.arrow_forward_ios_rounded,
               size: 16,
               color: AppTheme.textSecondary,
             ),
-          ],
-        ),
+        ],
       ),
-    ).animate().fadeIn(delay: (idx * 100).ms).slideY(begin: 0.2);
+    );
+
+    return Semantics(
+      label: 'Log $title',
+      button: true,
+      child: GestureDetector(
+        onTap: () {
+          if (!isSoon && onTap != null) {
+            HapticFeedback.selectionClick();
+            onTap();
+          }
+        },
+        child: content,
+      ),
+    ).animate(key: ValueKey(title)).fadeIn(delay: (idx * 100).ms).slideY(begin: 0.2);
   }
 }

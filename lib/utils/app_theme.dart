@@ -4,6 +4,91 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/cycle_engine.dart';
 // Re-export constants for backward compat with files that import app_theme.dart
 export 'constants.dart';
+export 'app_responsive.dart';
+
+class AppDesignTokens {
+  // Typography scale
+  static const double displaySize = 32;
+  static const double headlineSize = 26;
+  static const double titleSize = 20;
+  static const double bodyLargeSize = 16;
+  static const double bodySize = 14;
+  static const double captionSize = 12;
+  static const double buttonSize = 16;
+  static const double labelSize = 10;
+
+  // Spacing (8pt grid)
+  static const double space4 = 4;
+  static const double space8 = 8;
+  static const double space12 = 12;
+  static const double space16 = 16;
+  static const double space20 = 20;
+  static const double space24 = 24;
+  static const double space32 = 32;
+  static const double space40 = 40;
+  static const double space48 = 48;
+  static const double space64 = 64;
+
+  // Border radii
+  static const double radiusXS = 8;
+  static const double radiusSM = 12;
+  static const double radiusMD = 20;
+  static const double radiusLG = 28;
+  static const double radiusXL = 40;
+
+  // Button dimensions
+  static const double buttonHeight = 56.0;
+  static const double buttonHPad = 24.0;
+  static const double buttonVPad = 16.0;
+
+  // Neumorphic shadows
+  static List<BoxShadow> neuShadowLight({bool isPressed = false}) {
+    final color = const Color(0xFFFF5D8C); // primaryPink500
+    return isPressed
+        ? [
+            BoxShadow(
+                color: color.withValues(alpha: 0.1),
+                blurRadius: 4,
+                offset: const Offset(1, 1))
+          ]
+        : [
+            BoxShadow(
+                color: color.withValues(alpha: 0.15),
+                blurRadius: 8,
+                offset: const Offset(4, 4)),
+            const BoxShadow(
+                color: Colors.white,
+                blurRadius: 8,
+                offset: Offset(-4, -4)),
+          ];
+  }
+
+  static List<BoxShadow> neuShadowDark({bool isPressed = false}) {
+    final color = Colors.black;
+    return isPressed
+        ? [
+            BoxShadow(
+                color: color.withValues(alpha: 0.3),
+                blurRadius: 4,
+                offset: const Offset(1, 1))
+          ]
+        : [
+            BoxShadow(
+                color: color.withValues(alpha: 0.5),
+                blurRadius: 8,
+                offset: const Offset(4, 4)),
+            BoxShadow(
+                color: Colors.white.withValues(alpha: 0.05),
+                blurRadius: 8,
+                offset: const Offset(-4, -4)),
+          ];
+  }
+
+  static List<BoxShadow> neuShadow(BuildContext context, {bool isPressed = false}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? neuShadowDark(isPressed: isPressed) : neuShadowLight(isPressed: isPressed);
+  }
+}
 
 abstract final class AppTheme {
   // ── Modern Pinkish Neumorphism Palette ─────────────────────────────────────

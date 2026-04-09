@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
 import '../services/storage_service.dart';
@@ -18,14 +19,25 @@ class SkeletonCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isHighPerf = context.select<StorageService, bool>(
+      (s) => s.isHighPerformanceMode,
+    );
+
+    final child = Container(
       width: width ?? double.infinity,
       height: height,
       decoration: BoxDecoration(
-        color: AppTheme.textSecondary.withValues(alpha: 0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(borderRadius),
       ),
-      child: const _SkeletonPulse(),
+    );
+
+    if (isHighPerf) return Opacity(opacity: 0.1, child: child);
+
+    return Shimmer.fromColors(
+      baseColor: AppTheme.textSecondary.withValues(alpha: 0.1),
+      highlightColor: Colors.white.withValues(alpha: 0.4),
+      child: child,
     );
   }
 }
@@ -38,14 +50,25 @@ class SkeletonCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final isHighPerf = context.select<StorageService, bool>(
+      (s) => s.isHighPerformanceMode,
+    );
+
+    final child = Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: AppTheme.textSecondary.withValues(alpha: 0.1),
+      decoration: const BoxDecoration(
+        color: Colors.white,
         shape: BoxShape.circle,
       ),
-      child: const _SkeletonPulse(),
+    );
+
+    if (isHighPerf) return Opacity(opacity: 0.1, child: child);
+
+    return Shimmer.fromColors(
+      baseColor: AppTheme.textSecondary.withValues(alpha: 0.1),
+      highlightColor: Colors.white.withValues(alpha: 0.4),
+      child: child,
     );
   }
 }
@@ -59,78 +82,26 @@ class SkeletonLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width ?? double.infinity,
-      height: height,
-      decoration: BoxDecoration(
-        color: AppTheme.textSecondary.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(height / 2),
-      ),
-      child: const _SkeletonPulse(),
-    );
-  }
-}
-
-/// Internal helper for pulse animation
-class _SkeletonPulse extends StatefulWidget {
-  const _SkeletonPulse();
-
-  @override
-  State<_SkeletonPulse> createState() => _SkeletonPulseState();
-}
-
-class _SkeletonPulseState extends State<_SkeletonPulse>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-    _animation = Tween<double>(
-      begin: 0.3,
-      end: 0.6,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     final isHighPerf = context.select<StorageService, bool>(
       (s) => s.isHighPerformanceMode,
     );
 
-    if (!isHighPerf) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
-          borderRadius: BorderRadius.circular(100),
-        ),
-      );
-    }
+    final child = Container(
+      width: width ?? double.infinity,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(height / 2),
+      ),
+    );
 
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        // Performance Fix: Avoid Opacity widget (saveLayer) on small elements
-        // as it triggers GraphicBuffer allocation errors on some Android drivers.
-        // Animating the color alpha is significantly more efficient.
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: _animation.value * 0.4),
-            borderRadius: BorderRadius.circular(100),
-          ),
-        );
-      },
+    if (isHighPerf) return Opacity(opacity: 0.1, child: child);
+
+    return Shimmer.fromColors(
+      baseColor: AppTheme.textSecondary.withValues(alpha: 0.1),
+      highlightColor: Colors.white.withValues(alpha: 0.4),
+      child: child,
     );
   }
 }
+

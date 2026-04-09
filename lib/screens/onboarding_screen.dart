@@ -120,14 +120,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  void _back() {
-    if (_currentPage > 0) {
-      _pageController.previousPage(
-        duration: 350.ms,
-        curve: Curves.easeOutCubic,
-      );
-    }
-  }
+
 
   Future<void> _finish() async {
     final age = int.tryParse(_ageController.text.trim());
@@ -204,8 +197,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Container(
       decoration: AppTheme.getBackgroundDecoration(context),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
+      child: PopScope(
+        canPop: _currentPage == widget.initialPage,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
@@ -225,23 +220,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         child: Row(
                           children: [
                             const SizedBox(width: 12),
-                            ThemedContainer(
-                              type: ContainerType.neu,
-                              padding: const EdgeInsets.all(12),
-                              radius: 16,
-                              onTap: () {
-                                if (_currentPage > widget.initialPage) {
-                                  _back();
-                                } else {
+                            if (_currentPage == widget.initialPage)
+                              ThemedContainer(
+                                type: ContainerType.neu,
+                                padding: const EdgeInsets.all(12),
+                                radius: 16,
+                                onTap: () {
                                   Navigator.of(context).pop();
-                                }
-                              },
-                              child: Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                color: Theme.of(context).colorScheme.onSurface,
-                                size: 18,
-                              ),
-                            ),
+                                },
+                                child: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  size: 18,
+                                ),
+                              )
+                            else
+                              const SizedBox(width: 42),
                             Expanded(
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -421,6 +415,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -491,20 +491,49 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                 context,
                                 listen: false,
                               );
-                              await storage.saveLog(log);
+                              final success = await storage.saveLog(log);
 
                               if (!context.mounted) return;
+                              
+                              if (!success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Overlapping period log found. Please adjust dates.'),
+                                    backgroundColor: Colors.orangeAccent,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                                return;
+                              }
+
                               showPhaseDelight(
                                 context,
                                 predView.phaseDisplayName,
                               );
+
                               Navigator.pop(context);
 
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Period logged! ✨'),
+                                SnackBar(
+                                  content: const Text('Period logged! ✨'),
                                   behavior: SnackBarBehavior.floating,
                                   backgroundColor: AppTheme.accentPink,
+                                  duration: const Duration(seconds: 5),
+                                  action: SnackBarAction(
+                                    label: 'Undo',
+                                    textColor: Colors.white,
+                                    onPressed: () async {
+                                      await storage.deleteLogByRef(log);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Log removed.'),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
                                 ),
                               );
                             },

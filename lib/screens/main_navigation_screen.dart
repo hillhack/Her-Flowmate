@@ -8,6 +8,7 @@ import 'daily_checkin_screen.dart';
 import 'calendar_screen.dart';
 import 'profile_screen.dart';
 import 'wellness_reminders_screen.dart';
+import 'insights_screen.dart';
 import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
@@ -23,11 +24,16 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
-  PageController _pageController = PageController(initialPage: 0, keepPage: true);
+  final PageController _pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
 
   static const List<Widget> _screens = <Widget>[
     HomeScreen(),
     CalendarScreen(),
+    InsightsScreen(),
+    WellnessRemindersScreen(),
     ProfileScreen(),
   ];
 
@@ -74,8 +80,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             children: _screens,
           ),
         ),
-        floatingActionButton: _logButton(),
-        floatingActionButtonLocation: isTablet ? FloatingActionButtonLocation.endFloat : FloatingActionButtonLocation.endDocked,
+        floatingActionButton:
+            context.select<StorageService, bool>(
+                  (storage) => storage.userGoal == 'pregnant',
+                )
+                ? null
+                : _logButton(),
+        floatingActionButtonLocation:
+            isTablet
+                ? FloatingActionButtonLocation.endFloat
+                : FloatingActionButtonLocation.endFloat,
         bottomNavigationBar: _buildBottomBar(isTablet),
       ),
     );
@@ -83,21 +97,39 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   Widget _buildBottomBar(bool isTablet) {
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    // Check if pregnant to determine if we need space for FAB
+    // Although we use endFloat now so it floats above the bar,
+    // let's adjust padding cleanly.
     return SafeArea(
       bottom: false,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          AppResponsive.pad(context), 
-          0, 
-          isTablet ? AppResponsive.pad(context) : AppResponsive.pad(context) + 72, 
+          AppResponsive.pad(context),
+          0,
+          AppResponsive.pad(context),
           bottomPadding + AppDesignTokens.space16,
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            height: kBottomNavigationBarHeight,
-            decoration: AppTheme.glassDecoration(radius: 20, opacity: 0.08),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Container(
+          height: 68,
+          decoration: BoxDecoration(
+            color: AppTheme.accentPink.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(
+              color: AppTheme.accentPink.withValues(alpha: 0.2),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(32),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -110,7 +142,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   ),
                 ),
                 Expanded(
-                  child: _bottomNavItem(2, Icons.person_rounded, 'Profile'),
+                  child: _bottomNavItem(2, Icons.bar_chart_rounded, 'Insights'),
+                ),
+                Expanded(
+                  child: _bottomNavItem(
+                    3,
+                    Icons.notifications_rounded,
+                    'Reminders',
+                  ),
+                ),
+                Expanded(
+                  child: _bottomNavItem(4, Icons.person_rounded, 'Profile'),
                 ),
               ],
             ),
@@ -175,25 +217,30 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               children: [
                 if (isSelected)
                   Container(
-                    width: 32,
-                    height: 32,
+                    width: 38,
+                    height: 28,
                     decoration: BoxDecoration(
-                      color: AppTheme.accentPink.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
+                      color: AppTheme.accentPink.withValues(alpha: 0.25),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ).animate().scale(
                     duration: 400.ms,
                     curve: Curves.easeOutBack,
                   ),
                 Icon(
-                  icon,
-                  color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
-                  size: 24,
-                ).animate(target: isSelected ? 1 : 0).scale(
-                  begin: const Offset(1, 1),
-                  end: const Offset(1.1, 1.1),
-                  duration: 300.ms,
-                ),
+                      icon,
+                      color:
+                          isSelected
+                              ? AppTheme.accentPink
+                              : AppTheme.textSecondary.withValues(alpha: 0.7),
+                      size: 22,
+                    )
+                    .animate(target: isSelected ? 1 : 0)
+                    .scale(
+                      begin: const Offset(1, 1),
+                      end: const Offset(1.1, 1.1),
+                      duration: 300.ms,
+                    ),
               ],
             ),
             const SizedBox(height: 2),
@@ -202,8 +249,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               style: GoogleFonts.inter(
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppTheme.accentPink : AppTheme.textSecondary,
+                color:
+                    isSelected
+                        ? AppTheme.accentPink
+                        : AppTheme.textSecondary.withValues(alpha: 0.7),
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -218,14 +270,21 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SingleChildScrollView(
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
           child: Container(
             decoration: BoxDecoration(
-              color: isDark ? AppTheme.darkSurface.withValues(alpha: 0.95) : Colors.white.withValues(alpha: 0.95),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+              color:
+                  isDark
+                      ? AppTheme.darkSurface.withValues(alpha: 0.95)
+                      : Colors.white.withValues(alpha: 0.95),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(40),
+              ),
               border: Border.all(
                 color: isDark ? Colors.white12 : Colors.white,
                 width: 1.5,
@@ -349,7 +408,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                           fontSize: AppDesignTokens.bodyLargeSize,
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface,
-                          decoration: isSoon ? TextDecoration.lineThrough : null,
+                          decoration:
+                              isSoon ? TextDecoration.lineThrough : null,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -357,7 +417,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                     if (isSoon) ...[
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: AppTheme.accentPink.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
@@ -371,7 +434,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                           ),
                         ),
                       ),
-                    ]
+                    ],
                   ],
                 ),
                 Text(
@@ -395,17 +458,20 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
 
     return Semantics(
-      label: 'Log $title',
-      button: true,
-      child: GestureDetector(
-        onTap: () {
-          if (!isSoon && onTap != null) {
-            HapticFeedback.selectionClick();
-            onTap();
-          }
-        },
-        child: content,
-      ),
-    ).animate(key: ValueKey(title)).fadeIn(delay: (idx * 100).ms).slideY(begin: 0.2);
+          label: 'Log $title',
+          button: true,
+          child: GestureDetector(
+            onTap: () {
+              if (!isSoon && onTap != null) {
+                HapticFeedback.selectionClick();
+                onTap();
+              }
+            },
+            child: content,
+          ),
+        )
+        .animate(key: ValueKey(title))
+        .fadeIn(delay: (idx * 100).ms)
+        .slideY(begin: 0.2);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../services/storage_service.dart';
@@ -71,8 +72,14 @@ class HistoryScreen extends StatelessWidget {
                 ),
 
                 Expanded(
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
+                  child: RefreshIndicator(
+                    color: AppTheme.accentPink,
+                    onRefresh: () async {
+                      HapticFeedback.mediumImpact();
+                      await Future.delayed(const Duration(milliseconds: 1500));
+                    },
+                    child: CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                     slivers: [
                       // ── Trend Chart ──────────────────────────────────────────
                       if (logs.length > 1)
@@ -177,16 +184,18 @@ class HistoryScreen extends StatelessWidget {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const ThemedContainer(
+                                  ThemedContainer(
                                     type: ContainerType.glass,
-                                    padding: EdgeInsets.all(32),
+                                    padding: const EdgeInsets.all(32),
                                     radius: 48,
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.history_toggle_off_rounded,
                                       color: AppTheme.accentPink,
                                       size: 64,
-                                    ),
-                                  ),
+                                    ).animate(onPlay: (c) => c.repeat(reverse: true))
+                                     .scaleXY(begin: 1.0, end: 1.1, duration: 1500.ms, curve: Curves.easeInOut)
+                                     .shimmer(duration: 2000.ms, color: Colors.white),
+                                  ).animate().fadeIn(duration: 800.ms).scaleXY(begin: 0.8),
                                   const SizedBox(height: 32),
                                   Text(
                                     'No data recorded yet.',
@@ -399,6 +408,7 @@ class HistoryScreen extends StatelessWidget {
                           ),
                         ),
                     ],
+                  ),
                   ),
                 ),
               ],

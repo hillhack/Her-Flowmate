@@ -4,8 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:file_picker/file_picker.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
@@ -496,11 +495,11 @@ class ProfileScreen extends StatelessWidget {
                                     _buildDivider(),
                                     _buildSettingsTile(
                                       context,
-                                      Icons.cloud_upload_rounded,
-                                      'Export Data',
-                                      'CSV/PDF',
+                                      Icons.backup_rounded,
+                                      'Backup Data',
+                                      'Export / Import',
                                       () =>
-                                          _showExportOptions(context, storage),
+                                          _showBackupOptions(context, storage),
                                       isSmallScreen: isSmallScreen,
                                     ),
                                     _buildDivider(),
@@ -1479,7 +1478,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _showExportOptions(BuildContext context, StorageService storage) {
+  void _showBackupOptions(BuildContext context, StorageService storage) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -1508,7 +1507,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 Text(
-                  'Export Health Data',
+                  'Backup & Recovery',
                   style: GoogleFonts.poppins(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
@@ -1546,23 +1545,33 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _exportOption(
                   ctx,
-                  '🔧',
-                  'JSON Raw Data',
-                  'For developers or moving data between apps.',
+                  '📥',
+                  'Import JSON Data',
+                  'Restore a previous JSON backup.',
                   () async {
                     Navigator.pop(ctx);
                     try {
-                      final json = await storage.exportLogsToJson();
-                      final dir = await getTemporaryDirectory();
-                      final file = File('${dir.path}/her_flowmate_export.json');
-                      await file.writeAsString(json);
-                      await Share.shareXFiles([
-                        XFile(file.path),
-                      ], subject: 'HerFlowmate JSON Export');
+                      final result = await FilePicker.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['json'],
+                      );
+                      if (result != null && result.files.isNotEmpty) {
+                        final fileUrl = result.files.single.path;
+                        if (fileUrl != null) {
+                          final file = File(fileUrl);
+                          final jsonStr = await file.readAsString();
+                          await storage.importLogsFromJson(jsonStr);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Import complete! 📥')),
+                            );
+                          }
+                        }
+                      }
                     } catch (e) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('JSON Export failed: $e')),
+                          SnackBar(content: Text('Import failed: $e')),
                         );
                       }
                     }

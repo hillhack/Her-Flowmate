@@ -43,8 +43,25 @@ class PeriodLogService extends ChangeNotifier {
     }
   }
 
-  Future<void> saveLog(PeriodLog log) async {
+  Future<bool> saveLog(PeriodLog log) async {
     try {
+      final existingLogs = getLogs();
+      final newStart = DateTime(log.startDate.year, log.startDate.month, log.startDate.day);
+      final newEndDay = log.endDate ?? log.startDate.add(Duration(days: log.duration - 1));
+      final newEnd = DateTime(newEndDay.year, newEndDay.month, newEndDay.day, 23, 59, 59);
+
+      for (final existing in existingLogs) {
+        final existingStart = DateTime(existing.startDate.year, existing.startDate.month, existing.startDate.day);
+        final eEndDay = existing.endDate ?? existing.startDate.add(Duration(days: existing.duration - 1));
+        final existingEnd = DateTime(eEndDay.year, eEndDay.month, eEndDay.day, 23, 59, 59);
+
+        // Check if overlaps
+        if (!newStart.isAfter(existingEnd) && !newEnd.isBefore(existingStart)) {
+          debugPrint('Overlap detected: Cannot save log.');
+          return false;
+        }
+      }
+
       await _box.add(log);
       if (_cachedLogs != null) {
         _cachedLogs!.add(log);
@@ -52,8 +69,10 @@ class PeriodLogService extends ChangeNotifier {
       }
       await _updateReminders();
       notifyListeners();
+      return true;
     } catch (e) {
       debugPrint('Failed to save log: $e');
+      return false;
     }
   }
 
@@ -71,6 +90,25 @@ class PeriodLogService extends ChangeNotifier {
       debugPrint('Failed to delete log: $e');
       _cachedLogs = null; // Conservative cleanup on error
       notifyListeners();
+    }
+  }
+
+  Future<void> deleteLogByRef(PeriodLog log) async {
+    try {
+      for (int i = _box.length - 1; i >= 0; i--) {
+        final existing = _box.getAt(i);
+        if (existing != null &&
+            existing.startDate == log.startDate &&
+            existing.duration == log.duration) {
+          await _box.deleteAt(i);
+          _cachedLogs = null;
+          await _updateReminders();
+          notifyListeners();
+          return;
+        }
+      }
+    } catch (e) {
+      debugPrint('Failed to delete log by ref: $e');
     }
   }
 

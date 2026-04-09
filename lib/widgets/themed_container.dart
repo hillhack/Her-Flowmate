@@ -1,7 +1,5 @@
 import 'dart:ui' show ImageFilter;
-import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
@@ -66,8 +64,8 @@ class ThemedContainer extends StatelessWidget {
         // Performance optimization: Lower default blur and respect performance mode
         final effectiveBlur = blur ?? 8.0;
         final effectiveOpacity = opacity ?? (isDark ? 0.2 : 0.4);
-        final bool shouldSkipBlur =
-            kIsWeb || (!kIsWeb && Platform.isAndroid) || !isHighPerf;
+        // Skip blur if users opted for high performance mode
+        final bool shouldSkipBlur = isHighPerf;
 
         final glassContent = Container(
           width: width,

@@ -8,10 +8,18 @@ import '../models/period_log.dart';
 import '../utils/app_theme.dart';
 import '../widgets/cycle_phase_wheel.dart';
 import '../widgets/themed_container.dart';
+import '../widgets/cycle_widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class InsightsScreen extends StatelessWidget {
+class InsightsScreen extends StatefulWidget {
   const InsightsScreen({super.key});
+
+  @override
+  State<InsightsScreen> createState() => _InsightsScreenState();
+}
+
+class _InsightsScreenState extends State<InsightsScreen> {
+  int? _selectedHormoneDay;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +128,38 @@ class InsightsScreen extends StatelessWidget {
                 pred,
               ).animate().fadeIn(delay: 650.ms).slideY(begin: 0.1),
 
+              const SizedBox(height: 48),
+
+              // Hormone Trends Section
+              Text(
+                'Hormone Trends',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: AppTheme.textDark,
+                ),
+              ).animate().fadeIn(delay: 700.ms),
+              const SizedBox(height: 16),
+              HormoneGraph(
+                pred: pred,
+                onDaySelected: (day) {
+                  setState(() => _selectedHormoneDay = day);
+                },
+              ).animate().fadeIn(delay: 750.ms).slideY(begin: 0.1),
+
+              const SizedBox(height: 16),
+              HormoneFocusWidget(
+                pred: pred,
+                day: _selectedHormoneDay,
+              ),
+
               const SizedBox(height: 32),
+              PhaseHealthTipsWidget(pred: pred)
+                  .animate()
+                  .fadeIn(delay: 800.ms)
+                  .slideY(begin: 0.1),
+
+              const SizedBox(height: 48),
 
               Text(
                 'Symptom Frequency',
@@ -129,11 +168,11 @@ class InsightsScreen extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   color: AppTheme.textDark,
                 ),
-              ).animate().fadeIn(delay: 700.ms),
+              ).animate().fadeIn(delay: 850.ms),
               const SizedBox(height: 16),
               _buildSymptomStats(
                 logs,
-              ).animate().fadeIn(delay: 750.ms).slideY(begin: 0.1),
+              ).animate().fadeIn(delay: 900.ms).slideY(begin: 0.1),
 
               const SizedBox(height: 32),
 
@@ -144,7 +183,7 @@ class InsightsScreen extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   color: AppTheme.textDark,
                 ),
-              ).animate().fadeIn(delay: 800.ms),
+              ).animate().fadeIn(delay: 950.ms),
               const SizedBox(height: 5),
               Text(
                 'Last 30 days',
@@ -152,11 +191,11 @@ class InsightsScreen extends StatelessWidget {
                   fontSize: 12,
                   color: AppTheme.textSecondary,
                 ),
-              ).animate().fadeIn(delay: 820.ms),
+              ).animate().fadeIn(delay: 970.ms),
               const SizedBox(height: 16),
               _buildMoodChart(
                 storage,
-              ).animate().fadeIn(delay: 850.ms).slideY(begin: 0.1),
+              ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.1),
 
               const SizedBox(height: 120),
             ],

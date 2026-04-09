@@ -3,12 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../services/storage_service.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
-import '../widgets/delight_widgets.dart';
 import '../widgets/notification_widgets.dart';
 import 'insights_screen.dart';
 
@@ -40,9 +40,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pred = context.watch<PredictionService>();
-    final storage = context.watch<StorageService>();
-
     return Material(
       color: AppTheme.frameColor,
       child: Container(
@@ -57,7 +54,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
               return Column(
                 children: [
-                  // Custom Top Bar (replacing AppBar)
                   Padding(
                     padding: const EdgeInsets.only(
                       left: AppTheme.spacingLg,
@@ -68,23 +64,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     child: Row(
                       children: [
                         Builder(
-                          builder:
-                              (context) => Semantics(
-                                label: 'Open Sidebar Menu',
-                                button: true,
-                                child: ThemedContainer(
-                                  type: ContainerType.neu,
-                                  padding: const EdgeInsets.all(10),
-                                  radius: 18,
-                                  onTap:
-                                      () => Scaffold.of(context).openDrawer(),
-                                  child: const Icon(
-                                    Icons.menu_rounded,
-                                    color: AppTheme.primaryPink700,
-                                    size: 26,
-                                  ),
-                                ),
+                          builder: (context) => Semantics(
+                            label: 'Open Sidebar Menu',
+                            button: true,
+                            child: ThemedContainer(
+                              type: ContainerType.neu,
+                              padding: const EdgeInsets.all(10),
+                              radius: 18,
+                              onTap: () => Scaffold.of(context).openDrawer(),
+                              child: const Icon(
+                                Icons.menu_rounded,
+                                color: AppTheme.primaryPink700,
+                                size: 26,
                               ),
+                            ),
+                          ),
                         ),
                         Expanded(
                           child: Center(
@@ -100,199 +94,196 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   ),
 
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(height: isSmallScreen ? 8 : 16),
-                          Padding(
+                    child: RefreshIndicator(
+                      color: AppTheme.accentPink,
+                      onRefresh: () async {
+                        HapticFeedback.mediumImpact();
+                        await Future.delayed(const Duration(milliseconds: 1500));
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Selector2<PredictionService, StorageService, Map<String, dynamic>>(
+                          selector: (ctx, p, s) => {
+                            'logs': s.getLogs(),
+                            'isHighPerformance': s.isHighPerformanceMode,
+                          },
+                          builder: (context, data, _) => Column(
+                            children: [
+                              SizedBox(height: isSmallScreen ? 8 : 16),
+                              Padding(
                                 padding: EdgeInsets.symmetric(horizontal: hPad),
                                 child: ThemedContainer(
                                   type: ContainerType.glass,
                                   radius: 32,
                                   padding: const EdgeInsets.all(16),
-                                  child: TableCalendar(
-                                    firstDay: DateTime.utc(2020, 1, 1),
-                                    lastDay: DateTime.utc(2030, 12, 31),
-                                    focusedDay: _focusedDay,
-                                    selectedDayPredicate:
-                                        (day) => isSameDay(_selectedDay, day),
-                                    onDaySelected: (selectedDay, focusedDay) {
-                                      setState(() {
-                                        _selectedDay = selectedDay;
-                                        _focusedDay = focusedDay;
-                                      });
-                                      _showDailyLogSheet(context, selectedDay);
-                                    },
-                                    onHeaderTapped: (focusedDay) {
-                                      _showMonthPicker(context);
-                                    },
-                                    calendarFormat: CalendarFormat.month,
-                                    headerStyle: HeaderStyle(
-                                      formatButtonVisible: false,
-                                      titleCentered: true,
-                                      titleTextStyle: GoogleFonts.poppins(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      leftChevronPadding: const EdgeInsets.all(
-                                        12,
-                                      ),
-                                      rightChevronPadding: const EdgeInsets.all(
-                                        12,
-                                      ),
-                                      leftChevronIcon: const Icon(
-                                        Icons.chevron_left_rounded,
-                                        color: AppTheme.accentPink,
-                                        size: 32,
-                                      ),
-                                      rightChevronIcon: const Icon(
-                                        Icons.chevron_right_rounded,
-                                        color: AppTheme.accentPink,
-                                        size: 32,
-                                      ),
-                                    ),
-                                    daysOfWeekStyle: DaysOfWeekStyle(
-                                      weekdayStyle: GoogleFonts.inter(
-                                        color: AppTheme.textSecondary,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                      weekendStyle: GoogleFonts.inter(
-                                        color: AppTheme.accentPink,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    calendarBuilders: CalendarBuilders(
-                                      defaultBuilder: (
-                                        context,
-                                        day,
-                                        focusedDay,
-                                      ) {
-                                        return _buildCalendarCell(
-                                          day,
-                                          pred,
-                                          storage,
-                                          isSelected: false,
-                                        );
+                                  child: Consumer2<PredictionService, StorageService>(
+                                    builder: (context, pInstance, sInstance, _) => TableCalendar(
+                                      firstDay: DateTime.utc(2020, 1, 1),
+                                      lastDay: DateTime.utc(2030, 12, 31),
+                                      focusedDay: _focusedDay,
+                                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                                      onDaySelected: (selectedDay, focusedDay) {
+                                        setState(() {
+                                          _selectedDay = selectedDay;
+                                          _focusedDay = focusedDay;
+                                        });
+                                        _showDailyLogSheet(context, selectedDay);
                                       },
-                                      selectedBuilder: (
-                                        context,
-                                        day,
-                                        focusedDay,
-                                      ) {
-                                        return _buildCalendarCell(
-                                          day,
-                                          pred,
-                                          storage,
-                                          isSelected: true,
-                                        );
+                                      onHeaderTapped: (focusedDay) {
+                                        _showMonthPicker(context);
                                       },
-                                      todayBuilder: (context, day, focusedDay) {
-                                        return _buildCalendarCell(
-                                          day,
-                                          pred,
-                                          storage,
-                                          isSelected: false,
-                                          isToday: true,
-                                        );
-                                      },
+                                      calendarFormat: CalendarFormat.month,
+                                      headerStyle: HeaderStyle(
+                                        formatButtonVisible: false,
+                                        titleCentered: true,
+                                        titleTextStyle: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w800,
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ),
+                                        leftChevronPadding: const EdgeInsets.all(12),
+                                        rightChevronPadding: const EdgeInsets.all(12),
+                                        leftChevronIcon: const Icon(
+                                          Icons.chevron_left_rounded,
+                                          color: AppTheme.accentPink,
+                                          size: 32,
+                                        ),
+                                        rightChevronIcon: const Icon(
+                                          Icons.chevron_right_rounded,
+                                          color: AppTheme.accentPink,
+                                          size: 32,
+                                        ),
+                                      ),
+                                      daysOfWeekStyle: DaysOfWeekStyle(
+                                        weekdayStyle: GoogleFonts.inter(
+                                          color: AppTheme.textSecondary,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        weekendStyle: GoogleFonts.inter(
+                                          color: AppTheme.accentPink,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                      calendarBuilders: CalendarBuilders(
+                                        defaultBuilder: (context, day, focusedDay) {
+                                          return _buildCalendarCell(
+                                            day,
+                                            pInstance,
+                                            sInstance,
+                                            isSelected: false,
+                                          );
+                                        },
+                                        selectedBuilder: (context, day, focusedDay) {
+                                          return _buildCalendarCell(
+                                            day,
+                                            pInstance,
+                                            sInstance,
+                                            isSelected: true,
+                                          );
+                                        },
+                                        todayBuilder: (context, day, focusedDay) {
+                                          return _buildCalendarCell(
+                                            day,
+                                            pInstance,
+                                            sInstance,
+                                            isSelected: false,
+                                            isToday: true,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              )
-                              .animate()
-                              .fadeIn(duration: 400.ms)
-                              .slideY(begin: 0.1),
+                              ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
 
-                          SizedBox(height: isSmallScreen ? 16 : 32),
+                              SizedBox(height: isSmallScreen ? 16 : 32),
 
-                          // Legend
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: hPad),
-                            child: _buildLegend(
-                              pred,
-                              isSmallScreen: isSmallScreen,
-                            ),
-                          ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: hPad),
+                                child: Consumer<PredictionService>(
+                                  builder: (context, pred, _) => _buildLegend(
+                                    pred,
+                                    isSmallScreen: isSmallScreen,
+                                  ),
+                                ),
+                              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
 
-                          SizedBox(height: isSmallScreen ? 16 : 24),
+                              SizedBox(height: isSmallScreen ? 16 : 24),
 
-                          // Floating Phase Explanation Card
-                          if (_selectedDay != null)
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: hPad),
-                              child: _buildPhaseExplanationCard(
-                                context,
-                                pred,
-                                _selectedDay!,
-                                isSmallScreen: isSmallScreen,
-                              ),
-                            ),
+                              if (_selectedDay != null)
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: hPad),
+                                  child: Consumer<PredictionService>(
+                                    builder: (context, pred, _) => _buildPhaseExplanationCard(
+                                      context,
+                                      pred,
+                                      _selectedDay!,
+                                      isSmallScreen: isSmallScreen,
+                                    ),
+                                  ),
+                                ),
 
-                          SizedBox(height: isSmallScreen ? 16 : 24),
+                              SizedBox(height: isSmallScreen ? 16 : 24),
 
-                          // Additional Actions - disabled on small screens to save space
-                          if (!isSmallScreen)
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: hPad),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: ThemedContainer(
-                                      type: ContainerType.neu,
-                                      radius: 20,
-                                      onTap: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(
-                                            content: Text('Note taking is coming soon!'),
-                                            behavior: SnackBarBehavior.floating,
-                                          ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'Add Note',
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w700,
-                                              color: AppTheme.textDark,
+                              if (!isSmallScreen)
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: hPad),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ThemedContainer(
+                                          type: ContainerType.neu,
+                                          radius: 20,
+                                          onTap: () {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                content: Text('Note taking is coming soon!'),
+                                                behavior: SnackBarBehavior.floating,
+                                              ),
+                                            );
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 16),
+                                            child: Center(
+                                              child: Text(
+                                                'Add Note',
+                                                style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppTheme.textDark,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                    child: ThemedContainer(
-                                      type: ContainerType.neu,
-                                      radius: 20,
-                                      onTap: () => Navigator.pop(context),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'View Insights',
-                                            style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w700,
-                                              color: AppTheme.textDark,
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: ThemedContainer(
+                                          type: ContainerType.neu,
+                                          radius: 20,
+                                          onTap: () => Navigator.pop(context),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 16),
+                                            child: Center(
+                                              child: Text(
+                                                'View Insights',
+                                                style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppTheme.textDark,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ).animate().fadeIn(delay: 400.ms),
+                                ).animate().fadeIn(delay: 400.ms),
 
-                          SizedBox(height: isSmallScreen ? 80 : 100),
-                        ],
+                              SizedBox(height: isSmallScreen ? 80 : 100),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -313,7 +304,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }) {
     final cycleDay = pred.getCycleDay(date);
     final phase = pred.getPhaseForDay(date);
-    final biology = pred.getPhaseBiology(cycleDay);
     final chance = pred.getConceptionChance(date);
 
     return ThemedContainer(
@@ -351,13 +341,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          // Icon-based status row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _statusIconItem('⚡', 'Energy', biology['energy']!),
-              _statusIconItem('🎭', 'Mood', biology['mood']!),
-              _statusIconItem('🩸', 'Hormones', biology['hormoneActivity']!),
+              _statusIconItem('⚡', 'Energy'),
+              _statusIconItem('🎭', 'Mood'),
+              _statusIconItem('🩸', 'Hormones'),
             ],
           ),
           const SizedBox(height: 20),
@@ -385,13 +374,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed:
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const InsightsScreen(),
-                    ),
-                  ),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const InsightsScreen()),
+              ),
               child: Text(
                 'Full Insights →',
                 style: GoogleFonts.inter(
@@ -428,7 +414,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _statusIconItem(String emoji, String label, String value) {
+  Widget _statusIconItem(String emoji, String label) {
     return Column(
       children: [
         Text(emoji, style: const TextStyle(fontSize: 24)),
@@ -449,41 +435,40 @@ class _CalendarScreenState extends State<CalendarScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) => ThemedContainer(
-            type: ContainerType.glass,
-            radius: 32,
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Select Date',
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: AppTheme.textDark,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 200,
-                  child: CalendarDatePicker(
-                    initialDate: _focusedDay,
-                    firstDate: DateTime(2020),
-                    lastDate: DateTime(2030),
-                    onDateChanged: (date) {
-                      setState(() {
-                        _focusedDay = date;
-                        _selectedDay = date;
-                      });
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-              ],
+      builder: (context) => ThemedContainer(
+        type: ContainerType.glass,
+        radius: 32,
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Select Date',
+              style: GoogleFonts.poppins(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: AppTheme.textDark,
+              ),
             ),
-          ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: CalendarDatePicker(
+                initialDate: _focusedDay,
+                firstDate: DateTime(2020),
+                lastDate: DateTime(2030),
+                onDateChanged: (date) {
+                  setState(() {
+                    _focusedDay = date;
+                    _selectedDay = date;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -500,41 +485,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
         runSpacing: 4,
         alignment: WrapAlignment.spaceEvenly,
         children: [
-          _buildLegendItem(
-            context,
-            'Period',
-            AppTheme.phaseColors['Menstrual']!,
-            isSmallScreen,
-          ),
-          _buildLegendItem(
-            context,
-            'Follicular',
-            AppTheme.phaseColors['Follicular']!,
-            isSmallScreen,
-          ),
-          _buildLegendItem(
-            context,
-            'Ovulation',
-            AppTheme.phaseColors['Ovulation']!,
-            isSmallScreen,
-          ),
-          _buildLegendItem(
-            context,
-            'Luteal',
-            AppTheme.phaseColors['Luteal']!,
-            isSmallScreen,
-          ),
+          _buildLegendItem(context, 'Period', AppTheme.phaseColors['Menstrual']!, isSmallScreen),
+          _buildLegendItem(context, 'Follicular', AppTheme.phaseColors['Follicular']!, isSmallScreen),
+          _buildLegendItem(context, 'Ovulation', AppTheme.phaseColors['Ovulation']!, isSmallScreen),
+          _buildLegendItem(context, 'Luteal', AppTheme.phaseColors['Luteal']!, isSmallScreen),
         ],
       ),
     );
   }
 
-  Widget _buildLegendItem(
-    BuildContext context,
-    String label,
-    Color color,
-    bool isSmallScreen,
-  ) {
+  Widget _buildLegendItem(BuildContext context, String label, Color color, bool isSmallScreen) {
     return Semantics(
       label: 'Phase $label indicated by color.',
       child: Row(
@@ -556,10 +516,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Text(
             label,
             style: GoogleFonts.inter(
-              color:
-                  Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.darkTextPrimary
-                      : AppTheme.midnightPlum,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppTheme.darkTextPrimary
+                  : AppTheme.midnightPlum,
               fontSize: isSmallScreen ? 10 : 13,
               fontWeight: FontWeight.w800,
             ),
@@ -622,26 +581,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
         gradient: gradient,
         shape: BoxShape.circle,
         border: border,
-        boxShadow:
-            isOvulation
+        boxShadow: isOvulation
+            ? [
+                BoxShadow(
+                  color: AppTheme.phaseColors['Ovulation']!.withValues(alpha: 0.6),
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                ),
+              ]
+            : (isSelected
                 ? [
-                  BoxShadow(
-                    color: AppTheme.phaseColors['Ovulation']!.withValues(
-                      alpha: 0.6,
+                    BoxShadow(
+                      color: AppTheme.accentPink.withValues(alpha: 0.4),
+                      blurRadius: 8,
+                      spreadRadius: 1,
                     ),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ]
-                : (isSelected
-                    ? [
-                      BoxShadow(
-                        color: AppTheme.accentPink.withValues(alpha: 0.4),
-                        blurRadius: 8,
-                        spreadRadius: 1,
-                      ),
-                    ]
-                    : null),
+                  ]
+                : null),
       ),
       alignment: Alignment.center,
       child: Stack(
@@ -650,16 +606,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Text(
             '${day.day}',
             style: GoogleFonts.inter(
-              color:
-                  isSelected || isPeriod
-                      ? Colors.white
-                      : (Theme.of(context).brightness == Brightness.dark
-                          ? AppTheme.darkTextPrimary
-                          : AppTheme.midnightPlum),
-              fontWeight:
-                  isSelected || isToday || isPeriod
-                      ? FontWeight.w900
-                      : FontWeight.w600,
+              color: isSelected || isPeriod
+                  ? Colors.white
+                  : (Theme.of(context).brightness == Brightness.dark
+                      ? AppTheme.darkTextPrimary
+                      : AppTheme.midnightPlum),
+              fontWeight: isSelected || isToday || isPeriod ? FontWeight.w900 : FontWeight.w600,
               fontSize: 14,
             ),
           ),
@@ -697,6 +649,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
     );
   }
+
+  Widget _hormoneMiniItem(String label, String status) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: AppTheme.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          status,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            color: AppTheme.textDark,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _DailyLogSheet extends StatelessWidget {
@@ -705,13 +681,10 @@ class _DailyLogSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pred = context.watch<PredictionService>();
+    final pred = context.read<PredictionService>();
     final chance = pred.getConceptionChance(date);
     final isHigh = chance >= 25;
-    final statusText =
-        isHigh
-            ? 'High Fertility'
-            : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
+    final statusText = isHigh ? 'High Fertility' : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
 
     final storage = context.watch<StorageService>();
     final dailyLog = storage.getDailyLog(date);
@@ -752,10 +725,7 @@ class _DailyLogSheet extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
-                            color:
-                                isDark
-                                    ? AppTheme.darkTextPrimary
-                                    : AppTheme.midnightPlum,
+                            color: isDark ? AppTheme.darkTextPrimary : AppTheme.midnightPlum,
                           ),
                         ),
                         Text(
@@ -771,10 +741,7 @@ class _DailyLogSheet extends StatelessWidget {
                     ThemedContainer(
                       type: ContainerType.neu,
                       radius: 16,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Text(
                         'Day ${pred.getCycleDay(date)}',
                         style: GoogleFonts.poppins(
@@ -841,15 +808,11 @@ class _DailyLogSheet extends StatelessWidget {
                         children: [
                           _hormoneMiniItem(
                             'Estrogen',
-                            pred.getHormoneDescriptions(
-                              pred.getCycleDay(date),
-                            )['Estrogen']!,
+                            pred.getHormoneDescriptions(pred.getCycleDay(date))['Estrogen']!,
                           ),
                           _hormoneMiniItem(
                             'Progesterone',
-                            pred.getHormoneDescriptions(
-                              pred.getCycleDay(date),
-                            )['Progesterone']!,
+                            pred.getHormoneDescriptions(pred.getCycleDay(date))['Progesterone']!,
                           ),
                         ],
                       ),
@@ -881,10 +844,7 @@ class _DailyLogSheet extends StatelessWidget {
                               ),
                             ),
                             if (dailyLog.moods?.isNotEmpty == true)
-                              Text(
-                                dailyLog.moods!.first,
-                                style: const TextStyle(fontSize: 24),
-                              ),
+                              Text(dailyLog.moods!.first, style: const TextStyle(fontSize: 24)),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -892,38 +852,27 @@ class _DailyLogSheet extends StatelessWidget {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children:
-                                dailyLog.symptoms!
-                                    .map(
-                                      (s) => Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppTheme.accentPink.withValues(
-                                            alpha: 0.1,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          s,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 12,
-                                            color: AppTheme.accentPink,
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                            children: dailyLog.symptoms!
+                                .map((s) => Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.accentPink.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        s,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          color: AppTheme.accentPink,
+                                          fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                    )
-                                    .toList(),
+                                    ))
+                                .toList(),
                           ),
                           const SizedBox(height: 12),
                         ],
-                        if (dailyLog.waterIntake != null &&
-                            dailyLog.waterIntake! > 0) ...[
+                        if (dailyLog.waterIntake != null && dailyLog.waterIntake! > 0) ...[
                           Row(
                             children: [
                               const Text('💧', style: TextStyle(fontSize: 14)),
@@ -1062,7 +1011,6 @@ class _DailyLogSheet extends StatelessWidget {
                         type: ContainerType.neu,
                         radius: 20,
                         onTap: () {
-                          showPhaseDelight(context, 'Period Logged');
                           Navigator.pop(context);
                         },
                         child: Padding(

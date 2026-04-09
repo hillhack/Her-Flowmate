@@ -38,7 +38,8 @@ class CycleEngine {
       }
     }
 
-    return cycleCount == 0 ? 28 : (totalDays / cycleCount).round();
+    int avg = cycleCount == 0 ? 28 : (totalDays / cycleCount).round();
+    return avg < 15 ? 28 : avg;
   }
 
   /// Detects if the cycle is irregular based on historical variance.
@@ -62,6 +63,7 @@ class CycleEngine {
     List<PeriodLog> logs,
     int avgCycleLen,
   ) {
+    if (avgCycleLen <= 0) avgCycleLen = 28;
     if (logs.isEmpty) return CyclePhase.unknown;
 
     // Find the relevant period start for this date
@@ -102,7 +104,9 @@ class CycleEngine {
 
     if (isBleeding) return CyclePhase.menstrual;
 
-    final ovulationDay = avgCycleLen - 14;
+    int ovulationDay = avgCycleLen - 14;
+    // Bound ovulation day for extremely irregular or short cycles
+    if (ovulationDay < 1) ovulationDay = 1;
 
     if (daysSinceStart >= avgCycleLen) return CyclePhase.luteal;
     if (daysSinceStart < ovulationDay - 5) return CyclePhase.follicular;
@@ -112,7 +116,10 @@ class CycleEngine {
 
   /// Calculates simplified hormone levels (0.0 to 1.0) based on cycle day.
   static Map<String, double> calculateHormones(int cycleDay, int cycleLen) {
-    final ovulationDay = cycleLen - 14;
+    if (cycleLen <= 0) cycleLen = 28;
+    int ovulationDay = cycleLen - 14;
+    if (ovulationDay < 1) ovulationDay = 1;
+
     int day = cycleDay.clamp(1, cycleLen);
 
     // Estrogen
@@ -122,6 +129,7 @@ class CycleEngine {
     } else {
       double lutealDay = (day - ovulationDay).toDouble();
       double lutealLen = (cycleLen - ovulationDay).toDouble();
+      if (lutealLen == 0) lutealLen = 1.0;
       estrogen =
           0.3 +
           0.4 * (1.0 - (lutealDay - (lutealLen / 2)).abs() / (lutealLen / 2));
@@ -132,6 +140,7 @@ class CycleEngine {
     if (day > ovulationDay) {
       double lutealDay = (day - ovulationDay).toDouble();
       double lutealLen = (cycleLen - ovulationDay).toDouble();
+      if (lutealLen == 0) lutealLen = 1.0;
       progesterone =
           0.1 +
           0.8 * (1.0 - (lutealDay - (lutealLen / 2)).abs() / (lutealLen / 2));
@@ -164,10 +173,12 @@ class CycleEngine {
     List<PeriodLog> logs,
     int avgCycleLen,
   ) {
+    if (avgCycleLen <= 0) avgCycleLen = 28;
     if (logs.isEmpty) return 1;
 
     final latestPeriod = logs.first;
-    final ovulationDay = avgCycleLen - 14;
+    int ovulationDay = avgCycleLen - 14;
+    if (ovulationDay < 1) ovulationDay = 1;
 
     final normSearch = DateTime(date.year, date.month, date.day);
     final normStart = DateTime(

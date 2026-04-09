@@ -185,8 +185,9 @@ class StorageService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveLog(PeriodLog log) => periodLog.saveLog(log);
+  Future<bool> saveLog(PeriodLog log) => periodLog.saveLog(log);
   Future<void> deleteLog(int index) => periodLog.deleteLog(index);
+  Future<void> deleteLogByRef(PeriodLog log) => periodLog.deleteLogByRef(log);
   List<PeriodLog> getLogs() => periodLog.getLogs();
 
   Future<String> exportLogsToJson() async {
@@ -204,6 +205,29 @@ class StorageService extends ChangeNotifier {
               )
               .toList();
       return jsonEncode(list);
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> importLogsFromJson(String jsonString) async {
+    _setLoading(true);
+    try {
+      final List<dynamic> decoded = jsonDecode(jsonString);
+      final importedLogs = decoded.map((json) {
+        return PeriodLog(
+          startDate: DateTime.parse(json['startDate']),
+          endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
+          duration: json['duration'],
+        );
+      }).toList();
+
+      for (var log in importedLogs) {
+        await periodLog.saveLog(log);
+      }
+    } catch (e) {
+      debugPrint('Error importing JSON: $e');
+      rethrow;
     } finally {
       _setLoading(false);
     }

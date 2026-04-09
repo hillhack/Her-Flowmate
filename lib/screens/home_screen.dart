@@ -1,6 +1,5 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -85,7 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   AppResponsive.pad(context),
                   MediaQuery.of(context).padding.top + AppDesignTokens.space16,
                   AppResponsive.pad(context),
-                  MediaQuery.of(context).padding.bottom + AppDesignTokens.space64,
+                  MediaQuery.of(context).padding.bottom +
+                      AppDesignTokens.space64,
                 ),
                 child: Column(
                   children: [
@@ -107,9 +107,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       },
-                      child: storage.isLoading
-                          ? _buildSkeletonDashboard()
-                          : _getDashboard(context, storage, pred),
+                      child:
+                          storage.isLoading
+                              ? _buildSkeletonDashboard()
+                              : _getDashboard(context, storage, pred),
                     ),
                     const SizedBox(height: AppTheme.spacingLg),
                     _buildMedicalDisclaimer(),
@@ -139,45 +140,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton:
-          storage.isLoading || storage.userGoal == 'pregnant'
-              ? null
-              : Semantics(
-                  label: 'Log an event',
-                  button: true,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => Padding(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                          ),
-                          child: const LogPeriodScreen(),
-                        ),
-                      );
-                    },
-                    label: Text(
-                      'Log Event',
-                      style: GoogleFonts.inter(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    icon: const Icon(Icons.add_rounded),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    elevation: 4,
-                  ).animate().scale(delay: 1.seconds, curve: Curves.bounceOut),
-                ),
     );
   }
 
-  Widget _getDashboard(BuildContext context, StorageService storage, PredictionService pred) {
+  Widget _getDashboard(
+    BuildContext context,
+    StorageService storage,
+    PredictionService pred,
+  ) {
     try {
       Widget dashboardWidget;
       if (storage.userGoal == 'pregnant') {
@@ -234,21 +204,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
-              child: storage.isLoading
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 12),
-                      child: SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+              child:
+                  storage.isLoading
+                      ? Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.6),
+                            ),
                           ),
                         ),
-                      ),
-                    ).animate().fadeIn()
-                  : const SizedBox(width: 28), // Keeps layout stable
+                      ).animate().fadeIn()
+                      : const SizedBox(width: 28), // Keeps layout stable
             ),
           ],
         ),
@@ -368,7 +341,10 @@ class _HomeScreenState extends State<HomeScreen> {
         // no setState needed; Provider will trigger rebuild
       },
       padding: const EdgeInsets.all(16),
-      color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05) : Colors.transparent,
+      color:
+          isSelected
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05)
+              : Colors.transparent,
       border:
           isSelected
               ? Border.all(
@@ -434,10 +410,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Icon(
-            Icons.auto_awesome_rounded,
-            color: Theme.of(context).colorScheme.primary,
-            size: 40,
-          ),
+                Icons.auto_awesome_rounded,
+                color: Theme.of(context).colorScheme.primary,
+                size: 64,
+              )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .scaleXY(
+                begin: 1.0,
+                end: 1.2,
+                duration: 1500.ms,
+                curve: Curves.easeInOut,
+              )
+              .shimmer(duration: 2000.ms, color: Colors.white),
           const SizedBox(height: 16),
           Text(
             'Ready to start?',
@@ -453,7 +437,9 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
               fontSize: 13,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 24),
@@ -464,9 +450,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Icon(Icons.calendar_month_rounded, size: 24, color: Theme.of(context).colorScheme.primary),
+                      Icon(
+                        Icons.calendar_month_rounded,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       const SizedBox(height: 8),
-                      Text('Log often', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600)),
+                      Text(
+                        'Log often',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -477,9 +473,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Icon(Icons.insights_rounded, size: 24, color: Theme.of(context).colorScheme.primary),
+                      Icon(
+                        Icons.insights_rounded,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       const SizedBox(height: 8),
-                      Text('Get insights', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600)),
+                      Text(
+                        'Get insights',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -495,18 +501,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => Padding(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: const LogPeriodScreen(),
-                ),
+                builder:
+                    (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: const LogPeriodScreen(),
+                    ),
               );
             },
           ),
         ],
       ),
-    );
+    ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.1);
   }
 
   Widget _buildSkeletonDashboard() {
@@ -553,7 +560,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Estimates are not medical advice. Consult a healthcare professional for concerns.',
                 style: GoogleFonts.inter(
                   fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                 ),
               ),
             ),

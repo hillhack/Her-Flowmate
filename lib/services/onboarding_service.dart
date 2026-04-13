@@ -36,6 +36,11 @@ class OnboardingService extends ChangeNotifier {
       user?.imagePath ?? _base.prefs.getString('userImagePath');
   bool get isDarkMode => _base.prefs.getBool('isDarkMode') ?? false;
 
+  double? get weight => user?.weight;
+  double? get height => user?.height;
+  bool get periodNotifications => user?.periodNotifications ?? true;
+  bool get healthNotifications => user?.healthNotifications ?? true;
+
   Future<void> saveUser(User newUser) async {
     await _userBox.put(userKey, newUser);
     notifyListeners();
@@ -78,6 +83,27 @@ class OnboardingService extends ChangeNotifier {
     final current = isDarkMode;
     await _base.prefs.setBool('isDarkMode', !current);
     notifyListeners();
+  }
+
+  Future<void> updateWeight(double val) async {
+    if (user != null) {
+      await saveUser(user!.copyWith(weight: val));
+    }
+  }
+
+  Future<void> updateHeight(double val) async {
+    if (user != null) {
+      await saveUser(user!.copyWith(height: val));
+    }
+  }
+
+  Future<void> updateNotificationSettings({bool? period, bool? health}) async {
+    if (user != null) {
+      await saveUser(user!.copyWith(
+        periodNotifications: period ?? user!.periodNotifications,
+        healthNotifications: health ?? user!.healthNotifications,
+      ));
+    }
   }
 
   Future<void> logout() async {

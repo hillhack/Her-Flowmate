@@ -18,6 +18,23 @@ class WellnessRemindersScreen extends StatefulWidget {
 }
 
 class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _notesController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+    _notesController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final storage = context.watch<StorageService>();
@@ -249,8 +266,8 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
   }
 
   void _showAddReminderSheet(BuildContext context, StorageService storage) {
-    final titleController = TextEditingController();
-    final notesController = TextEditingController();
+    _titleController.clear();
+    _notesController.clear();
     DateTime selectedDate = DateTime.now().add(const Duration(hours: 1));
     WellnessCategory selectedCat = WellnessCategory.selfCare;
 
@@ -299,7 +316,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                       ),
                       const SizedBox(height: 24),
                       TextField(
-                        controller: titleController,
+                        controller: _titleController,
                         decoration: InputDecoration(
                           hintText: 'Goal Title (e.g. Morning Yoga)',
                           filled: true,
@@ -423,7 +440,7 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                       ),
                       const SizedBox(height: 8),
                       TextField(
-                        controller: notesController,
+                        controller: _notesController,
                         decoration: InputDecoration(
                           hintText: 'Notes (optional)',
                           filled: true,
@@ -440,21 +457,23 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (titleController.text.trim().isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please enter a goal title.'),
-                                  backgroundColor: Colors.redAccent,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
+                            if (_titleController.text.trim().isEmpty) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter a goal title.'),
+                                    backgroundColor: Colors.redAccent,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
                               return;
                             }
                             storage.saveAppointment(
                               Appointment(
-                                title: titleController.text.trim(),
+                                title: _titleController.text.trim(),
                                 date: selectedDate,
-                                notes: notesController.text.trim(),
+                                notes: _notesController.text.trim(),
                                 typeIndex: selectedCat.index,
                               ),
                             );

@@ -6,4 +6,5 @@ import '../entities/community_post.dart';
 abstract class ICommunityRepository {
   Future<List<CommunityPost>> getFeedPosts();
   Future<void> likePost(String postId);
+  Future<void> createPost({required String content, required String category});
 }

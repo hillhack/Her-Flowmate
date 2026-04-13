@@ -14,7 +14,9 @@ import 'services/google_auth_services.dart';
 
 import 'providers/community_provider.dart';
 import 'domain/use_cases/get_community_feed.dart';
-import 'data/repositories/mock_community_repository.dart';
+import 'domain/use_cases/like_post.dart';
+import 'domain/use_cases/create_community_post.dart';
+import 'data/repositories/api_community_repository.dart';
 
 import 'screens/main_navigation_screen.dart';
 import 'screens/onboarding_screen.dart';
@@ -184,9 +186,14 @@ class _BootstrapScreenState extends State<BootstrapScreen> {
         ),
         ChangeNotifierProvider(
           create:
-              (_) => CommunityProvider(
-                getFeedUseCase: GetCommunityFeed(MockCommunityRepository()),
-              ),
+              (_) {
+                final repo = ApiCommunityRepository();
+                return CommunityProvider(
+                  getFeedUseCase: GetCommunityFeed(repo),
+                  likePostUseCase: LikePost(repo),
+                  createPostUseCase: CreateCommunityPost(repo),
+                );
+              },
         ),
       ],
       child: const HerFlowmateApp(),
@@ -267,8 +274,32 @@ class AppLockWrapper extends StatefulWidget {
   State<AppLockWrapper> createState() => _AppLockWrapperState();
 }
 
-class _AppLockWrapperState extends State<AppLockWrapper> {
+class _AppLockWrapperState extends State<AppLockWrapper> with WidgetsBindingObserver {
   bool _unlocked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      final storage = StorageService.instance;
+      if (storage.isPinLocked) {
+        setState(() {
+          _unlocked = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

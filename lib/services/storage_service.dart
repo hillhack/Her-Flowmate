@@ -77,6 +77,10 @@ class StorageService extends ChangeNotifier {
   bool get isHighPerformanceMode =>
       BaseStorageService.instance.prefs.getBool('isHighPerformanceMode') ??
       true;
+  double? get weight => onboarding.weight;
+  double? get height => onboarding.height;
+  bool get periodNotifications => onboarding.periodNotifications;
+  bool get healthNotifications => onboarding.healthNotifications;
 
   DateTime? get dueDate => pregnancy.dueDate;
   DateTime? get conceptionDate => pregnancy.conceptionDate;
@@ -101,6 +105,27 @@ class StorageService extends ChangeNotifier {
       await UserService.updateUserProfile(onboarding.user!);
     }
     notifyListeners();
+  }
+
+  Future<void> updateWeight(double val) async {
+    await onboarding.updateWeight(val);
+    if (onboarding.user != null) {
+      await UserService.updateUserProfile(onboarding.user!);
+    }
+  }
+
+  Future<void> updateHeight(double val) async {
+    await onboarding.updateHeight(val);
+    if (onboarding.user != null) {
+      await UserService.updateUserProfile(onboarding.user!);
+    }
+  }
+
+  Future<void> updateNotificationSettings({bool? period, bool? health}) async {
+    await onboarding.updateNotificationSettings(period: period, health: health);
+    if (onboarding.user != null) {
+      await UserService.updateUserProfile(onboarding.user!);
+    }
   }
 
   Future<void> updateUserImagePath(String? path) async {
@@ -137,10 +162,15 @@ class StorageService extends ChangeNotifier {
     await syncUserWithBackend();
   }
 
+  bool _isSyncing = false;
+
   Future<void> syncUserWithBackend() async {
+    if (_isSyncing) return;
+    
     final token = ApiService.token;
     if (token == null) return;
 
+    _isSyncing = true;
     _setLoading(true);
     try {
       // 1. Sync User Profile
@@ -165,6 +195,7 @@ class StorageService extends ChangeNotifier {
     } catch (e) {
       debugPrint('Full Sync Error: $e');
     } finally {
+      _isSyncing = false;
       _setLoading(false);
     }
   }
@@ -193,18 +224,14 @@ class StorageService extends ChangeNotifier {
   Future<String> exportLogsToJson() async {
     _setLoading(true);
     try {
-      final logs = getLogs();
-      final list =
-          logs
-              .map(
-                (l) => {
-                  'startDate': l.startDate.toIso8601String(),
-                  'endDate': l.endDate?.toIso8601String(),
-                  'duration': l.duration,
-                },
-              )
-              .toList();
-      return jsonEncode(list);
+      final data = {
+        'periodLogs': getLogs().map((l) => l.toJson()).toList(),
+        'dailyLogs': healthTracker.getDailyLogs().map((l) => l.toJson()).toList(),
+        'appointments': appointment.getAllAppointments().map((l) => l.toJson()).toList(),
+        'exportDate': DateTime.now().toIso8601String(),
+        'version': '2.0',
+      };
+      return jsonEncode(data);
     } finally {
       _setLoading(false);
     }
@@ -213,17 +240,48 @@ class StorageService extends ChangeNotifier {
   Future<void> importLogsFromJson(String jsonString) async {
     _setLoading(true);
     try {
-      final List<dynamic> decoded = jsonDecode(jsonString);
-      final importedLogs = decoded.map((json) {
-        return PeriodLog(
-          startDate: DateTime.parse(json['startDate']),
-          endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
-          duration: json['duration'],
-        );
-      }).toList();
+      final decoded = jsonDecode(jsonString);
 
-      for (var log in importedLogs) {
-        await periodLog.saveLog(log);
+      if (decoded is List) {
+        // Legacy format: List of period logs
+        final importedLogs = decoded.map((json) {
+          return PeriodLog.fromJson(json as Map<String, dynamic>);
+        }).toList();
+
+        for (var log in importedLogs) {
+          await periodLog.saveLog(log);
+        }
+      } else if (decoded is Map<String, dynamic>) {
+        // New bundled format
+        // 1. Period Logs
+        if (decoded['periodLogs'] is List) {
+          final pLogs = (decoded['periodLogs'] as List)
+              .map((j) => PeriodLog.fromJson(j as Map<String, dynamic>))
+              .toList();
+          for (var log in pLogs) {
+            await periodLog.saveLog(log);
+          }
+        }
+
+        // 2. Daily Logs
+        if (decoded['dailyLogs'] is List) {
+          final dLogs = (decoded['dailyLogs'] as List)
+              .map((j) => DailyLog.fromJson(j as Map<String, dynamic>))
+              .toList();
+          for (var log in dLogs) {
+            await healthTracker.saveDailyLog(log);
+          }
+        }
+
+        // 3. Appointments
+        if (decoded['appointments'] is List) {
+          final aLogs = (decoded['appointments'] as List)
+              .map((j) => Appointment.fromJson(j as Map<String, dynamic>))
+              .toList();
+          for (var log in aLogs) {
+            await appointment.saveAppointment(log);
+          }
+        }
       }
     } catch (e) {
       debugPrint('Error importing JSON: $e');
@@ -309,6 +367,21 @@ class StorageService extends ChangeNotifier {
                           l.startDate.toString().split(' ')[0],
                           l.endDate?.toString().split(' ')[0] ?? '-',
                           '$duration days',
+                        ];
+                      }).toList(),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Header(level: 1, child: pw.Text('Daily Health Log')),
+                pw.TableHelper.fromTextArray(
+                  headers: ['Date', 'Mood', 'Water', 'Sleep (h)', 'Steps'],
+                  data:
+                      getDailyLogs().map((d) {
+                        return [
+                          d.date.toString().split(' ')[0],
+                          d.moods?.join(', ') ?? '-',
+                          '${d.waterIntake ?? 0} glasses',
+                          '${d.sleepHours ?? '-'}',
+                          '${d.stepsCount ?? 0}',
                         ];
                       }).toList(),
                 ),

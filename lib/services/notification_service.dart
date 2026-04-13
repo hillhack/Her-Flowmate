@@ -88,6 +88,8 @@ class NotificationService {
 
   Future<void> scheduleDailyCheckinReminder() async {
     if (kIsWeb) return;
+    // Cancel existing to avoid duplicates
+    await _notifications.cancel(id: 1);
     // Daily recurring at 8 AM
     await _notifications.zonedSchedule(
       id: 1,
@@ -118,6 +120,8 @@ class NotificationService {
       0,
     );
     if (scheduledTime.isBefore(DateTime.now())) return;
+    // Cancel existing to avoid duplicates
+    await _notifications.cancel(id: 2);
 
     await _notifications.zonedSchedule(
       id: 2,
@@ -162,8 +166,11 @@ class NotificationService {
     if (kIsWeb) return;
     if (date.isBefore(DateTime.now())) return;
 
+    final notificationId = 100 + id;
+    await _notifications.cancel(id: notificationId);
+
     await _notifications.zonedSchedule(
-      id: 100 + id, // Offset for wellness goals
+      id: notificationId, // Offset for wellness goals
       title: '$category Goal! 🧘',
       body: 'Time for your wellness activity: $title',
       scheduledDate: tz.TZDateTime.from(date, tz.local),

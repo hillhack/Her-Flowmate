@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 
 import '../services/storage_service.dart';
 import '../services/prediction_service.dart';
+import '../services/partner_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
 
@@ -19,13 +19,55 @@ class PartnerSyncScreen extends StatefulWidget {
 
 class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
   String? _syncCode;
+  bool _isLoading = false;
+  int _activeTab = 0; // 0: My Code, 1: Link Partner
+  final TextEditingController _connectController = TextEditingController();
 
-  void _generateCode() {
-    final random = Random();
-    final parts = List.generate(3, (_) => random.nextInt(900) + 100);
-    setState(() {
-      _syncCode = '${parts[0]}-${parts[1]}-${parts[2]}';
-    });
+  Future<void> _generateCode() async {
+    setState(() => _isLoading = true);
+    try {
+      final result = await PartnerService.generateSyncCode();
+      if (result != null) {
+        setState(() {
+          _syncCode = result['code'];
+        });
+      } else {
+        _showError('Failed to generate code. Try again later.');
+      }
+    } catch (e) {
+      _showError('Connection error.');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _connectWithCode() async {
+    final code = _connectController.text.trim();
+    if (code.isEmpty) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final success = await PartnerService.connectToPartner(code);
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Successfully linked with partner! ❤️')),
+        );
+        _connectController.clear();
+      } else {
+        _showError('Invalid code or connection expired.');
+      }
+    } catch (e) {
+      _showError('Connection error.');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String msg) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg), backgroundColor: Colors.redAccent),
+    );
   }
 
   void _copyCode() {
@@ -130,7 +172,7 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                 ),
                 const SizedBox(height: 32),
                 Text(
-                  'Share Your Cycle',
+                  'Partner Connection',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: 24,
@@ -140,7 +182,7 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                 ).animate().fadeIn(delay: 200.ms),
                 const SizedBox(height: 12),
                 Text(
-                  'Generate a secure sync code so your partner can understand your phases and know exactly how to support you.',
+                  'Sync with your partner to share cycle insights and support each other through every phase.',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 15,
@@ -148,103 +190,72 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                     height: 1.5,
                   ),
                 ).animate().fadeIn(delay: 300.ms),
-                const SizedBox(height: 40),
+                const SizedBox(height: 32),
+                
+                // Tab Switcher
+                Container(
+                  height: 56,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => setState(() => _activeTab = 0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: _activeTab == 0 ? Colors.white : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: _activeTab == 0 ? [
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)
+                              ] : null,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'My Code',
+                              style: GoogleFonts.inter(
+                                fontWeight: _activeTab == 0 ? FontWeight.w700 : FontWeight.w500,
+                                color: _activeTab == 0 ? AppTheme.accentPink : AppTheme.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => setState(() => _activeTab = 1),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: _activeTab == 1 ? Colors.white : Colors.transparent,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: _activeTab == 1 ? [
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)
+                              ] : null,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Link Partner',
+                              style: GoogleFonts.inter(
+                                fontWeight: _activeTab == 1 ? FontWeight.w700 : FontWeight.w500,
+                                color: _activeTab == 1 ? AppTheme.accentPink : AppTheme.textSecondary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn(delay: 350.ms),
+                
+                const SizedBox(height: 24),
                 ThemedContainer(
                   type: ContainerType.glass,
                   padding: const EdgeInsets.all(32),
                   radius: 32,
-                  child: Column(
-                    children: [
-                      if (_syncCode == null) ...[
-                        GestureDetector(
-                          onTap: _generateCode,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFBA68C8),
-                                  AppTheme.accentPink,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppTheme.accentPink.withValues(
-                                    alpha: 0.4,
-                                  ),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              'Generate Sync Code',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ] else ...[
-                        Text(
-                          'Your Sync Code',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            color: AppTheme.textSecondary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 24,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.8),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: AppTheme.accentPink.withValues(alpha: 0.3),
-                              width: 2,
-                            ),
-                          ),
-                          child: Text(
-                            _syncCode!,
-                            style: GoogleFonts.robotoMono(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w900,
-                              color: AppTheme.textDark,
-                              letterSpacing: 4,
-                            ),
-                          ),
-                        ).animate().scale(
-                          duration: 400.ms,
-                          curve: Curves.easeOutBack,
-                        ),
-                        const SizedBox(height: 20),
-                        TextButton.icon(
-                          onPressed: _copyCode,
-                          icon: const Icon(
-                            Icons.copy_rounded,
-                            color: AppTheme.accentPink,
-                          ),
-                          label: Text(
-                            'Copy Code',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.accentPink,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                  child: _activeTab == 0 ? _buildMyCodeSection() : _buildLinkPartnerSection(),
                 ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
                 const SizedBox(height: 48),
                 Text(
@@ -335,6 +346,150 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMyCodeSection() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator(color: AppTheme.accentPink));
+    }
+    
+    return Column(
+      children: [
+        if (_syncCode == null) ...[
+          GestureDetector(
+            onTap: _generateCode,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFBA68C8), AppTheme.accentPink],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.accentPink.withValues(alpha: 0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Text(
+                'Generate Sync Code',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ] else ...[
+          Text(
+            'Your Sync Code',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: AppTheme.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppTheme.accentPink.withValues(alpha: 0.3),
+                width: 2,
+              ),
+            ),
+            child: Text(
+              _syncCode!,
+              style: GoogleFonts.robotoMono(
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                color: AppTheme.textDark,
+                letterSpacing: 4,
+              ),
+            ),
+          ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
+          const SizedBox(height: 20),
+          TextButton.icon(
+            onPressed: _copyCode,
+            icon: const Icon(Icons.copy_rounded, color: AppTheme.accentPink),
+            label: Text(
+              'Copy Code',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.accentPink,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildLinkPartnerSection() {
+    return Column(
+      children: [
+        Text(
+          'Enter Partner\'s Code',
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            color: AppTheme.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _connectController,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.robotoMono(
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            color: AppTheme.textDark,
+            letterSpacing: 2,
+          ),
+          decoration: InputDecoration(
+            hintText: 'XXX-XXX-XXX',
+            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.3)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(color: Colors.white),
+            ),
+            filled: true,
+            fillColor: Colors.white.withValues(alpha: 0.6),
+          ),
+        ),
+        const SizedBox(height: 24),
+        GestureDetector(
+          onTap: _isLoading ? null : _connectWithCode,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: AppTheme.accentPink,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: _isLoading 
+              ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)))
+              : Text(
+                  'Link with Partner',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+          ),
+        ),
+      ],
     );
   }
 }

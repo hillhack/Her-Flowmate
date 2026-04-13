@@ -186,11 +186,15 @@ class PeriodLogService extends ChangeNotifier {
             data.map((json) => PeriodLog.fromJson(json)).toList();
 
         // Simple merge: Clear local and replace with remote for now
-        // A more complex merge would check dates to avoid duplicates
-        await _box.clear();
-        await _box.addAll(remoteLogs);
-        _cachedLogs = null;
-        notifyListeners();
+        // Guard: only clear local data if remote returned actual logs to prevent accidental wipe
+        if (remoteLogs.isNotEmpty) {
+          await _box.clear();
+          await _box.addAll(remoteLogs);
+          _cachedLogs = null;
+          notifyListeners();
+        } else {
+          debugPrint('Remote period logs were empty - keeping local data.');
+        }
       }
     } catch (e) {
       debugPrint('Error fetching logs: $e');

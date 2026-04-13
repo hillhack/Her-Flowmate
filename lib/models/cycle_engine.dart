@@ -24,12 +24,16 @@ class CycleEngine {
   static int calculateAverageCycleLength(List<PeriodLog> logs) {
     if (logs.length < 2) return 28;
 
+    // Enforce descending sort (newest first)
+    final sortedLogs = List<PeriodLog>.from(logs)
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
+
     int totalDays = 0;
     int cycleCount = 0;
 
-    for (int i = 0; i < logs.length - 1; i++) {
-      final currentStart = logs[i].startDate;
-      final previousStart = logs[i + 1].startDate;
+    for (int i = 0; i < sortedLogs.length - 1; i++) {
+      final currentStart = sortedLogs[i].startDate;
+      final previousStart = sortedLogs[i + 1].startDate;
       final cycleDays = currentStart.difference(previousStart).inDays;
 
       if (cycleDays > 15 && cycleDays < 90) {
@@ -46,9 +50,12 @@ class CycleEngine {
   static bool detectIrregularity(List<PeriodLog> logs) {
     if (logs.length < 3) return false;
 
+    final sortedLogs = List<PeriodLog>.from(logs)
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
+
     int minLen = 100, maxLen = 0;
-    for (int i = 0; i < logs.length - 1; i++) {
-      final len = logs[i].startDate.difference(logs[i + 1].startDate).inDays;
+    for (int i = 0; i < sortedLogs.length - 1; i++) {
+      final len = sortedLogs[i].startDate.difference(sortedLogs[i + 1].startDate).inDays;
       if (len > 15 && len < 90) {
         if (len < minLen) minLen = len;
         if (len > maxLen) maxLen = len;
@@ -67,9 +74,12 @@ class CycleEngine {
     if (logs.isEmpty) return CyclePhase.unknown;
 
     // Find the relevant period start for this date
+    final sortedLogs = List<PeriodLog>.from(logs)
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
+
     DateTime? periodStart;
     PeriodLog? relevantLog;
-    for (final log in logs) {
+    for (final log in sortedLogs) {
       if (!date.isBefore(log.startDate)) {
         periodStart = log.startDate;
         relevantLog = log;
@@ -176,37 +186,45 @@ class CycleEngine {
     if (avgCycleLen <= 0) avgCycleLen = 28;
     if (logs.isEmpty) return 1;
 
-    final latestPeriod = logs.first;
+    final sortedLogs = List<PeriodLog>.from(logs)
+      ..sort((a, b) => b.startDate.compareTo(a.startDate));
+
+    PeriodLog? relevantLog;
+    for (final log in sortedLogs) {
+      if (!date.isBefore(log.startDate)) {
+        relevantLog = log;
+        break;
+      }
+    }
+
+    if (relevantLog == null) return 1;
+
     int ovulationDay = avgCycleLen - 14;
     if (ovulationDay < 1) ovulationDay = 1;
 
     final normSearch = DateTime(date.year, date.month, date.day);
     final normStart = DateTime(
-      latestPeriod.startDate.year,
-      latestPeriod.startDate.month,
-      latestPeriod.startDate.day,
+      relevantLog.startDate.year,
+      relevantLog.startDate.month,
+      relevantLog.startDate.day,
     );
 
     final daysSinceStart = normSearch.difference(normStart).inDays;
+    
+    // If we've passed the current cycle length, it's a new cycle starting soon
+    if (daysSinceStart >= avgCycleLen) return 1;
+
     final diff = daysSinceStart - ovulationDay + 1;
 
     switch (diff) {
-      case 0:
-        return 33;
-      case -1:
-        return 31;
-      case -2:
-        return 27;
-      case -3:
-        return 14;
-      case -4:
-        return 16;
-      case -5:
-        return 10;
-      case 1:
-        return 5;
-      default:
-        return 1;
+      case 0: return 33;
+      case -1: return 31;
+      case -2: return 27;
+      case -3: return 14;
+      case -4: return 16;
+      case -5: return 10;
+      case 1: return 5;
+      default: return 1;
     }
   }
 

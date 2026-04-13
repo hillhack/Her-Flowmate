@@ -134,18 +134,27 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         const SizedBox(height: 20),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.favorite_border_rounded,
-                              size: 20,
-                              color: AppTheme.accentPink,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              '${post.likes}',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.textSecondary,
+                            GestureDetector(
+                              onTap: () {
+                                context.read<CommunityProvider>().likePost(post.id);
+                              },
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.favorite_rounded,
+                                    size: 20,
+                                    color: AppTheme.accentPink,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    '${post.likes}',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.textSecondary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             const Spacer(),
@@ -173,6 +182,112 @@ class _CommunityScreenState extends State<CommunityScreen> {
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showCreatePostDialog(context),
+        backgroundColor: AppTheme.accentPink,
+        label: Text(
+          'Share Thoughts',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+        ),
+        icon: const Icon(Icons.edit_note_rounded),
+      ).animate().scale(delay: 400.ms, curve: Curves.easeOutBack),
+    );
+  }
+
+  void _showCreatePostDialog(BuildContext context) {
+    final contentController = TextEditingController();
+    String selectedCategory = 'Self-Care';
+    final categories = ['Self-Care', 'Cycle Support', 'Wellness', 'Other'];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+            ),
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Share with the community',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: AppTheme.textDark,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedCategory,
+                  decoration: InputDecoration(
+                    labelText: 'Category',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  items: categories
+                      .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                      .toList(),
+                  onChanged: (val) => setState(() => selectedCategory = val!),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: contentController,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    hintText: "What's on your mind? 🌸",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (contentController.text.trim().isEmpty) return;
+                    
+                    final provider = context.read<CommunityProvider>();
+                    Navigator.pop(context);
+                    
+                    await provider.createPost(
+                      content: contentController.text.trim(),
+                      category: selectedCategory,
+                    );
+                    
+                    if (context.mounted && provider.error != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(provider.error!)),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.accentPink,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: Text(
+                    'Post to Community',
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

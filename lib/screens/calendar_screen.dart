@@ -649,30 +649,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
     );
   }
-
-  Widget _hormoneMiniItem(String label, String status) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12,
-            color: AppTheme.textSecondary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Text(
-          status,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            color: AppTheme.textDark,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 class _DailyLogSheet extends StatelessWidget {

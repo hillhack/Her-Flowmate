@@ -12,6 +12,11 @@ import '../screens/calendar_screen.dart';
 import '../screens/mode_settings_screen.dart';
 import '../screens/feedback_screen.dart';
 import '../screens/log_period_screen.dart';
+import '../screens/community_screen.dart';
+import '../screens/partner_sync_screen.dart';
+import '../screens/about_screen.dart';
+import '../screens/daily_checkin_screen.dart';
+import '../screens/wellness_reminders_screen.dart';
 
 // Provider for SharedPreferences (initialized in main)
 final sharedPreferencesProvider = rf.Provider<SharedPreferences>((ref) {
@@ -95,6 +100,26 @@ final routerProvider = rf.Provider<gr.GoRouter>((ref) {
       gr.GoRoute(
         path: '/support',
         builder: (context, state) => const FeedbackScreen(),
+      ),
+      gr.GoRoute(
+        path: '/community',
+        builder: (context, state) => const CommunityScreen(),
+      ),
+      gr.GoRoute(
+        path: '/partner',
+        builder: (context, state) => const PartnerSyncScreen(),
+      ),
+      gr.GoRoute(
+        path: '/about',
+        builder: (context, state) => const AboutAppScreen(),
+      ),
+      gr.GoRoute(
+        path: '/daily-checkin',
+        builder: (context, state) => const DailyCheckinScreen(),
+      ),
+      gr.GoRoute(
+        path: '/reminders',
+        builder: (context, state) => const WellnessRemindersScreen(),
       ),
     ],
   );

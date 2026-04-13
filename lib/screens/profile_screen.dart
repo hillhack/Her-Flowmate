@@ -5,14 +5,48 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
 import 'about_screen.dart';
 import 'login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _ageController;
+  String _appVersion = '1.0.0';
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _ageController = TextEditingController();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,6 +280,24 @@ class ProfileScreen extends StatelessWidget {
                                           _showGoalSelection(context, storage),
                                       isSmallScreen: isSmallScreen,
                                     ),
+                                    _buildDivider(),
+                                    _buildSettingsTile(
+                                      context,
+                                      Icons.monitor_weight_rounded,
+                                      'Weight',
+                                      storage.weight != null ? '${storage.weight} kg' : 'Set Weight',
+                                      () => _editWeight(context, storage),
+                                      isSmallScreen: isSmallScreen,
+                                    ),
+                                    _buildDivider(),
+                                    _buildSettingsTile(
+                                      context,
+                                      Icons.height_rounded,
+                                      'Height',
+                                      storage.height != null ? '${storage.height} cm' : 'Set Height',
+                                      () => _editHeight(context, storage),
+                                      isSmallScreen: isSmallScreen,
+                                    ),
                                   ],
                                 ),
                               ).animate().fadeIn(delay: 200.ms),
@@ -274,27 +326,42 @@ class ProfileScreen extends StatelessWidget {
                                         showModalBottomSheet(
                                           context: context,
                                           backgroundColor: Colors.transparent,
-                                          builder: (ctx) => ThemedContainer(
-                                            type: ContainerType.glass,
-                                            padding: const EdgeInsets.all(24),
-                                            radius: 32,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const Icon(Icons.notifications_active_rounded, size: 48, color: AppTheme.accentPink),
-                                                const SizedBox(height: 16),
-                                                Text(
-                                                  'Coming Soon!',
-                                                  style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  'Notification settings will be available in the next update.',
-                                                  textAlign: TextAlign.center,
-                                                  style: GoogleFonts.inter(color: AppTheme.textSecondary),
-                                                ),
-                                                const SizedBox(height: 24),
-                                              ],
+                                          builder: (ctx) => StatefulBuilder(
+                                            builder: (ctx, setModalState) => ThemedContainer(
+                                              type: ContainerType.glass,
+                                              padding: const EdgeInsets.all(24),
+                                              radius: 32,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    'Notification Settings',
+                                                    style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.textDark),
+                                                  ),
+                                                  const SizedBox(height: 24),
+                                                  SwitchListTile(
+                                                    title: const Text('Period Reminders'),
+                                                    subtitle: const Text('Get notified before your cycle starts'),
+                                                    value: storage.periodNotifications,
+                                                    activeColor: AppTheme.accentPink,
+                                                    onChanged: (val) {
+                                                      storage.updateNotificationSettings(period: val);
+                                                      setModalState(() {});
+                                                    },
+                                                  ),
+                                                  SwitchListTile(
+                                                    title: const Text('Health Check-ins'),
+                                                    subtitle: const Text('Daily reminders to log symptoms'),
+                                                    value: storage.healthNotifications,
+                                                    activeColor: AppTheme.accentPink,
+                                                    onChanged: (val) {
+                                                      storage.updateNotificationSettings(health: val);
+                                                      setModalState(() {});
+                                                    },
+                                                  ),
+                                                  const SizedBox(height: 24),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         );
@@ -510,19 +577,13 @@ class ProfileScreen extends StatelessWidget {
                                       'Update logs and profile',
                                       () async {
                                         await storage.syncUserWithBackend();
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                'Cloud sync completed! ☁️',
-                                              ),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                            ),
-                                          );
-                                        }
+                                        if (!context.mounted) return;
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text('Cloud sync completed! ☁️'),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
                                       },
                                       isSmallScreen: isSmallScreen,
                                     ),
@@ -559,7 +620,7 @@ class ProfileScreen extends StatelessWidget {
                                       context,
                                       Icons.info_outline_rounded,
                                       'Version',
-                                      '1.2.0 (Premium)',
+                                      '$_appVersion (Premium)',
                                       () => Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -751,9 +812,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _editAge(BuildContext context, StorageService storage) {
-    final controller = TextEditingController(
-      text: storage.userAge?.toString() ?? '',
-    );
+    _ageController.text = storage.userAge?.toString() ?? '';
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -775,7 +834,7 @@ class ProfileScreen extends StatelessWidget {
                 String? errorText;
 
                 void validateAndSave() {
-                  final ageStr = controller.text.trim();
+                  final ageStr = _ageController.text.trim();
                   if (ageStr.isEmpty) {
                     setModalState(() => errorText = 'Please enter your age');
                     return;
@@ -808,7 +867,7 @@ class ProfileScreen extends StatelessWidget {
                             errorText != null ? Colors.redAccent : null,
                       ),
                       child: TextField(
-                        controller: controller,
+                        controller: _ageController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -1175,7 +1234,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _editName(BuildContext context, StorageService storage) {
-    final controller = TextEditingController(text: storage.userName);
+    _nameController.text = storage.userName;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1197,7 +1256,7 @@ class ProfileScreen extends StatelessWidget {
                 String? errorText;
 
                 void validateAndSave() {
-                  final name = controller.text.trim();
+                  final name = _nameController.text.trim();
                   if (name.isEmpty) {
                     setModalState(() => errorText = 'Name cannot be empty');
                     return;
@@ -1229,7 +1288,7 @@ class ProfileScreen extends StatelessWidget {
                             errorText != null ? Colors.redAccent : null,
                       ),
                       child: TextField(
-                        controller: controller,
+                        controller: _nameController,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Enter your name',
@@ -1337,7 +1396,7 @@ class ProfileScreen extends StatelessWidget {
                           try {
                             storage.clearAllData();
                             Navigator.pop(ctx);
-                            if (context.mounted) {
+                            if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
@@ -1627,6 +1686,84 @@ class ProfileScreen extends StatelessWidget {
               color: AppTheme.textSecondary,
             ),
           ],
+        ),
+      ),
+    );
+  }
+  void _editWeight(BuildContext context, StorageService storage) {
+    final controller = TextEditingController(text: storage.weight?.toString() ?? '');
+    _showNumberInputDialog(
+      context,
+      title: 'Update Weight',
+      label: 'Weight (kg)',
+      controller: controller,
+      onSave: (val) => storage.updateWeight(val),
+    );
+  }
+
+  void _editHeight(BuildContext context, StorageService storage) {
+    final controller = TextEditingController(text: storage.height?.toString() ?? '');
+    _showNumberInputDialog(
+      context,
+      title: 'Update Height',
+      label: 'Height (cm)',
+      controller: controller,
+      onSave: (val) => storage.updateHeight(val),
+    );
+  }
+
+  void _showNumberInputDialog(
+    BuildContext context, {
+    required String title,
+    required String label,
+    required TextEditingController controller,
+    required Function(double) onSave,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(title, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: label,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  final val = double.tryParse(controller.text);
+                  if (val != null) {
+                    onSave(val);
+                    Navigator.pop(ctx);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.accentPink,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                ),
+                child: const Text('Save'),
+              ),
+            ],
+          ),
         ),
       ),
     );

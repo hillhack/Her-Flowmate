@@ -138,7 +138,7 @@ class HistoryScreen extends StatelessWidget {
                                           lineBarsData: [
                                             LineChartBarData(
                                               spots:
-                                                  logs.asMap().entries.map((e) {
+                                                  logs.reversed.toList().asMap().entries.map((e) {
                                                     return FlSpot(
                                                       e.key.toDouble(),
                                                       e.value.duration
@@ -237,7 +237,7 @@ class HistoryScreen extends StatelessWidget {
                           padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
                           sliver: SliverList(
                             delegate: SliverChildBuilderDelegate((ctx, i) {
-                              final log = logs[logs.length - 1 - i];
+                              final log = logs[i];
                               final dailyLog = storage.getDailyLog(
                                 log.startDate,
                               );

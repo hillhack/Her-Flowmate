@@ -20,6 +20,12 @@ class User extends HiveObject {
   @HiveField(5)
   final double? height;
 
+  @HiveField(6)
+  final bool periodNotifications;
+
+  @HiveField(7)
+  final bool healthNotifications;
+
   User({
     required this.name,
     required this.age,
@@ -27,6 +33,8 @@ class User extends HiveObject {
     this.imagePath,
     this.weight,
     this.height,
+    this.periodNotifications = true,
+    this.healthNotifications = true,
   });
 
   Map<String, dynamic> toJson() => {
@@ -36,6 +44,8 @@ class User extends HiveObject {
     'photo_url': imagePath, // backend field name
     'weight': weight,
     'height': height,
+    'period_notifications': periodNotifications,
+    'health_notifications': healthNotifications,
   };
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -46,6 +56,8 @@ class User extends HiveObject {
     imagePath: (json['photo_url'] ?? json['imagePath']) as String?,
     weight: (json['weight'] as num?)?.toDouble(),
     height: (json['height'] as num?)?.toDouble(),
+    periodNotifications: (json['period_notifications'] as bool?) ?? true,
+    healthNotifications: (json['health_notifications'] as bool?) ?? true,
   );
 
   User copyWith({
@@ -55,6 +67,8 @@ class User extends HiveObject {
     String? imagePath,
     double? weight,
     double? height,
+    bool? periodNotifications,
+    bool? healthNotifications,
   }) => User(
     name: name ?? this.name,
     age: age ?? this.age,
@@ -62,6 +76,8 @@ class User extends HiveObject {
     imagePath: imagePath ?? this.imagePath,
     weight: weight ?? this.weight,
     height: height ?? this.height,
+    periodNotifications: periodNotifications ?? this.periodNotifications,
+    healthNotifications: healthNotifications ?? this.healthNotifications,
   );
 
   bool validate() {
@@ -89,13 +105,15 @@ class UserAdapter extends TypeAdapter<User> {
       imagePath: fields[3] as String?,
       weight: fields[4] as double?,
       height: fields[5] as double?,
+      periodNotifications: (fields[6] as bool?) ?? true,
+      healthNotifications: (fields[7] as bool?) ?? true,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -107,6 +125,10 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(4)
       ..write(obj.weight)
       ..writeByte(5)
-      ..write(obj.height);
+      ..write(obj.height)
+      ..writeByte(6)
+      ..write(obj.periodNotifications)
+      ..writeByte(7)
+      ..write(obj.healthNotifications);
   }
 }

@@ -16,32 +16,19 @@ class HealthTrackerService extends ChangeNotifier {
     await Hive.openBox<DailyLog>(dailyBoxName);
   }
 
+  String _dateKey(DateTime date) =>
+      "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+
   DailyLog? getDailyLog(DateTime date) {
     try {
-      return _dailyBox.values.firstWhere(
-        (log) =>
-            log.date.year == date.year &&
-            log.date.month == date.month &&
-            log.date.day == date.day,
-      );
+      return _dailyBox.get(_dateKey(date));
     } catch (_) {
       return null;
     }
   }
 
   Future<void> saveDailyLog(DailyLog log) async {
-    final existingKey = _dailyBox.keys.firstWhere((k) {
-      final existing = _dailyBox.get(k);
-      return existing != null &&
-          existing.date.year == log.date.year &&
-          existing.date.month == log.date.month &&
-          existing.date.day == log.date.day;
-    }, orElse: () => null);
-
-    if (existingKey != null) {
-      await _dailyBox.delete(existingKey);
-    }
-    await _dailyBox.add(log);
+    await _dailyBox.put(_dateKey(log.date), log);
     notifyListeners();
   }
 
@@ -61,11 +48,14 @@ class HealthTrackerService extends ChangeNotifier {
 
   int getCheckinStreak() {
     int streak = 0;
-    DateTime day = DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-    );
+    DateTime today = DateTime.now();
+    DateTime day = DateTime(today.year, today.month, today.day);
+
+    // If today is not logged, check if yesterday was logged to continue the streak
+    if (getDailyLog(day) == null) {
+      day = day.subtract(const Duration(days: 1));
+    }
+
     while (true) {
       final log = getDailyLog(day);
       if (log == null) break;
@@ -103,9 +93,16 @@ class HealthTrackerService extends ChangeNotifier {
         }
         final remoteLogs = data.map((json) => DailyLog.fromJson(json)).toList();
 
-        await _dailyBox.clear();
-        await _dailyBox.addAll(remoteLogs);
-        notifyListeners();
+        // Safe replacement: Clear only after remote logs are ready
+        // Guard: only clear local data if remote returned actual logs to prevent accidental wipe
+        if (remoteLogs.isNotEmpty) {
+          final map = {for (var l in remoteLogs) _dateKey(l.date): l};
+          await _dailyBox.clear();
+          await _dailyBox.putAll(map);
+          notifyListeners();
+        } else {
+          debugPrint('Remote daily logs were empty - keeping local data.');
+        }
       }
     } catch (e) {
       debugPrint('Error fetching daily logs: $e');

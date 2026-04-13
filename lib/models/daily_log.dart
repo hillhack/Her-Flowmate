@@ -103,15 +103,15 @@ class DailyLogAdapter extends TypeAdapter<DailyLog> {
       date: fields[0] as DateTime,
       moods: (fields[1] as List?)?.cast<String>(),
       symptoms: (fields[2] as List?)?.cast<String>(),
-      waterIntake: fields[3] as int?,
+      waterIntake: (fields[3] as num?)?.toInt(),
       notes: fields[4] as String?,
       flowIntensity: fields[5] as String?,
       physicalActivity: (fields[6] as List?)?.cast<String>(),
-      sleepHours: fields[7] as double?,
-      energyLevel: fields[8] as int?,
-      stressLevel: fields[9] as int?,
-      basalBodyTemperature: fields[10] as double?,
-      stepsCount: fields[11] as int?,
+      sleepHours: (fields[7] as num?)?.toDouble(),
+      energyLevel: (fields[8] as num?)?.toInt(),
+      stressLevel: (fields[9] as num?)?.toInt(),
+      basalBodyTemperature: (fields[10] as num?)?.toDouble(),
+      stepsCount: (fields[11] as num?)?.toInt(),
     );
   }
 

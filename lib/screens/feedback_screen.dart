@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
 import '../widgets/brand_widgets.dart';
+import '../services/api_service.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -15,6 +17,7 @@ class FeedbackScreen extends StatefulWidget {
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
   final TextEditingController _feedbackController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -33,20 +36,52 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       return;
     }
 
+    setState(() => _isLoading = true);
+
+    // Try API first
+    try {
+      final response = await ApiService.post('/feedback', {
+        'message': text,
+        'platform': Platform.isAndroid ? 'Android' : (Platform.isIOS ? 'iOS' : 'Web'),
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        setState(() => _isLoading = false);
+        _feedbackController.clear();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Feedback sent! Thank you 💌')),
+          );
+          Navigator.pop(context);
+        }
+        return;
+      }
+    } catch (e) {
+      debugPrint('API Feedback Error: $e');
+    }
+
+    // Fallback to mailto
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: 'herflowmate.app@gmail.com',
-      query: 'subject=App Feedback from HerFlowmate&body=$text',
+      queryParameters: {
+        'subject': 'App Feedback from HerFlowmate',
+        'body': text,
+      },
     );
 
     try {
       if (await canLaunchUrl(emailUri)) {
         await launchUrl(emailUri);
+        if (mounted) Navigator.pop(context);
       } else {
         _showSuccessFallback();
       }
     } catch (_) {
       _showSuccessFallback();
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -183,13 +218,19 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   type: ContainerType.glass,
                   radius: 20,
                   child: ElevatedButton.icon(
-                    onPressed: _sendFeedback,
-                    icon: const Icon(
-                      Icons.send_rounded,
-                      color: AppTheme.accentPink,
-                    ),
+                    onPressed: _isLoading ? null : _sendFeedback,
+                    icon: _isLoading 
+                      ? const SizedBox(
+                          width: 20, 
+                          height: 20, 
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.accentPink)
+                        )
+                      : const Icon(
+                          Icons.send_rounded,
+                          color: AppTheme.accentPink,
+                        ),
                     label: Text(
-                      'Submit Feedback',
+                      _isLoading ? 'Sending...' : 'Submit Feedback',
                       style: GoogleFonts.inter(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,

@@ -23,7 +23,7 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     Widget content = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -67,10 +67,13 @@ class PrimaryButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: (onTap == null || isLoading) ? null : () {
-            HapticFeedback.lightImpact();
-            onTap!();
-          },
+          onTap:
+              (onTap == null || isLoading)
+                  ? null
+                  : () {
+                    HapticFeedback.lightImpact();
+                    onTap!();
+                  },
           borderRadius: BorderRadius.circular(AppDesignTokens.radiusLG),
           child: Ink(
             height: AppDesignTokens.buttonHeight,
@@ -81,9 +84,19 @@ class PrimaryButton extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppDesignTokens.radiusLG),
               gradient: isSecondary ? null : AppTheme.brandGradient,
-              color: isSecondary ? colorScheme.primary.withValues(alpha: 0.1) : null,
-              border: isSecondary ? Border.all(color: colorScheme.primary.withValues(alpha: 0.5), width: 1.5) : null,
-              boxShadow: isSecondary ? null : AppDesignTokens.neuShadow(context),
+              color:
+                  isSecondary
+                      ? colorScheme.primary.withValues(alpha: 0.1)
+                      : null,
+              border:
+                  isSecondary
+                      ? Border.all(
+                        color: colorScheme.primary.withValues(alpha: 0.5),
+                        width: 1.5,
+                      )
+                      : null,
+              boxShadow:
+                  isSecondary ? null : AppDesignTokens.neuShadow(context),
             ),
             child: Center(child: content),
           ),

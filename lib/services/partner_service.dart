@@ -6,7 +6,7 @@ class PartnerService {
   /// Returns a map with 'code' and 'expiry' (ISO string).
   static Future<Map<String, dynamic>?> generateSyncCode() async {
     final response = await ApiService.post('/partner/generate-code', {});
-    
+
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
     }
@@ -18,14 +18,14 @@ class PartnerService {
     final response = await ApiService.post('/partner/connect', {
       'code': code.replaceAll('-', ''), // Send clean code
     });
-    
+
     return response.statusCode == 200 || response.statusCode == 201;
   }
 
   /// Fetches the partner's current phase info.
   static Future<Map<String, dynamic>?> getPartnerStatus() async {
     final response = await ApiService.get('/partner/status');
-    
+
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as Map<String, dynamic>;
     }

@@ -65,7 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 tag: 'brand_logo_login',
                                 child: BrandLogo(
                                   size: isSmall ? 80 : 100,
-                                  imagePath: 'assets/images/feature_graphic.png',
+                                  imagePath:
+                                      'assets/images/feature_graphic.png',
                                   showName: true,
                                   nameFontSize: AppTheme.adaptiveFontSize(
                                     context,
@@ -79,9 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: Theme.of(
                                   context,
                                 ).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.7),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -126,9 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                         icon: Icons.person_outline_rounded,
                                         isSecondary: true,
                                         isLoading: false,
-                                        onTap: _isLoading
-                                            ? null
-                                            : () => _handleLogin(context, false),
+                                        onTap:
+                                            _isLoading
+                                                ? null
+                                                : () => _handleLogin(
+                                                  context,
+                                                  false,
+                                                ),
                                       ),
                                     ).animate().fadeIn(delay: 500.ms),
                                   ],
@@ -147,7 +151,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.lock_rounded,
@@ -247,9 +252,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 16),
                         Text(
                           'Authenticating...',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -289,7 +293,10 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         final userData = await GoogleAuthService.authenticateWithBackend(token);
-        name = userData?['display_name'] ?? userData?['name'] ?? userData?['given_name'];
+        name =
+            userData?['display_name'] ??
+            userData?['name'] ??
+            userData?['given_name'];
       }
 
       if (!context.mounted) return;

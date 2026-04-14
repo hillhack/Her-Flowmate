@@ -8,8 +8,10 @@ class AppResponsive {
     if (w < 400) return 16;
     return 24;
   }
-  
-  static bool isSmall(BuildContext context) => MediaQuery.of(context).size.width < 360;
-  
-  static double font(BuildContext context, double base) => AppTheme.adaptiveFontSize(context, base);
+
+  static bool isSmall(BuildContext context) =>
+      MediaQuery.of(context).size.width < 360;
+
+  static double font(BuildContext context, double base) =>
+      AppTheme.adaptiveFontSize(context, base);
 }

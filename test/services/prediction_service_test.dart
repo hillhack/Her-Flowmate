@@ -6,9 +6,13 @@ import 'package:her_flowmate/services/storage_service.dart';
 class FakeStorageService extends StorageService {
   FakeStorageService() : super.internal();
   List<PeriodLog> logs = [];
+  int fakeCycleLength = 28;
 
   @override
   List<PeriodLog> getLogs() => logs;
+
+  @override
+  int get avgCycleLengthPreference => fakeCycleLength;
 }
 
 void main() {

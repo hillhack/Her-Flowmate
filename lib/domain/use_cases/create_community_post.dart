@@ -6,7 +6,10 @@ class CreateCommunityPost {
 
   CreateCommunityPost(this.repository);
 
-  Future<void> execute({required String content, required String category}) async {
+  Future<void> execute({
+    required String content,
+    required String category,
+  }) async {
     return repository.createPost(content: content, category: category);
   }
 }

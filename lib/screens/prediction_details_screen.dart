@@ -19,7 +19,10 @@ class PredictionDetailsScreen extends StatelessWidget {
             type: ContainerType.glass,
             padding: const EdgeInsets.all(8),
             radius: 12,
-            child: Icon(Icons.arrow_back_rounded, color: Theme.of(context).colorScheme.onSurface),
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -116,11 +119,7 @@ class PredictionDetailsScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 20,
-                ),
+                child: Icon(icon, color: Colors.white, size: 20),
               ),
             ],
           ),

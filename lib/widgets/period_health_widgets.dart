@@ -9,9 +9,9 @@ class PeriodHealthModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppTheme.frameColor,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
       ),
       padding: const EdgeInsets.only(top: 16),
       child: ThemedContainer(
@@ -29,7 +29,7 @@ class PeriodHealthModal extends StatelessWidget {
                     width: 48,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: AppTheme.textSecondary.withValues(alpha: 0.2),
+                      color: context.secondaryText.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
@@ -41,7 +41,7 @@ class PeriodHealthModal extends StatelessWidget {
                   style: GoogleFonts.poppins(
                     fontSize: 26,
                     fontWeight: FontWeight.w800,
-                    color: AppTheme.textDark,
+                    color: context.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -50,14 +50,14 @@ class PeriodHealthModal extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     fontSize: 15,
-                    color: AppTheme.textSecondary,
+                    color: context.secondaryText,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 32),
 
                 // Period Color Section
-                _buildSectionTitle('🩸', 'Period Color'),
+                _buildSectionTitle(context, '🩸', 'Period Color'),
                 const SizedBox(height: 16),
                 ThemedContainer(
                   type: ContainerType.neu,
@@ -74,17 +74,19 @@ class PeriodHealthModal extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // Clots Section
-                _buildSectionTitle('🔬', 'Clots'),
+                _buildSectionTitle(context, '🔬', 'Clots'),
                 const SizedBox(height: 16),
                 _buildInfoCard(
+                  context,
                   'Small clots (size of a penny or smaller) are usually normal and happen when the blood is shedding quickly. If you see large clots (larger than a quarter), it might be worth mentioning to your doctor.',
                 ),
                 const SizedBox(height: 32),
 
                 // Pain Level Section
-                _buildSectionTitle('📉', 'Pain Level'),
+                _buildSectionTitle(context, '📉', 'Pain Level'),
                 const SizedBox(height: 16),
                 _buildInfoCard(
+                  context,
                   'Mild cramping is common and can often be managed with heat or gentle movement. However, debilitating pain that prevents daily activities is not "normal" and should be discussed with a healthcare professional.',
                 ),
 
@@ -116,7 +118,7 @@ class PeriodHealthModal extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String emoji, String title) {
+  Widget _buildSectionTitle(BuildContext context, String emoji, String title) {
     return Row(
       children: [
         Text(emoji, style: const TextStyle(fontSize: 20)),
@@ -126,14 +128,14 @@ class PeriodHealthModal extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w800,
-            color: AppTheme.textDark,
+            color: context.onSurface,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildInfoCard(String text) {
+  Widget _buildInfoCard(BuildContext context, String text) {
     return ThemedContainer(
       type: ContainerType.neu,
       radius: 24,
@@ -144,7 +146,7 @@ class PeriodHealthModal extends StatelessWidget {
         style: GoogleFonts.inter(
           fontSize: 14,
           height: 1.6,
-          color: AppTheme.textDark.withValues(alpha: 0.8),
+          color: context.onSurface.withValues(alpha: 0.8),
           fontWeight: FontWeight.w500,
         ),
       ),

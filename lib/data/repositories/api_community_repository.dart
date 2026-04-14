@@ -8,7 +8,7 @@ class ApiCommunityRepository implements ICommunityRepository {
   @override
   Future<List<CommunityPost>> getFeedPosts() async {
     final response = await ApiService.get('/community/posts');
-    
+
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => CommunityPost.fromJson(json)).toList();
@@ -20,14 +20,17 @@ class ApiCommunityRepository implements ICommunityRepository {
   @override
   Future<void> likePost(String postId) async {
     final response = await ApiService.post('/community/posts/$postId/like', {});
-    
+
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Failed to like post: ${response.statusCode}');
     }
   }
 
   @override
-  Future<void> createPost({required String content, required String category}) async {
+  Future<void> createPost({
+    required String content,
+    required String category,
+  }) async {
     final response = await ApiService.post('/community/posts', {
       'content': content,
       'category': category,

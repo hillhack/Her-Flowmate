@@ -38,7 +38,7 @@ class User extends HiveObject {
   });
 
   Map<String, dynamic> toJson() => {
-    'display_name': name,  // backend field name
+    'display_name': name, // backend field name
     'age': age,
     'goal': goal,
     'photo_url': imagePath, // backend field name

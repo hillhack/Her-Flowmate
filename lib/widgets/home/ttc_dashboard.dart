@@ -10,6 +10,7 @@ import '../../screens/daily_checkin_screen.dart';
 import '../common/neu_card.dart';
 import '../common/primary_button.dart';
 import '../../models/period_log.dart';
+import 'dashboard_calendar_strip.dart';
 
 class TTCDashboard extends StatelessWidget {
   final StorageService storage;
@@ -29,7 +30,10 @@ class TTCDashboard extends StatelessWidget {
         child: Center(
           child: Text(
             'Log your period to see fertility insights',
-            style: AppTheme.outfit(context: context, fontSize: AppDesignTokens.bodyLargeSize),
+            style: AppTheme.outfit(
+              context: context,
+              fontSize: AppDesignTokens.bodyLargeSize,
+            ),
           ),
         ),
       );
@@ -37,8 +41,16 @@ class TTCDashboard extends StatelessWidget {
 
     return Column(
       children: [
-        _buildTopMetricsRow(context),
+        // ── 1. Interactive Calendar Strip (Central Focus) ─────────────
+        DashboardCalendarStrip(
+          pred: pred,
+          storage: storage,
+          onDateSelected: (date) {
+            // Future: Open fertility details for that date
+          },
+        ).animate().fadeIn(duration: 400.ms),
         const SizedBox(height: AppDesignTokens.space24),
+
         _buildPrimaryInsight(context),
         const SizedBox(height: AppDesignTokens.space24),
         _buildConceptionTipsCard(context, pred),
@@ -48,107 +60,6 @@ class TTCDashboard extends StatelessWidget {
         _buildRecentActivity(context),
       ],
     );
-  }
-
-  Widget _buildTopMetricsRow(BuildContext context) {
-    final ovDays = pred.daysUntilOvulation;
-    final ovStr =
-        ovDays == 0 ? 'Today' : (ovDays > 0 ? 'in $ovDays d' : 'Passed');
-
-    // Estimate fertile window dates: approx 5 days before ovulation
-    final today = DateTime.now();
-    final ovDate = today.add(Duration(days: ovDays > 0 ? ovDays : 0));
-    final windowStart = ovDate.subtract(const Duration(days: 5));
-    final windowEnd = ovDate.add(const Duration(days: 1));
-
-    String windowText =
-        '${DateFormat('MMM d').format(windowStart)} - ${DateFormat('MMM d').format(windowEnd)}';
-    if (ovDays < 0) windowText = 'TBD';
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 360) {
-          return Column(
-            children: [
-              _metricCard(context, label: 'Fertile Window', value: windowText, delay: 0),
-              const SizedBox(height: AppDesignTokens.space8),
-              _metricCard(context, label: 'Ovulation', value: ovStr, delay: 100),
-              const SizedBox(height: AppDesignTokens.space8),
-              _metricCard(context, label: 'Peak Fertility', value: '${pred.currentConceptionChance}%', delay: 200),
-            ],
-          );
-        }
-        return Row(
-          children: [
-            Expanded(
-              child: _metricCard(
-                context,
-                label: 'Fertile Window',
-                value: windowText,
-                delay: 0,
-              ),
-            ),
-            const SizedBox(width: AppDesignTokens.space8),
-            Expanded(
-              child: _metricCard(
-                context,
-                label: 'Ovulation',
-                value: ovStr,
-                delay: 100,
-              ),
-            ),
-            const SizedBox(width: AppDesignTokens.space8),
-            Expanded(
-              child: _metricCard(
-                context,
-                label: 'Peak Fertility',
-                value: '${pred.currentConceptionChance}%',
-                delay: 200,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _metricCard(
-    BuildContext context, {
-    required String label,
-    required String value,
-    required int delay,
-  }) {
-    return NeumorphicCard(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: AppDesignTokens.labelSize,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: AppDesignTokens.space4),
-          Text(
-            value,
-            style: GoogleFonts.poppins(
-              fontSize: AppDesignTokens.bodySize,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: delay.ms).slideY(begin: 0.1);
   }
 
   Widget _buildPrimaryInsight(BuildContext context) {
@@ -320,7 +231,10 @@ class TTCDashboard extends StatelessWidget {
     ).animate().fadeIn(delay: 500.ms);
   }
 
-  Widget _buildConceptionTipsCard(BuildContext context, PredictionService pred) {
+  Widget _buildConceptionTipsCard(
+    BuildContext context,
+    PredictionService pred,
+  ) {
     final chance = pred.currentConceptionChance;
     final day = pred.currentCycleDay;
 
@@ -391,11 +305,7 @@ class _TipIcon extends StatelessWidget {
         color: color.withValues(alpha: 0.15),
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        icon,
-        color: color,
-        size: 28,
-      ),
+      child: Icon(icon, color: color, size: 28),
     );
   }
 }
@@ -424,7 +334,9 @@ class _TipTexts extends StatelessWidget {
           tip,
           style: GoogleFonts.inter(
             fontSize: 13,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.7),
             height: 1.4,
           ),
         ),

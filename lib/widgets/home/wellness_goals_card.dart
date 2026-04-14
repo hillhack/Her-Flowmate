@@ -9,7 +9,11 @@ import '../themed_container.dart';
 class WellnessGoalsCard extends StatelessWidget {
   final StorageService storage;
   final String heroTag;
-  const WellnessGoalsCard({super.key, required this.storage, this.heroTag = 'wellness_goals'});
+  const WellnessGoalsCard({
+    super.key,
+    required this.storage,
+    this.heroTag = 'wellness_goals',
+  });
 
   @override
   Widget build(BuildContext context) {

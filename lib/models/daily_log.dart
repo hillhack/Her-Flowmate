@@ -87,6 +87,36 @@ class DailyLog extends HiveObject {
     basalBodyTemperature: (json['basalBodyTemperature'] as num?)?.toDouble(),
     stepsCount: json['stepsCount'] as int?,
   );
+
+  DailyLog copyWith({
+    DateTime? date,
+    List<String>? moods,
+    List<String>? symptoms,
+    int? waterIntake,
+    String? notes,
+    String? flowIntensity,
+    List<String>? physicalActivity,
+    double? sleepHours,
+    int? energyLevel,
+    int? stressLevel,
+    double? basalBodyTemperature,
+    int? stepsCount,
+  }) {
+    return DailyLog(
+      date: date ?? this.date,
+      moods: moods ?? this.moods,
+      symptoms: symptoms ?? this.symptoms,
+      waterIntake: waterIntake ?? this.waterIntake,
+      notes: notes ?? this.notes,
+      flowIntensity: flowIntensity ?? this.flowIntensity,
+      physicalActivity: physicalActivity ?? this.physicalActivity,
+      sleepHours: sleepHours ?? this.sleepHours,
+      energyLevel: energyLevel ?? this.energyLevel,
+      stressLevel: stressLevel ?? this.stressLevel,
+      basalBodyTemperature: basalBodyTemperature ?? this.basalBodyTemperature,
+      stepsCount: stepsCount ?? this.stepsCount,
+    );
+  }
 }
 
 class DailyLogAdapter extends TypeAdapter<DailyLog> {

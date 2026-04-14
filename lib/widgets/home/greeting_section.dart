@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../services/storage_service.dart';
+import '../../utils/app_theme.dart';
 
 class GreetingSection extends StatelessWidget {
   final StorageService storage;
@@ -12,17 +12,16 @@ class GreetingSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final hour = DateTime.now().hour;
     String greeting = 'Good Morning';
-    String emoji = '☀️';
+    String emoji = '🌸';
     if (hour >= 12 && hour < 17) {
       greeting = 'Good Afternoon';
-      emoji = '🌤️';
+      emoji = '✨';
     } else if (hour >= 17 || hour < 5) {
       greeting = 'Good Evening';
       emoji = '🌙';
     }
 
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final name = storage.userName.split(' ').first;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -31,25 +30,31 @@ class GreetingSection extends StatelessWidget {
         Row(
           children: [
             Text(
-              '$emoji $greeting, ',
-              style: GoogleFonts.inter(
+              '$emoji $greeting',
+              style: AppTheme.outfit(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface.withValues(alpha: 0.6),
-                letterSpacing: 0.5,
+                color: context.secondaryText,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 2),
-        Text(
-          '${storage.userName.split(' ').first}!',
-          style: GoogleFonts.poppins(
-            fontSize: 28,
+        const SizedBox(height: 4),
+        AppTheme.isSmallScreen(context)
+        ? Text(
+          '$name!',
+          style: AppTheme.playfair(
+            fontSize: 32,
             fontWeight: FontWeight.w900,
-            color: colorScheme.onSurface,
-            height: 1.0,
-            letterSpacing: -0.5,
+            color: context.onSurface,
+          ),
+        )
+        : Text(
+          '$name, welcome back',
+          style: AppTheme.playfair(
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+            color: context.onSurface,
           ),
         ),
       ],

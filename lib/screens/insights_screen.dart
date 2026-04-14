@@ -6,20 +6,20 @@ import '../services/prediction_service.dart';
 import '../services/storage_service.dart';
 import '../models/period_log.dart';
 import '../utils/app_theme.dart';
-import '../widgets/cycle_phase_wheel.dart';
 import '../widgets/themed_container.dart';
+import '../widgets/shared_app_bar.dart';
 import '../widgets/cycle_widgets.dart';
-import 'package:fl_chart/fl_chart.dart';
+
 
 class InsightsScreen extends StatefulWidget {
-  const InsightsScreen({super.key});
+  final VoidCallback? onMenuPressed;
+  const InsightsScreen({super.key, this.onMenuPressed});
 
   @override
   State<InsightsScreen> createState() => _InsightsScreenState();
 }
 
 class _InsightsScreenState extends State<InsightsScreen> {
-  int? _selectedHormoneDay;
 
   @override
   Widget build(BuildContext context) {
@@ -27,177 +27,72 @@ class _InsightsScreenState extends State<InsightsScreen> {
     final storage = context.watch<StorageService>();
     final logs = storage.getLogs();
 
-    final cycleDay = pred.currentCycleDay == 0 ? 1 : pred.currentCycleDay;
-    final cycleLen = pred.averageCycleLength > 0 ? pred.averageCycleLength : 28;
-    final phaseName = pred.phaseDisplayName;
-    final daysToNext = pred.daysUntilNextPeriod;
-
     return Scaffold(
-      backgroundColor: AppTheme.frameColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const ThemedContainer(
-              type: ContainerType.neu,
-              radius: 12,
-              padding: EdgeInsets.zero,
-              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
-            ),
-          ),
-        ),
-        title: Text(
-          'Cycle Insights',
-          style: GoogleFonts.poppins(
-            color: AppTheme.textDark,
-            fontWeight: FontWeight.w800,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: true,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      appBar: SharedAppBar(
+        title: 'Cycle Insights',
+        onMenuPressed: widget.onMenuPressed,
       ),
-      body: SafeArea(
+      body: Container(
+        decoration: AppTheme.getBackgroundDecoration(context),
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: EdgeInsets.only(
+            top: kToolbarHeight + MediaQuery.of(context).padding.top + 16,
+            left: 20,
+            right: 20,
+            bottom: 40,
+          ),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.stretch, // Changed to stretch for charts
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Large Phase Wheel
-              CyclePhaseWheel(
-                    currentCycleDay: cycleDay,
-                    cycleLength: cycleLen,
-                    currentPhase: phaseName,
-                    daysUntilNextPeriod: daysToNext,
-                  )
-                  .animate()
-                  .fadeIn(duration: 800.ms)
-                  .scale(curve: Curves.easeOutBack),
+              _buildFlowmateScore(pred).animate().fadeIn(duration: 500.ms).slideY(begin: 0.1),
+              const SizedBox(height: 24),
 
-              const SizedBox(height: 40),
-              const _DailyInsightCard().animate().fadeIn(delay: 400.ms),
-              const SizedBox(height: 32),
-
-              // Scores Row
-              Row(
-                    children: [
-                      Expanded(
-                        child: _buildScoreCard(
-                          'Avg Cycle',
-                          '${pred.averageCycleLength}d',
-                          Icons.sync_rounded,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildScoreCard(
-                          'Avg Period',
-                          '${_getAveragePeriodLength(logs)}d',
-                          Icons.water_drop_rounded,
-                        ),
-                      ),
-                    ],
-                  )
-                  .animate()
-                  .fadeIn(delay: 500.ms, duration: 600.ms)
-                  .slideY(begin: 0.1),
-
-              const SizedBox(height: 32),
-
-              // Data Visualizations
               Text(
-                'Cycle History',
-                style: GoogleFonts.poppins(
+                'Cycle Statistics',
+                style: AppTheme.outfit(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
+                  color: context.onSurface,
                 ),
-              ).animate().fadeIn(delay: 550.ms),
-              const SizedBox(height: 16),
-              _buildCycleChart(
-                logs,
-              ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.1),
-
-              const SizedBox(height: 32),
-
-              _buildFlowmateScore(
-                pred,
-              ).animate().fadeIn(delay: 650.ms).slideY(begin: 0.1),
-
-              const SizedBox(height: 48),
-
-              // Hormone Trends Section
-              Text(
-                'Hormone Trends',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
-                ),
-              ).animate().fadeIn(delay: 700.ms),
-              const SizedBox(height: 16),
-              HormoneGraph(
-                pred: pred,
-                onDaySelected: (day) {
-                  setState(() => _selectedHormoneDay = day);
-                },
-              ).animate().fadeIn(delay: 750.ms).slideY(begin: 0.1),
-
-              const SizedBox(height: 16),
-              HormoneFocusWidget(
-                pred: pred,
-                day: _selectedHormoneDay,
               ),
-
-              const SizedBox(height: 32),
-              PhaseHealthTipsWidget(pred: pred)
-                  .animate()
-                  .fadeIn(delay: 800.ms)
-                  .slideY(begin: 0.1),
-
-              const SizedBox(height: 48),
-
-              Text(
-                'Symptom Frequency',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
-                ),
-              ).animate().fadeIn(delay: 850.ms),
               const SizedBox(height: 16),
-              _buildSymptomStats(
-                logs,
-              ).animate().fadeIn(delay: 900.ms).slideY(begin: 0.1),
-
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildScoreCard(
+                      'Avg Cycle',
+                      '${pred.averageCycleLength}d',
+                      Icons.sync_rounded,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildScoreCard(
+                      'Avg Period',
+                      '${_getAveragePeriodLength(logs)}d',
+                      Icons.water_drop_rounded,
+                    ),
+                  ),
+                ],
+              ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.05),
               const SizedBox(height: 32),
 
+              const _DailyInsightCard().animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.95, 0.95)),
+              const SizedBox(height: 32),
+
               Text(
-                'Mood Analytics',
-                style: GoogleFonts.poppins(
+                'Wellness Advice',
+                style: AppTheme.outfit(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  color: AppTheme.textDark,
+                  color: context.onSurface,
                 ),
-              ).animate().fadeIn(delay: 950.ms),
-              const SizedBox(height: 5),
-              Text(
-                'Last 30 days',
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  color: AppTheme.textSecondary,
-                ),
-              ).animate().fadeIn(delay: 970.ms),
+              ),
               const SizedBox(height: 16),
-              _buildMoodChart(
-                storage,
-              ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.1),
-
-              const SizedBox(height: 120),
+              PhaseHealthTipsWidget(pred: pred).animate().fadeIn(delay: 600.ms),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -205,574 +100,76 @@ class _InsightsScreenState extends State<InsightsScreen> {
     );
   }
 
+
   int _getAveragePeriodLength(List<PeriodLog> logs) {
     if (logs.isEmpty) return 5;
-    int total = 0;
-    for (var log in logs) {
-      total += log.duration;
-    }
+    int total = logs.fold(0, (sum, log) => sum + log.duration);
     return (total / logs.length).round();
   }
 
   Widget _buildScoreCard(String title, String value, IconData icon) {
-    return ThemedContainer(
-      type: ContainerType.neu,
-      radius: 28,
+    return Container(
       padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: context.surface.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppTheme.accentPink.withValues(alpha: 0.1)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppTheme.accentPink.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: AppTheme.accentPink, size: 24),
-          ),
+          Icon(icon, color: AppTheme.accentPink, size: 24),
           const SizedBox(height: 16),
-          Text(
-            value,
-            style: GoogleFonts.poppins(
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              color: AppTheme.textDark,
-            ),
-          ),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              fontSize: 13,
-              color: AppTheme.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          Text(value, style: AppTheme.playfair(fontSize: 26, fontWeight: FontWeight.w900, color: context.onSurface)),
+          Text(title, style: AppTheme.outfit(fontSize: 12, color: context.secondaryText, fontWeight: FontWeight.w600)),
         ],
       ),
     );
   }
 
   Widget _buildFlowmateScore(PredictionService pred) {
-    // Compute a real score from available signals
-    final isRegular = !pred.isIrregularCycle;
     int score = _computeFlowmateScore(pred);
-
-    return ThemedContainer(
-      type: ContainerType.neu,
-      radius: 28,
+    return Container(
       padding: const EdgeInsets.all(24),
-      borderColor: AppTheme.accentPink.withValues(alpha: 0.3),
+      decoration: BoxDecoration(
+        color: AppTheme.accentPink.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: AppTheme.accentPink.withValues(alpha: 0.1)),
+      ),
       child: Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Flowmate Score',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: AppTheme.textSecondary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  '$score',
-                  style: GoogleFonts.outfit(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                    color: AppTheme.textDark,
-                    height: 1.0,
-                  ),
-                ),
+                Text('Flowmate Score', style: AppTheme.outfit(fontSize: 14, fontWeight: FontWeight.w700, color: context.secondaryText)),
+                Text('$score', style: AppTheme.playfair(fontSize: 48, fontWeight: FontWeight.w900, color: context.onSurface)),
                 const SizedBox(height: 8),
                 Text(
-                  isRegular
-                      ? 'Your cycle is highly regular. Keep logging!'
-                      : 'Your cycle shows some variation. This is normal!',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    color: AppTheme.textDark,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  'Your daily health index based on symptoms and regularity.',
+                  style: AppTheme.outfit(fontSize: 13, color: context.secondaryText),
                 ),
               ],
             ),
           ),
           Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppTheme.accentPink.withValues(alpha: 0.1),
-            ),
-            child: Center(
-              child: Icon(
-                isRegular ? Icons.check_circle_rounded : Icons.info_rounded,
-                color: AppTheme.accentPink,
-                size: 40,
-              ),
-            ),
+            width: 70, height: 70,
+            decoration: BoxDecoration(color: AppTheme.accentPink.withValues(alpha: 0.1), shape: BoxShape.circle),
+            child: const Icon(Icons.auto_awesome_rounded, color: AppTheme.accentPink, size: 32),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCycleChart(List<PeriodLog> logs) {
-    List<int> cycleLengths = [];
-    for (int i = 0; i < logs.length - 1 && cycleLengths.length < 6; i++) {
-      final currentStart = logs[i].startDate;
-      final previousStart = logs[i + 1].startDate;
-      final diff = previousStart.difference(currentStart).inDays.abs();
-      if (diff > 15 && diff < 90) {
-        cycleLengths.insert(0, diff); // Reverse for chronological order
-      }
-    }
-
-    return ThemedContainer(
-      type: ContainerType.neu,
-      radius: 28,
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Last Cycles (Days)',
-            style: GoogleFonts.inter(
-              fontSize: 14,
-              color: AppTheme.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            height: 200,
-            child:
-                cycleLengths.isEmpty
-                    ? Center(
-                      child: Text(
-                        'Log more periods to see chart',
-                        style: GoogleFonts.inter(color: AppTheme.textSecondary),
-                      ),
-                    )
-                    : LayoutBuilder(
-                      builder: (context, constraints) {
-                        return BarChart(
-                          BarChartData(
-                            alignment: BarChartAlignment.spaceEvenly,
-                            maxY: 40,
-                            minY: 0,
-                            groupsSpace: 12,
-                            barTouchData: BarTouchData(
-                              touchTooltipData: BarTouchTooltipData(
-                                getTooltipColor: (_) => AppTheme.textDark,
-                                getTooltipItem: (
-                                  group,
-                                  groupIndex,
-                                  rod,
-                                  rodIndex,
-                                ) {
-                                  return BarTooltipItem(
-                                    '${rod.toY.toInt()} days',
-                                    GoogleFonts.inter(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            titlesData: FlTitlesData(
-                              show: true,
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: (value, meta) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                        'C${value.toInt() + 1}',
-                                        style: GoogleFonts.inter(
-                                          color: AppTheme.textSecondary,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              leftTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              topTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                              rightTitles: const AxisTitles(
-                                sideTitles: SideTitles(showTitles: false),
-                              ),
-                            ),
-                            gridData: FlGridData(
-                              show: true,
-                              drawVerticalLine: false,
-                              horizontalInterval: 10,
-                              getDrawingHorizontalLine:
-                                  (value) => FlLine(
-                                    color: AppTheme.shadowDark.withValues(
-                                      alpha: 0.2,
-                                    ),
-                                    strokeWidth: 1,
-                                    dashArray: [4, 4],
-                                  ),
-                            ),
-                            borderData: FlBorderData(show: false),
-                            barGroups: List.generate(cycleLengths.length, (i) {
-                              final val = cycleLengths[i].toDouble();
-                              return BarChartGroupData(
-                                x: i,
-                                barRods: [
-                                  BarChartRodData(
-                                    toY: val,
-                                    width:
-                                        constraints.maxWidth /
-                                        (cycleLengths.length * 2),
-                                    gradient: AppTheme.brandGradient,
-                                    borderRadius: const BorderRadius.vertical(
-                                      top: Radius.circular(6),
-                                    ),
-                                    backDrawRodData: BackgroundBarChartRodData(
-                                      show: true,
-                                      toY: 40,
-                                      color: AppTheme.shadowDark.withValues(
-                                        alpha: 0.3,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }),
-                          ),
-                          duration: 800.ms,
-                          curve: Curves.easeOutCubic,
-                        );
-                      },
-                    ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSymptomStats(List<PeriodLog> logs) {
-    Map<String, int> counts = {};
-    for (var log in logs) {
-      if (log.symptoms != null) {
-        for (var sym in log.symptoms!) {
-          counts[sym] = (counts[sym] ?? 0) + 1;
-        }
-      }
-    }
-
-    if (counts.isEmpty) {
-      return ThemedContainer(
-        type: ContainerType.neu,
-        radius: 28,
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Text(
-            'Log symptoms to see frequency.',
-            style: GoogleFonts.inter(
-              color: AppTheme.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      );
-    }
-
-    var entries =
-        counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-    int total = counts.values.fold(0, (sum, val) => sum + val);
-
-    return ThemedContainer(
-      type: ContainerType.neu,
-      radius: 28,
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children:
-            entries.take(5).map((entry) {
-              final pct = entry.value / total;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        entry.key,
-                        style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: AppTheme.textDark,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: AppTheme.shadowDark.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: pct,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppTheme.accentPink,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      '${(pct * 100).round()}%',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: AppTheme.textSecondary,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-      ),
-    );
-  }
-
-  /// Mood frequency bar chart for the last 30 days.
-  Widget _buildMoodChart(StorageService storage) {
-    // Collect mood counts from all daily logs
-    final cutoff = DateTime.now().subtract(const Duration(days: 30));
-    final moodCounts = <String, int>{};
-    for (final log in storage.getDailyLogs()) {
-      if (log.date.isBefore(cutoff)) continue;
-      for (final mood in (log.moods ?? [])) {
-        moodCounts[mood] = (moodCounts[mood] ?? 0) + 1;
-      }
-    }
-
-    if (moodCounts.isEmpty) {
-      return ThemedContainer(
-        type: ContainerType.neu,
-        radius: 24,
-        padding: const EdgeInsets.all(24),
-        child: Center(
-          child: Column(
-            children: [
-              const Text('🌸', style: TextStyle(fontSize: 32)),
-              const SizedBox(height: 12),
-              Text(
-                'No mood data yet.\nStart logging in daily check-in!',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.inter(
-                  color: AppTheme.textSecondary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    // Sort moods by frequency
-    final sorted =
-        moodCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
-    final moodColors = {
-      'Happy': const Color(0xFF66BB6A),
-      'Excited': const Color(0xFFFF9800),
-      'Sad': const Color(0xFF42A5F5),
-      'Anxious': const Color(0xFFFF686B),
-      'Irritable': const Color(0xFFFF7043),
-      'Calm': const Color(0xFF26C6DA),
-      'Tired': const Color(0xFFAB8FC0),
-      'Energetic': const Color(0xFFFFD54F),
-      'Romantic': const Color(0xFFFFA4C8),
-    };
-
-    final maxVal = sorted.first.value.toDouble();
-
-    return ThemedContainer(
-      type: ContainerType.neu,
-      radius: 24,
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 180,
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: maxVal * 1.3,
-                barTouchData: BarTouchData(
-                  enabled: true,
-                  touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => AppTheme.textDark,
-                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                      return BarTooltipItem(
-                        '${sorted[groupIndex].key}\n${rod.toY.toInt()} days',
-                        GoogleFonts.inter(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 11,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  show: true,
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        final idx = value.toInt();
-                        if (idx < 0 || idx >= sorted.length) {
-                          return const SizedBox.shrink();
-                        }
-                        // Show just the emoji for space
-                        final moodEmojis = {
-                          'Happy': '😊',
-                          'Excited': '🤩',
-                          'Sad': '😢',
-                          'Anxious': '😰',
-                          'Irritable': '😠',
-                          'Calm': '😌',
-                          'Tired': '😴',
-                          'Energetic': '⚡',
-                          'Romantic': '💕',
-                        };
-                        final emoji =
-                            moodEmojis[sorted[idx].key] ??
-                            sorted[idx].key.substring(0, 1);
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            emoji,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: false,
-                  getDrawingHorizontalLine:
-                      (_) => FlLine(
-                        color: AppTheme.textSecondary.withValues(alpha: 0.15),
-                        strokeWidth: 1,
-                      ),
-                ),
-                borderData: FlBorderData(show: false),
-                barGroups:
-                    sorted.asMap().entries.map((entry) {
-                      final idx = entry.key;
-                      final mood = entry.value;
-                      final color = moodColors[mood.key] ?? AppTheme.accentPink;
-                      return BarChartGroupData(
-                        x: idx,
-                        barRods: [
-                          BarChartRodData(
-                            toY: mood.value.toDouble(),
-                            color: color,
-                            width: 20,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(8),
-                            ),
-                            backDrawRodData: BackgroundBarChartRodData(
-                              show: true,
-                              toY: maxVal * 1.3,
-                              color: color.withValues(alpha: 0.08),
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          // Legend
-          Wrap(
-            spacing: 12,
-            runSpacing: 8,
-            children:
-                sorted.take(6).map((entry) {
-                  final color = moodColors[entry.key] ?? AppTheme.accentPink;
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        '${entry.key} (${entry.value})',
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: AppTheme.textSecondary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-
-  /// Computes a Flowmate health score (0-100) from real usage data.
   int _computeFlowmateScore(PredictionService pred) {
-    // PredictionService already has getHealthScore() based on regularity + log count,
-    // but we layer on additional signals here.
-    int base = pred.getHealthScore(); // 0–100 from PredictionService
-
-    // Bonus: cycle average in healthy range (21–35 days)
+    int base = pred.getHealthScore();
     final avg = pred.averageCycleLength;
     if (avg >= 21 && avg <= 35) base = (base + 10).clamp(0, 100);
-
     return base;
   }
 }
+
 
 class _DailyInsightCard extends StatelessWidget {
   const _DailyInsightCard();
@@ -820,7 +217,7 @@ class _DailyInsightCard extends StatelessWidget {
                     tip,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: AppTheme.textDark,
+                      color: context.onSurface,
                       height: 1.4,
                       fontWeight: FontWeight.w500,
                     ),

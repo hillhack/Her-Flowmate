@@ -72,5 +72,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'herflowmate-bf7e1.firebasestorage.app',
     iosBundleId: 'com.herflowmate.herFlowmate',
   );
-
 }

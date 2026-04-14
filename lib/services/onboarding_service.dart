@@ -40,6 +40,7 @@ class OnboardingService extends ChangeNotifier {
   double? get height => user?.height;
   bool get periodNotifications => user?.periodNotifications ?? true;
   bool get healthNotifications => user?.healthNotifications ?? true;
+  int get avgCycleLength => _base.prefs.getInt('avgCycleLength') ?? 28;
 
   Future<void> saveUser(User newUser) async {
     await _userBox.put(userKey, newUser);
@@ -67,6 +68,29 @@ class OnboardingService extends ChangeNotifier {
       goal: goal,
     );
     await saveUser(currentUser);
+    notifyListeners();
+  }
+
+  Future<void> completeRadicalOnboarding({
+    required String goal,
+    int? avgCycleLength,
+  }) async {
+    await _base.prefs.setBool('hasCompletedOnboarding', true);
+    if (avgCycleLength != null) {
+      await _base.prefs.setInt('avgCycleLength', avgCycleLength);
+    }
+    
+    // Create a base user if not exists
+    if (user == null) {
+      final newUser = User(
+        name: 'Friend',
+        age: 25,
+        goal: goal,
+      );
+      await saveUser(newUser);
+    } else {
+      await saveUser(user!.copyWith(goal: goal));
+    }
     notifyListeners();
   }
 
@@ -99,10 +123,12 @@ class OnboardingService extends ChangeNotifier {
 
   Future<void> updateNotificationSettings({bool? period, bool? health}) async {
     if (user != null) {
-      await saveUser(user!.copyWith(
-        periodNotifications: period ?? user!.periodNotifications,
-        healthNotifications: health ?? user!.healthNotifications,
-      ));
+      await saveUser(
+        user!.copyWith(
+          periodNotifications: period ?? user!.periodNotifications,
+          healthNotifications: health ?? user!.healthNotifications,
+        ),
+      );
     }
   }
 

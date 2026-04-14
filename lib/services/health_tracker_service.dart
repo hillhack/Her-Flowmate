@@ -9,8 +9,11 @@ import 'dart:convert';
 class HealthTrackerService extends ChangeNotifier {
   static const String dailyBoxName = 'daily_logs';
   final BaseStorageService _base = BaseStorageService.instance;
+  final Box<DailyLog>? unitTestBox;
 
-  Box<DailyLog> get _dailyBox => Hive.box<DailyLog>(dailyBoxName);
+  HealthTrackerService({this.unitTestBox});
+
+  Box<DailyLog> get _dailyBox => unitTestBox ?? Hive.box<DailyLog>(dailyBoxName);
 
   Future<void> init() async {
     await Hive.openBox<DailyLog>(dailyBoxName);

@@ -9,11 +9,13 @@ import '../services/storage_service.dart';
 import '../services/prediction_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
-import '../widgets/notification_widgets.dart';
+import '../widgets/shared_app_bar.dart';
 import 'insights_screen.dart';
+import 'log_period_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({super.key});
+  final VoidCallback? onMenuPressed;
+  const CalendarScreen({super.key, this.onMenuPressed});
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -40,109 +42,116 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppTheme.frameColor,
-      child: Container(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      appBar: SharedAppBar(
+        title: 'Cycle Calendar',
+        onMenuPressed: widget.onMenuPressed,
+      ),
+      body: Container(
         decoration: AppTheme.getBackgroundDecoration(context),
-        child: SafeArea(
-          bottom: false,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final screenWidth = constraints.maxWidth;
-              final isSmallScreen = screenWidth < 360;
-              final hPad = isSmallScreen ? 12.0 : 20.0;
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            final isSmallScreen = screenWidth < 360;
+            final hPad = isSmallScreen ? 12.0 : 20.0;
 
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: AppTheme.spacingLg,
-                      right: AppTheme.spacingLg,
-                      top: 24,
-                      bottom: 16,
-                    ),
-                    child: Row(
-                      children: [
-                        Builder(
-                          builder: (context) => Semantics(
-                            label: 'Open Sidebar Menu',
-                            button: true,
-                            child: ThemedContainer(
-                              type: ContainerType.neu,
-                              padding: const EdgeInsets.all(10),
-                              radius: 18,
-                              onTap: () => Scaffold.of(context).openDrawer(),
-                              child: const Icon(
-                                Icons.menu_rounded,
-                                color: AppTheme.primaryPink700,
-                                size: 26,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              'Cycle Calendar',
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                          ),
-                        ),
-                        const NotificationBell(),
-                      ],
-                    ),
-                  ),
-
-                  Expanded(
-                    child: RefreshIndicator(
-                      color: AppTheme.accentPink,
-                      onRefresh: () async {
-                        HapticFeedback.mediumImpact();
-                        await Future.delayed(const Duration(milliseconds: 1500));
+            return RefreshIndicator(
+              color: AppTheme.accentPink,
+              edgeOffset: kToolbarHeight + MediaQuery.of(context).padding.top,
+              onRefresh: () async {
+                HapticFeedback.mediumImpact();
+                await Future.delayed(
+                  const Duration(milliseconds: 1500),
+                );
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.only(
+                  top: kToolbarHeight + MediaQuery.of(context).padding.top + 16,
+                ),
+                child: Selector2<
+                  PredictionService,
+                  StorageService,
+                  Map<String, dynamic>
+                >(
+                  selector:
+                      (ctx, p, s) => {
+                        'logs': s.getLogs(),
+                        'isHighPerformance': s.isHighPerformanceMode,
                       },
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Selector2<PredictionService, StorageService, Map<String, dynamic>>(
-                          selector: (ctx, p, s) => {
-                            'logs': s.getLogs(),
-                            'isHighPerformance': s.isHighPerformanceMode,
-                          },
-                          builder: (context, data, _) => Column(
-                            children: [
-                              SizedBox(height: isSmallScreen ? 8 : 16),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: hPad),
-                                child: ThemedContainer(
-                                  type: ContainerType.glass,
-                                  radius: 32,
-                                  padding: const EdgeInsets.all(16),
-                                  child: Consumer2<PredictionService, StorageService>(
-                                    builder: (context, pInstance, sInstance, _) => TableCalendar(
-                                      firstDay: DateTime.utc(2020, 1, 1),
-                                      lastDay: DateTime.utc(2030, 12, 31),
+                  builder:
+                      (context, data, _) => Column(
+                        children: [
+                          SizedBox(height: isSmallScreen ? 8 : 16),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: hPad,
+                            ),
+                            child: ThemedContainer(
+                              type: ContainerType.glass,
+                              radius: 32,
+                              padding: const EdgeInsets.all(16),
+                              child: Consumer2<
+                                PredictionService,
+                                StorageService
+                              >(
+                                builder:
+                                    (
+                                      context,
+                                      pInstance,
+                                      sInstance,
+                                      _,
+                                    ) => TableCalendar(
+                                      firstDay: DateTime.utc(
+                                        2020,
+                                        1,
+                                        1,
+                                      ),
+                                      lastDay: DateTime.utc(
+                                        2030,
+                                        12,
+                                        31,
+                                      ),
                                       focusedDay: _focusedDay,
-                                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                                      onDaySelected: (selectedDay, focusedDay) {
+                                      selectedDayPredicate:
+                                          (day) => isSameDay(
+                                            _selectedDay,
+                                            day,
+                                          ),
+                                      onDaySelected: (
+                                        selectedDay,
+                                        focusedDay,
+                                      ) {
                                         setState(() {
                                           _selectedDay = selectedDay;
                                           _focusedDay = focusedDay;
                                         });
-                                        _showDailyLogSheet(context, selectedDay);
+                                        _showDailyLogSheet(
+                                          context,
+                                          selectedDay,
+                                        );
                                       },
                                       onHeaderTapped: (focusedDay) {
                                         _showMonthPicker(context);
                                       },
-                                      calendarFormat: CalendarFormat.month,
+                                      calendarFormat:
+                                          CalendarFormat.month,
                                       headerStyle: HeaderStyle(
                                         formatButtonVisible: false,
                                         titleCentered: true,
-                                        titleTextStyle: GoogleFonts.poppins(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w800,
-                                          color: Theme.of(context).colorScheme.onSurface,
-                                        ),
-                                        leftChevronPadding: const EdgeInsets.all(12),
-                                        rightChevronPadding: const EdgeInsets.all(12),
+                                        titleTextStyle:
+                                            GoogleFonts.poppins(
+                                              fontSize: 18,
+                                              fontWeight:
+                                                  FontWeight.w800,
+                                              color: context.onSurface,
+                                            ),
+                                        leftChevronPadding:
+                                            const EdgeInsets.all(12),
+                                        rightChevronPadding:
+                                            const EdgeInsets.all(12),
                                         leftChevronIcon: const Icon(
                                           Icons.chevron_left_rounded,
                                           color: AppTheme.accentPink,
@@ -156,7 +165,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                       ),
                                       daysOfWeekStyle: DaysOfWeekStyle(
                                         weekdayStyle: GoogleFonts.inter(
-                                          color: AppTheme.textSecondary,
+                                          color: context.secondaryText,
                                           fontWeight: FontWeight.w700,
                                         ),
                                         weekendStyle: GoogleFonts.inter(
@@ -164,133 +173,170 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                      calendarBuilders: CalendarBuilders(
-                                        defaultBuilder: (context, day, focusedDay) {
-                                          return _buildCalendarCell(
-                                            day,
-                                            pInstance,
-                                            sInstance,
-                                            isSelected: false,
-                                          );
-                                        },
-                                        selectedBuilder: (context, day, focusedDay) {
-                                          return _buildCalendarCell(
-                                            day,
-                                            pInstance,
-                                            sInstance,
-                                            isSelected: true,
-                                          );
-                                        },
-                                        todayBuilder: (context, day, focusedDay) {
-                                          return _buildCalendarCell(
-                                            day,
-                                            pInstance,
-                                            sInstance,
-                                            isSelected: false,
-                                            isToday: true,
-                                          );
-                                        },
-                                      ),
+                                      calendarBuilders:
+                                          CalendarBuilders(
+                                            defaultBuilder: (
+                                              context,
+                                              day,
+                                              focusedDay,
+                                            ) {
+                                              return _buildCalendarCell(
+                                                day,
+                                                pInstance,
+                                                sInstance,
+                                                isSelected: false,
+                                              );
+                                            },
+                                            selectedBuilder: (
+                                              context,
+                                              day,
+                                              focusedDay,
+                                            ) {
+                                              return _buildCalendarCell(
+                                                day,
+                                                pInstance,
+                                                sInstance,
+                                                isSelected: true,
+                                              );
+                                            },
+                                            todayBuilder: (
+                                              context,
+                                              day,
+                                              focusedDay,
+                                            ) {
+                                              return _buildCalendarCell(
+                                                day,
+                                                pInstance,
+                                                sInstance,
+                                                isSelected: false,
+                                                isToday: true,
+                                              );
+                                            },
+                                          ),
                                     ),
-                                  ),
+                              ),
+                            ),
+                          ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
+
+                          SizedBox(height: isSmallScreen ? 16 : 32),
+
+                          Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: hPad,
                                 ),
-                              ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
-
-                              SizedBox(height: isSmallScreen ? 16 : 32),
-
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: hPad),
                                 child: Consumer<PredictionService>(
-                                  builder: (context, pred, _) => _buildLegend(
-                                    pred,
-                                    isSmallScreen: isSmallScreen,
-                                  ),
+                                  builder:
+                                      (context, pred, _) =>
+                                          _buildLegend(
+                                            pred,
+                                            isSmallScreen:
+                                                isSmallScreen,
+                                          ),
                                 ),
-                              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+                              )
+                              .animate()
+                              .fadeIn(delay: 300.ms)
+                              .slideY(begin: 0.1),
 
-                              SizedBox(height: isSmallScreen ? 16 : 24),
+                          SizedBox(height: isSmallScreen ? 16 : 24),
 
-                              if (_selectedDay != null)
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: hPad),
-                                  child: Consumer<PredictionService>(
-                                    builder: (context, pred, _) => _buildPhaseExplanationCard(
-                                      context,
-                                      pred,
-                                      _selectedDay!,
-                                      isSmallScreen: isSmallScreen,
+                          if (_selectedDay != null)
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: hPad,
+                              ),
+                              child: Consumer<PredictionService>(
+                                builder:
+                                    (context, pred, _) =>
+                                        _buildPhaseExplanationCard(
+                                          context,
+                                          pred,
+                                          _selectedDay!,
+                                          isSmallScreen: isSmallScreen,
+                                        ),
+                              ),
+                            ),
+
+                          SizedBox(height: isSmallScreen ? 16 : 24),
+
+                          if (!isSmallScreen)
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: hPad,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ThemedContainer(
+                                      type: ContainerType.neu,
+                                      radius: 20,
+                                      onTap: () {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Note taking is coming soon!',
+                                            ),
+                                            behavior:
+                                                SnackBarBehavior
+                                                    .floating,
+                                          ),
+                                        );
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                            ),
+                                        child: Center(
+                                          child: Text(
+                                            'Add Note',
+                                            style: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FontWeight.w700,
+                                              color: context.onSurface,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-
-                              SizedBox(height: isSmallScreen ? 16 : 24),
-
-                              if (!isSmallScreen)
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: hPad),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: ThemedContainer(
-                                          type: ContainerType.neu,
-                                          radius: 20,
-                                          onTap: () {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text('Note taking is coming soon!'),
-                                                behavior: SnackBarBehavior.floating,
-                                              ),
-                                            );
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 16),
-                                            child: Center(
-                                              child: Text(
-                                                'Add Note',
-                                                style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: AppTheme.textDark,
-                                                ),
-                                              ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: ThemedContainer(
+                                      type: ContainerType.neu,
+                                      radius: 20,
+                                      onTap:
+                                          () => Navigator.pop(context),
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.symmetric(
+                                              vertical: 16,
+                                            ),
+                                        child: Center(
+                                          child: Text(
+                                            'View Insights',
+                                            style: GoogleFonts.inter(
+                                              fontWeight:
+                                                  FontWeight.w700,
+                                              color: context.onSurface,
                                             ),
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: ThemedContainer(
-                                          type: ContainerType.neu,
-                                          radius: 20,
-                                          onTap: () => Navigator.pop(context),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 16),
-                                            child: Center(
-                                              child: Text(
-                                                'View Insights',
-                                                style: GoogleFonts.inter(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: AppTheme.textDark,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ).animate().fadeIn(delay: 400.ms),
-
-                              SizedBox(height: isSmallScreen ? 80 : 100),
-                            ],
-                          ),
-                        ),
+                                ],
+                              ),
+                            ).animate().fadeIn(delay: 400.ms),
+                          const SizedBox(height: 80),
+                        ],
                       ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -324,14 +370,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
+                      color: context.onSurface,
                     ),
                   ),
                   Text(
                     'Cycle Day: $cycleDay',
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: AppTheme.textSecondary,
+                      color: context.secondaryText,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -363,7 +409,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   pred.getConceptionStatus(chance),
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: AppTheme.textDark,
+                    color: context.onSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -374,10 +420,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const InsightsScreen()),
-              ),
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const InsightsScreen()),
+                  ),
               child: Text(
                 'Full Insights →',
                 style: GoogleFonts.inter(
@@ -424,7 +471,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           style: GoogleFonts.inter(
             fontSize: 10,
             fontWeight: FontWeight.w700,
-            color: AppTheme.textSecondary,
+            color: context.secondaryText,
           ),
         ),
       ],
@@ -435,40 +482,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => ThemedContainer(
-        type: ContainerType.glass,
-        radius: 32,
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Select Date',
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.textDark,
-              ),
+      builder:
+          (context) => ThemedContainer(
+            type: ContainerType.glass,
+            radius: 32,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Select Date',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: context.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 200,
+                  child: CalendarDatePicker(
+                    initialDate: _focusedDay,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2030),
+                    onDateChanged: (date) {
+                      setState(() {
+                        _focusedDay = date;
+                        _selectedDay = date;
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: CalendarDatePicker(
-                initialDate: _focusedDay,
-                firstDate: DateTime(2020),
-                lastDate: DateTime(2030),
-                onDateChanged: (date) {
-                  setState(() {
-                    _focusedDay = date;
-                    _selectedDay = date;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -485,16 +533,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
         runSpacing: 4,
         alignment: WrapAlignment.spaceEvenly,
         children: [
-          _buildLegendItem(context, 'Period', AppTheme.phaseColors['Menstrual']!, isSmallScreen),
-          _buildLegendItem(context, 'Follicular', AppTheme.phaseColors['Follicular']!, isSmallScreen),
-          _buildLegendItem(context, 'Ovulation', AppTheme.phaseColors['Ovulation']!, isSmallScreen),
-          _buildLegendItem(context, 'Luteal', AppTheme.phaseColors['Luteal']!, isSmallScreen),
+          _buildLegendItem(
+            context,
+            'Period',
+            AppTheme.phaseColors['Menstrual']!,
+            isSmallScreen,
+          ),
+          _buildLegendItem(
+            context,
+            'Follicular',
+            AppTheme.phaseColors['Follicular']!,
+            isSmallScreen,
+          ),
+          _buildLegendItem(
+            context,
+            'Ovulation',
+            AppTheme.phaseColors['Ovulation']!,
+            isSmallScreen,
+          ),
+          _buildLegendItem(
+            context,
+            'Luteal',
+            AppTheme.phaseColors['Luteal']!,
+            isSmallScreen,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildLegendItem(BuildContext context, String label, Color color, bool isSmallScreen) {
+  Widget _buildLegendItem(
+    BuildContext context,
+    String label,
+    Color color,
+    bool isSmallScreen,
+  ) {
     return Semantics(
       label: 'Phase $label indicated by color.',
       child: Row(
@@ -506,19 +579,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
-              border: Border.all(
-                color: color.withValues(alpha: 0.5),
-                width: 1,
-              ),
+              border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
             ),
           ),
           SizedBox(width: isSmallScreen ? 4 : 8),
           Text(
             label,
             style: GoogleFonts.inter(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? AppTheme.darkTextPrimary
-                  : AppTheme.midnightPlum,
+              color: context.onSurface,
               fontSize: isSmallScreen ? 10 : 13,
               fontWeight: FontWeight.w800,
             ),
@@ -561,6 +629,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
       );
+    } else if (isOvulation) {
+      bgColor = AppTheme.phaseColors['Ovulation']!.withValues(alpha: 0.2);
+      border = Border.all(
+        color: AppTheme.phaseColors['Ovulation']!.withValues(alpha: 0.4),
+        width: 1.5,
+      );
     } else if (isFollicular) {
       bgColor = AppTheme.phaseColors['Follicular']!.withValues(alpha: 0.15);
     } else if (isLuteal) {
@@ -584,7 +658,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
         boxShadow: isOvulation
             ? [
                 BoxShadow(
-                  color: AppTheme.phaseColors['Ovulation']!.withValues(alpha: 0.6),
+                  color: AppTheme.phaseColors['Ovulation']!.withValues(
+                    alpha: 0.4,
+                  ),
                   blurRadius: 10,
                   spreadRadius: 2,
                 ),
@@ -608,40 +684,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
             style: GoogleFonts.inter(
               color: isSelected || isPeriod
                   ? Colors.white
-                  : (Theme.of(context).brightness == Brightness.dark
-                      ? AppTheme.darkTextPrimary
-                      : AppTheme.midnightPlum),
-              fontWeight: isSelected || isToday || isPeriod ? FontWeight.w900 : FontWeight.w600,
+                  : (isOvulation
+                      ? AppTheme.phaseColors['Ovulation']
+                      : context.onSurface),
+              fontWeight: isSelected || isToday || isPeriod || isOvulation
+                  ? FontWeight.w900
+                  : FontWeight.w600,
               fontSize: 14,
             ),
           ),
           if (isOvulation)
             Positioned(
-              bottom: 4,
-              child: Container(
-                width: 8,
-                height: 8,
-                decoration: BoxDecoration(
+              top: 4,
+              right: 4,
+              child: Text(
+                '✨',
+                style: TextStyle(
+                  fontSize: 8,
                   color: AppTheme.phaseColors['Ovulation'],
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.phaseColors['Ovulation']!,
-                      blurRadius: 4,
-                    ),
-                  ],
                 ),
               ),
             ),
           if (storage.getDailyLog(day) != null)
             Positioned(
-              bottom: 2,
+              bottom: 4,
               child: Container(
                 width: 6,
                 height: 6,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: AppTheme.accentPink,
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 1),
                 ),
               ),
             ),
@@ -660,15 +733,17 @@ class _DailyLogSheet extends StatelessWidget {
     final pred = context.read<PredictionService>();
     final chance = pred.getConceptionChance(date);
     final isHigh = chance >= 25;
-    final statusText = isHigh ? 'High Fertility' : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
+    final statusText =
+        isHigh
+            ? 'High Fertility'
+            : (chance >= 10 ? 'Moderate Fertility' : 'Low Fertility');
 
     final storage = context.watch<StorageService>();
     final dailyLog = storage.getDailyLog(date);
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppTheme.darkSurface : AppTheme.frameColor,
+        color: context.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
       ),
       padding: const EdgeInsets.only(top: 16),
@@ -701,14 +776,14 @@ class _DailyLogSheet extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 22,
                             fontWeight: FontWeight.w900,
-                            color: isDark ? AppTheme.darkTextPrimary : AppTheme.midnightPlum,
+                            color: context.onSurface,
                           ),
                         ),
                         Text(
                           DateFormat('EEEE').format(date),
                           style: GoogleFonts.inter(
                             fontSize: 14,
-                            color: AppTheme.textSecondary,
+                            color: context.secondaryText,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -717,7 +792,10 @@ class _DailyLogSheet extends StatelessWidget {
                     ThemedContainer(
                       type: ContainerType.neu,
                       radius: 16,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: Text(
                         'Day ${pred.getCycleDay(date)}',
                         style: GoogleFonts.poppins(
@@ -784,11 +862,15 @@ class _DailyLogSheet extends StatelessWidget {
                         children: [
                           _hormoneMiniItem(
                             'Estrogen',
-                            pred.getHormoneDescriptions(pred.getCycleDay(date))['Estrogen']!,
+                            pred.getHormoneDescriptions(
+                              pred.getCycleDay(date),
+                            )['Estrogen']!,
                           ),
                           _hormoneMiniItem(
                             'Progesterone',
-                            pred.getHormoneDescriptions(pred.getCycleDay(date))['Progesterone']!,
+                            pred.getHormoneDescriptions(
+                              pred.getCycleDay(date),
+                            )['Progesterone']!,
                           ),
                         ],
                       ),
@@ -820,7 +902,10 @@ class _DailyLogSheet extends StatelessWidget {
                               ),
                             ),
                             if (dailyLog.moods?.isNotEmpty == true)
-                              Text(dailyLog.moods!.first, style: const TextStyle(fontSize: 24)),
+                              Text(
+                                dailyLog.moods!.first,
+                                style: const TextStyle(fontSize: 24),
+                              ),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -828,27 +913,38 @@ class _DailyLogSheet extends StatelessWidget {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: dailyLog.symptoms!
-                                .map((s) => Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.accentPink.withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        s,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          color: AppTheme.accentPink,
-                                          fontWeight: FontWeight.w600,
+                            children:
+                                dailyLog.symptoms!
+                                    .map(
+                                      (s) => Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.accentPink.withValues(
+                                            alpha: 0.1,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          s,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 12,
+                                            color: AppTheme.accentPink,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
-                                    ))
-                                .toList(),
+                                    )
+                                    .toList(),
                           ),
                           const SizedBox(height: 12),
                         ],
-                        if (dailyLog.waterIntake != null && dailyLog.waterIntake! > 0) ...[
+                        if (dailyLog.waterIntake != null &&
+                            dailyLog.waterIntake! > 0) ...[
                           Row(
                             children: [
                               const Text('💧', style: TextStyle(fontSize: 14)),
@@ -988,6 +1084,12 @@ class _DailyLogSheet extends StatelessWidget {
                         radius: 20,
                         onTap: () {
                           Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LogPeriodScreen(),
+                            ),
+                          );
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -1018,7 +1120,15 @@ class _DailyLogSheet extends StatelessWidget {
                       child: ThemedContainer(
                         type: ContainerType.neu,
                         radius: 20,
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LogPeriodScreen(),
+                            ),
+                          );
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Center(

@@ -51,12 +51,11 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
-          color: isDark ? AppTheme.darkSurface : AppTheme.frameColor,
+          color: context.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
         ),
         padding: const EdgeInsets.only(top: 16),
@@ -91,8 +90,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
-                      color:
-                          isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
+                      color: context.onSurface,
                     ),
                   ).animate().fadeIn(duration: 400.ms),
                   const SizedBox(height: 8),
@@ -108,7 +106,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                       ],
                       style: GoogleFonts.inter(
                         fontSize: 15,
-                        color: AppTheme.textSecondary,
+                        color: context.secondaryText,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -137,14 +135,8 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                   primary:
                                       Theme.of(context).colorScheme.primary,
                                   onPrimary: Colors.white,
-                                  surface:
-                                      isDark
-                                          ? AppTheme.darkSurface
-                                          : AppTheme.frameColor,
-                                  onSurface:
-                                      isDark
-                                          ? AppTheme.darkTextPrimary
-                                          : AppTheme.textDark,
+                                  surface: context.surface,
+                                  onSurface: context.onSurface,
                                 ),
                               ),
                               child: child!,
@@ -172,10 +164,8 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                               fontSize: 16,
                               color:
                                   _selectedDate == null
-                                      ? AppTheme.textSecondary
-                                      : (isDark
-                                          ? AppTheme.darkTextPrimary
-                                          : AppTheme.textDark),
+                                      ? context.secondaryText
+                                      : context.onSurface,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -239,17 +229,14 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                       keyboardType: TextInputType.number,
                       style: GoogleFonts.inter(
                         fontSize: 18,
-                        color:
-                            isDark
-                                ? AppTheme.darkTextPrimary
-                                : AppTheme.textDark,
+                        color: context.onSurface,
                         fontWeight: FontWeight.w600,
                       ),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Number of days',
                         hintStyle: GoogleFonts.inter(
-                          color: AppTheme.textSecondary.withValues(alpha: 0.4),
+                          color: context.secondaryText.withValues(alpha: 0.4),
                         ),
                       ),
                     ),
@@ -298,7 +285,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                           color:
                                               isSelected
                                                   ? AppTheme.accentPink
-                                                  : AppTheme.textDark,
+                                                  : context.onSurface,
                                         ),
                                       ),
                                     ),
@@ -353,9 +340,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                     color:
                                         isSelected
                                             ? AppTheme.accentPink
-                                            : (isDark
-                                                ? AppTheme.darkTextPrimary
-                                                : AppTheme.textDark),
+                                            : context.onSurface,
                                     fontWeight:
                                         isSelected
                                             ? FontWeight.w800
@@ -410,10 +395,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                         entry.key,
                                         style: GoogleFonts.inter(
                                           fontSize: 10,
-                                          color:
-                                              isDark
-                                                  ? AppTheme.darkTextPrimary
-                                                  : AppTheme.textDark,
+                                          color: context.onSurface,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -443,39 +425,46 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                         _selectedDate == null
                             ? () {}
                             : () async {
-                                HapticFeedback.mediumImpact();
-                                if (_selectedDate!.isAfter(DateTime.now())) {
+                              HapticFeedback.mediumImpact();
+                              if (_selectedDate!.isAfter(DateTime.now())) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Cannot log a period in the future.',
+                                    ),
+                                    backgroundColor: Colors.redAccent,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                                return;
+                              }
+                              final durationText =
+                                  _durationController.text.trim();
+                              if (durationText.isNotEmpty) {
+                                int? parsedDuration = int.tryParse(
+                                  durationText,
+                                );
+                                if (parsedDuration != null &&
+                                    parsedDuration > 10) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Cannot log a period in the future.'),
-                                      backgroundColor: Colors.redAccent,
+                                      content: Text(
+                                        'Duration exceeds normal limits. Please verify.',
+                                      ),
+                                      backgroundColor: Colors.orangeAccent,
                                       behavior: SnackBarBehavior.floating,
                                     ),
                                   );
                                   return;
                                 }
-                                final durationText = _durationController.text.trim();
-                                if (durationText.isNotEmpty) {
-                                  int? parsedDuration = int.tryParse(durationText);
-                                  if (parsedDuration != null && parsedDuration > 10) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Duration exceeds normal limits. Please verify.'),
-                                        backgroundColor: Colors.orangeAccent,
-                                        behavior: SnackBarBehavior.floating,
-                                      ),
-                                    );
-                                    return;
-                                  }
-                                }
-                                final dateWithTime = DateTime(
-                                  _selectedDate!.year,
-                                  _selectedDate!.month,
-                                  _selectedDate!.day,
-                                  _isAM ? 8 : 20,
-                                );
-                                final duration =
-                                    int.tryParse(durationText) ?? 5;
+                              }
+                              final dateWithTime = DateTime(
+                                _selectedDate!.year,
+                                _selectedDate!.month,
+                                _selectedDate!.day,
+                                _isAM ? 8 : 20,
+                              );
+                              final duration = int.tryParse(durationText) ?? 5;
                               final log = PeriodLog(
                                 startDate: dateWithTime,
                                 duration: duration,
@@ -494,11 +483,13 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                               final success = await storage.saveLog(log);
 
                               if (!context.mounted) return;
-                              
+
                               if (!success) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Overlapping period log found. Please adjust dates.'),
+                                    content: Text(
+                                      'Overlapping period log found. Please adjust dates.',
+                                    ),
                                     backgroundColor: Colors.orangeAccent,
                                     behavior: SnackBarBehavior.floating,
                                   ),
@@ -525,7 +516,9 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                     onPressed: () async {
                                       await storage.deleteLogByRef(log);
                                       if (context.mounted) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
                                           const SnackBar(
                                             content: Text('Log removed.'),
                                             behavior: SnackBarBehavior.floating,
@@ -546,7 +539,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                             Icons.cloud_done_rounded,
                             color:
                                 _selectedDate == null
-                                    ? AppTheme.textSecondary
+                                    ? context.secondaryText
                                     : Theme.of(context).colorScheme.primary,
                           ),
                           const SizedBox(width: 12),
@@ -557,7 +550,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                               fontWeight: FontWeight.w800,
                               color:
                                   _selectedDate == null
-                                      ? AppTheme.textSecondary
+                                      ? context.secondaryText
                                       : Theme.of(context).colorScheme.primary,
                             ),
                           ),
@@ -577,7 +570,6 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
   }
 
   Widget _stepLabel(BuildContext context, String step, String label) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         Container(
@@ -603,7 +595,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
           style: GoogleFonts.inter(
             fontSize: 17,
             fontWeight: FontWeight.w800,
-            color: isDark ? AppTheme.darkTextPrimary : AppTheme.textDark,
+            color: context.onSurface,
           ),
         ),
       ],
@@ -628,7 +620,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
               label == 'AM'
                   ? Icons.wb_sunny_rounded
                   : Icons.nights_stay_rounded,
-              color: isActive ? AppTheme.accentPink : AppTheme.textSecondary,
+              color: isActive ? AppTheme.accentPink : context.secondaryText,
               size: 22,
             ),
             const SizedBox(width: 10),
@@ -637,7 +629,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: isActive ? FontWeight.w900 : FontWeight.w700,
-                color: isActive ? AppTheme.accentPink : AppTheme.textSecondary,
+                color: isActive ? AppTheme.accentPink : context.secondaryText,
               ),
             ),
           ],

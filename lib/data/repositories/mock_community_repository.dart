@@ -47,8 +47,10 @@ class MockCommunityRepository implements ICommunityRepository {
   }
 
   @override
-  Future<void> createPost(
-      {required String content, required String category}) async {
+  Future<void> createPost({
+    required String content,
+    required String category,
+  }) async {
     // Simulating API call
     return;
   }

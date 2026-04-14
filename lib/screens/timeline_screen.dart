@@ -13,10 +13,11 @@ class TimelineScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<PredictionService, Map<String, dynamic>>(
-      selector: (ctx, p) => {
-        'cycleLen': p.averageCycleLength > 0 ? p.averageCycleLength : 28,
-        'currentDay': p.currentCycleDay,
-      },
+      selector:
+          (ctx, p) => {
+            'cycleLen': p.averageCycleLength > 0 ? p.averageCycleLength : 28,
+            'currentDay': p.currentCycleDay,
+          },
       builder: (context, data, _) {
         final cycleLen = data['cycleLen'] as int;
         final currentDay = data['currentDay'] as int;
@@ -57,68 +58,103 @@ class TimelineScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildLegendItem('Menstrual', AppTheme.phaseColors['Menstrual']!),
+                        _buildLegendItem(
+                          'Menstrual',
+                          AppTheme.phaseColors['Menstrual']!,
+                        ),
                         const SizedBox(width: 16),
-                        _buildLegendItem('Follicular', AppTheme.phaseColors['Follicular']!),
+                        _buildLegendItem(
+                          'Follicular',
+                          AppTheme.phaseColors['Follicular']!,
+                        ),
                         const SizedBox(width: 16),
-                        _buildLegendItem('Ovulation', AppTheme.phaseColors['Ovulation']!),
+                        _buildLegendItem(
+                          'Ovulation',
+                          AppTheme.phaseColors['Ovulation']!,
+                        ),
                         const SizedBox(width: 16),
-                        _buildLegendItem('Luteal', AppTheme.phaseColors['Luteal']!),
+                        _buildLegendItem(
+                          'Luteal',
+                          AppTheme.phaseColors['Luteal']!,
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 32),
                   Expanded(
-                    child: cycleLen <= 0 ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Text(
-                          'Log at least one period to see your timeline.',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            color: AppTheme.textSecondary,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ) : RefreshIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                      onRefresh: () async {
-                        if (context.mounted) {
-                          await context.read<StorageService>().syncUserWithBackend();
-                        }
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
-                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                        itemCount: cycleLen,
-                        itemBuilder: (context, index) {
-                          final day = index + 1;
-                          final isToday = day == currentDay;
-                          final targetDate = DateTime.now().add(Duration(days: day - currentDay));
-                          final phaseEnum = pred.getPhaseForDay(targetDate);
-                          final phaseName = phaseEnum.displayName;
-                          final phaseColor = AppTheme.phaseColor(phaseName);
+                    child:
+                        cycleLen <= 0
+                            ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: Text(
+                                  'Log at least one period to see your timeline.',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: AppTheme.textSecondary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            )
+                            : RefreshIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                              onRefresh: () async {
+                                if (context.mounted) {
+                                  await context
+                                      .read<StorageService>()
+                                      .syncUserWithBackend();
+                                }
+                              },
+                              child: ListView.builder(
+                                padding: const EdgeInsets.fromLTRB(
+                                  24,
+                                  0,
+                                  24,
+                                  40,
+                                ),
+                                physics: const AlwaysScrollableScrollPhysics(
+                                  parent: BouncingScrollPhysics(),
+                                ),
+                                itemCount: cycleLen,
+                                itemBuilder: (context, index) {
+                                  final day = index + 1;
+                                  final isToday = day == currentDay;
+                                  final targetDate = DateTime.now().add(
+                                    Duration(days: day - currentDay),
+                                  );
+                                  final phaseEnum = pred.getPhaseForDay(
+                                    targetDate,
+                                  );
+                                  final phaseName = phaseEnum.displayName;
+                                  final phaseColor = AppTheme.phaseColor(
+                                    phaseName,
+                                  );
 
-                          Widget rowWidget = _TimelineRow(
-                            day: day,
-                            isToday: isToday,
-                            isLast: index == cycleLen - 1,
-                            phaseName: phaseName,
-                            phaseColor: phaseColor,
-                          );
+                                  Widget rowWidget = _TimelineRow(
+                                    day: day,
+                                    isToday: isToday,
+                                    isLast: index == cycleLen - 1,
+                                    phaseName: phaseName,
+                                    phaseColor: phaseColor,
+                                  );
 
-                          if (index < 5) {
-                            rowWidget = rowWidget.animate()
-                                .fadeIn(delay: Duration(milliseconds: 30 * index))
-                                .slideX(begin: 0.05);
-                          }
-                          
-                          return rowWidget;
-                        },
-                      ),
-                    ),
+                                  if (index < 5) {
+                                    rowWidget = rowWidget
+                                        .animate()
+                                        .fadeIn(
+                                          delay: Duration(
+                                            milliseconds: 30 * index,
+                                          ),
+                                        )
+                                        .slideX(begin: 0.05);
+                                  }
+
+                                  return rowWidget;
+                                },
+                              ),
+                            ),
                   ),
                 ],
               ),
@@ -208,9 +244,14 @@ class _TimelineRow extends StatelessWidget {
                     border: Border.all(color: phaseColor, width: 2),
                     shape: BoxShape.circle,
                   ),
-                  child: isToday
-                      ? const Icon(Icons.star_rounded, size: 10, color: Colors.white)
-                      : null,
+                  child:
+                      isToday
+                          ? const Icon(
+                            Icons.star_rounded,
+                            size: 10,
+                            color: Colors.white,
+                          )
+                          : null,
                 ),
                 if (!isLast)
                   Container(
@@ -228,11 +269,20 @@ class _TimelineRow extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 16),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
                   color: phaseColor.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(20),
-                  border: isToday ? Border.all(color: phaseColor.withValues(alpha: 0.6), width: 1.5) : null,
+                  border:
+                      isToday
+                          ? Border.all(
+                            color: phaseColor.withValues(alpha: 0.6),
+                            width: 1.5,
+                          )
+                          : null,
                 ),
                 child: _rowContent(context),
               ),
@@ -244,7 +294,8 @@ class _TimelineRow extends StatelessWidget {
   }
 
   Widget _rowContent(BuildContext context) {
-    final contrastColor = HSLColor.fromColor(phaseColor).withLightness(0.4).toColor();
+    final contrastColor =
+        HSLColor.fromColor(phaseColor).withLightness(0.4).toColor();
     final storage = context.read<StorageService>();
 
     return Row(

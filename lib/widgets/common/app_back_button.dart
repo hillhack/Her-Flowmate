@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class AppBackButton extends StatelessWidget {
   final VoidCallback? onPressed;
-  
+
   const AppBackButton({super.key, this.onPressed});
 
   @override

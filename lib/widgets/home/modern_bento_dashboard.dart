@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:confetti/confetti.dart';
 import '../../services/prediction_service.dart';
 import '../../services/storage_service.dart';
 import '../../utils/app_theme.dart';
-import '../common/neu_card.dart';
-import '../cycle_widgets.dart';
 import 'cycle_core_ring.dart';
 import 'daily_insight_card.dart';
 import 'insight_bubble.dart';
 import 'water_intake_card.dart';
 import 'wellness_stats.dart';
-import 'body_insight_card.dart';
 import 'wellness_goals_card.dart';
+import '../themed_container.dart';
+import '../../models/appointment.dart';
+import '../../screens/wellness_reminders_screen.dart';
 
 class ModernBentoDashboard extends StatefulWidget {
   final StorageService storage;
@@ -32,7 +31,6 @@ class ModernBentoDashboard extends StatefulWidget {
 }
 
 class _ModernBentoDashboardState extends State<ModernBentoDashboard> {
-  bool _isHormonesExpanded = false;
   bool _isWaterExpanded = false;
   bool _isSleepExpanded = false;
   bool _isStreakExpanded = false;
@@ -44,41 +42,30 @@ class _ModernBentoDashboardState extends State<ModernBentoDashboard> {
         final isWide = constraints.maxWidth > 500;
         return Column(
           children: [
-            // ── 1. Top 3-metric summary cards ──────────────────────────
-            _buildTopMetricsRow(),
-            const SizedBox(height: AppDesignTokens.space24),
-
-            // ── 2. Cycle Core Ring (primary progress gauge) ────────────
+            // ── 1. Cycle Core Ring (primary progress gauge) ────────────
             RepaintBoundary(
               child: CycleCoreRing(pred: widget.pred)
                   .animate()
                   .fadeIn(duration: 600.ms)
                   .scale(begin: const Offset(0.9, 0.9)),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppDesignTokens.space24),
+            _buildActiveGoalPill(context),
+            const SizedBox(height: AppDesignTokens.space12),
 
             // ── 3. Daily Phase Insight Card ─────────────────────────────
             RepaintBoundary(
-              child: DailyInsightCard(pred: widget.pred)
-                  .animate()
-                  .fadeIn(delay: 200.ms)
-                  .slideY(begin: 0.1),
+              child: DailyInsightCard(
+                pred: widget.pred,
+              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: AppDesignTokens.space32),
 
             // ── 4. Expandable Quick-access Insight Bubbles ──────────────
             _buildInsightBubbles(isWide),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppDesignTokens.space24),
 
             // ── 5. Expanded detail panels ───────────────────────────────
-            if (_isHormonesExpanded)
-              ...[
-                HormoneGraph(pred: widget.pred),
-                const SizedBox(height: 16),
-                PhaseHealthTipsWidget(pred: widget.pred),
-                const SizedBox(height: 16),
-              ].animate().fadeIn().slideY(begin: -0.05),
-
             if (_isWaterExpanded)
               RepaintBoundary(
                 child: WaterIntakeCard(
@@ -105,12 +92,8 @@ class _ModernBentoDashboardState extends State<ModernBentoDashboard> {
                 ).animate().fadeIn().slideY(begin: -0.05),
               ),
 
-            // ── 6. Your Body Today (Hormones / Energy / Mood) ──────────
-            const SizedBox(height: 16),
-            BodyInsightCard(pred: widget.pred),
-
-            // ── 7. Wellness Goals / upcoming reminders ──────────────────
-            const SizedBox(height: 24),
+            // ── 6. Wellness Goals / upcoming reminders ──────────────────
+            const SizedBox(height: AppDesignTokens.space24),
             WellnessGoalsCard(
               storage: widget.storage,
               heroTag: 'wellness_goals_bento',
@@ -121,95 +104,67 @@ class _ModernBentoDashboardState extends State<ModernBentoDashboard> {
     );
   }
 
-  // ── Top metrics row ────────────────────────────────────────────────────────
 
-  Widget _buildTopMetricsRow() {
-    final day = widget.pred.currentCycleDay == 0
-        ? 1
-        : widget.pred.currentCycleDay;
-    final nextPeriodDays = widget.pred.nextPeriodDate != null
-        ? widget.pred.nextPeriodDate!.difference(DateTime.now()).inDays
-        : -1;
-    final nextStr = nextPeriodDays > 0
-        ? 'in $nextPeriodDays d'
-        : (nextPeriodDays == 0 ? 'Today' : 'Due');
+  Widget _buildActiveGoalPill(BuildContext context) {
+    final goals = widget.storage.getAllAppointments();
+    if (goals.isEmpty) return const SizedBox.shrink();
 
-    return Row(
-      children: [
-        Expanded(
-          child: _metricCard(label: 'Cycle day', value: '$day', delay: 0),
-        ),
-        const SizedBox(width: AppDesignTokens.space8),
-        Expanded(
-          child: _metricCard(
-            label: 'Next period',
-            value: nextStr,
-            delay: 100,
-          ),
-        ),
-        const SizedBox(width: AppDesignTokens.space8),
-        Expanded(
-          child: _metricCard(
-            label: 'Phase',
-            value: widget.pred.phaseDisplayName,
-            delay: 200,
-          ),
-        ),
-      ],
-    );
-  }
+    final latestGoal = goals.first;
 
-  Widget _metricCard({
-    required String label,
-    required String value,
-    required int delay,
-  }) {
-    return NeumorphicCard(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.6),
+    return GestureDetector(
+      onTap:
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const WellnessRemindersScreen(heroTag: 'goal_pill'),
             ),
-            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+      child: Hero(
+        tag: 'goal_pill',
+        child: Material(
+          color: Colors.transparent,
+          child: ThemedContainer(
+            type: ContainerType.glass,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            radius: 20,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  latestGoal.category.emoji,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    latestGoal.title,
+                    style: AppTheme.outfit(
+                      context: context,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 12,
+                  color: context.onSurface.withValues(alpha: 0.3),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
-        ],
+        ),
       ),
-    ).animate().fadeIn(delay: delay.ms).slideY(begin: 0.1);
+    ).animate().fadeIn().slideY(begin: 0.2);
   }
 
   // ── Insight Bubbles ────────────────────────────────────────────────────────
 
   Widget _buildInsightBubbles(bool isWide) {
     final bubbles = [
-      _bubble(
-        icon: '🧪',
-        label: 'Hormones',
-        color: Theme.of(context).colorScheme.primary,
-        isExpanded: _isHormonesExpanded,
-        onTap: () =>
-            setState(() => _isHormonesExpanded = !_isHormonesExpanded),
-      ),
       _bubble(
         icon: '💧',
         label: 'Water',

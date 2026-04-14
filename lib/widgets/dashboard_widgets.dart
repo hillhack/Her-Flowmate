@@ -26,7 +26,7 @@ class PhaseCard extends StatelessWidget {
                   'Current Phase',
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: AppTheme.textSecondary,
+                    color: context.secondaryText,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -48,7 +48,7 @@ class PhaseCard extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 32,
                 fontWeight: FontWeight.w800,
-                color: AppTheme.textDark,
+                color: context.onSurface,
               ),
             ),
             const SizedBox(height: 5),
@@ -100,7 +100,7 @@ class StatusRow extends StatelessWidget {
                     label1,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: AppTheme.textSecondary,
+                      color: context.secondaryText,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -110,7 +110,7 @@ class StatusRow extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
+                      color: context.onSurface,
                     ),
                   ),
                 ],
@@ -130,7 +130,7 @@ class StatusRow extends StatelessWidget {
                     label2,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: AppTheme.textSecondary,
+                      color: context.secondaryText,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -142,7 +142,7 @@ class StatusRow extends StatelessWidget {
                     style: GoogleFonts.poppins(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: AppTheme.textDark,
+                      color: context.onSurface,
                     ),
                   ),
                 ],
@@ -187,7 +187,7 @@ class FertilityCard extends StatelessWidget {
                       title,
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: AppTheme.textSecondary,
+                        color: context.secondaryText,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -197,7 +197,7 @@ class FertilityCard extends StatelessWidget {
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: AppTheme.textDark,
+                        color: context.onSurface,
                       ),
                     ),
                   ],
@@ -230,7 +230,7 @@ class FertilityCard extends StatelessWidget {
                   'Chance of Conception',
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    color: AppTheme.textSecondary,
+                    color: context.secondaryText,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -289,7 +289,7 @@ class MedicalDisclaimer extends StatelessWidget {
           'This is an estimate based on cycle patterns and should not be considered medical advice.',
           style: GoogleFonts.inter(
             fontSize: 11,
-            color: AppTheme.textSecondary.withValues(alpha: 0.6),
+            color: context.secondaryText.withValues(alpha: 0.6),
             fontStyle: FontStyle.italic,
           ),
           textAlign: TextAlign.center,

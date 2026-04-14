@@ -42,7 +42,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     try {
       final response = await ApiService.post('/feedback', {
         'message': text,
-        'platform': Platform.isAndroid ? 'Android' : (Platform.isIOS ? 'iOS' : 'Web'),
+        'platform':
+            Platform.isAndroid ? 'Android' : (Platform.isIOS ? 'iOS' : 'Web'),
         'timestamp': DateTime.now().toIso8601String(),
       });
 
@@ -219,16 +220,20 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   radius: 20,
                   child: ElevatedButton.icon(
                     onPressed: _isLoading ? null : _sendFeedback,
-                    icon: _isLoading 
-                      ? const SizedBox(
-                          width: 20, 
-                          height: 20, 
-                          child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.accentPink)
-                        )
-                      : const Icon(
-                          Icons.send_rounded,
-                          color: AppTheme.accentPink,
-                        ),
+                    icon:
+                        _isLoading
+                            ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppTheme.accentPink,
+                              ),
+                            )
+                            : const Icon(
+                              Icons.send_rounded,
+                              color: AppTheme.accentPink,
+                            ),
                     label: Text(
                       _isLoading ? 'Sending...' : 'Submit Feedback',
                       style: GoogleFonts.inter(

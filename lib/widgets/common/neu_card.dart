@@ -24,7 +24,7 @@ class NeumorphicCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     Widget content = Container(
       width: width,
       height: height,

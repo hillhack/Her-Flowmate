@@ -65,12 +65,32 @@ jobs:
         with:
           channel: 'stable'
           cache: true
-      - run: flutter pub get
-      - name: Build APK
-        run: flutter build apk --debug
+      
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Google Services
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+        continue-on-error: true # Allow build to proceed to test logic even if secrets aren't set yet
+
+      - name: Setup Android Signing
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=app/upload-keystore.jks" >> android/key.properties
+        continue-on-error: true
+
+      - name: Build APK (Release)
+        run: |
+          flutter build apk --release \
+            --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }} \
+            --build-name=1.0.1 \
+            --build-number=${{ github.run_number }}
       
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: her-flowmate-debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          name: her-flowmate-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

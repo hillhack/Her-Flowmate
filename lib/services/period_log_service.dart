@@ -46,14 +46,39 @@ class PeriodLogService extends ChangeNotifier {
   Future<bool> saveLog(PeriodLog log) async {
     try {
       final existingLogs = getLogs();
-      final newStart = DateTime(log.startDate.year, log.startDate.month, log.startDate.day);
-      final newEndDay = log.endDate ?? log.startDate.add(Duration(days: log.duration - 1));
-      final newEnd = DateTime(newEndDay.year, newEndDay.month, newEndDay.day, 23, 59, 59);
+      final newStart = DateTime(
+        log.startDate.year,
+        log.startDate.month,
+        log.startDate.day,
+      );
+      final newEndDay =
+          log.endDate ?? log.startDate.add(Duration(days: log.duration - 1));
+      final newEnd = DateTime(
+        newEndDay.year,
+        newEndDay.month,
+        newEndDay.day,
+        23,
+        59,
+        59,
+      );
 
       for (final existing in existingLogs) {
-        final existingStart = DateTime(existing.startDate.year, existing.startDate.month, existing.startDate.day);
-        final eEndDay = existing.endDate ?? existing.startDate.add(Duration(days: existing.duration - 1));
-        final existingEnd = DateTime(eEndDay.year, eEndDay.month, eEndDay.day, 23, 59, 59);
+        final existingStart = DateTime(
+          existing.startDate.year,
+          existing.startDate.month,
+          existing.startDate.day,
+        );
+        final eEndDay =
+            existing.endDate ??
+            existing.startDate.add(Duration(days: existing.duration - 1));
+        final existingEnd = DateTime(
+          eEndDay.year,
+          eEndDay.month,
+          eEndDay.day,
+          23,
+          59,
+          59,
+        );
 
         // Check if overlaps
         if (!newStart.isAfter(existingEnd) && !newEnd.isBefore(existingStart)) {

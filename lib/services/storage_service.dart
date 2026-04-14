@@ -82,6 +82,11 @@ class StorageService extends ChangeNotifier {
   bool get periodNotifications => onboarding.periodNotifications;
   bool get healthNotifications => onboarding.healthNotifications;
 
+  /// The user's self-reported average cycle length from onboarding.
+  /// Falls back to 28 if not set.
+  int get avgCycleLengthPreference =>
+      BaseStorageService.instance.prefs.getInt('avgCycleLength') ?? 28;
+
   DateTime? get dueDate => pregnancy.dueDate;
   DateTime? get conceptionDate => pregnancy.conceptionDate;
   int? get pregnancyWeeks =>
@@ -162,11 +167,41 @@ class StorageService extends ChangeNotifier {
     await syncUserWithBackend();
   }
 
+  Future<void> completeRadicalOnboarding({
+    required String goal,
+    int? avgCycleLength,
+  }) async {
+    await onboarding.completeRadicalOnboarding(
+      goal: goal,
+      avgCycleLength: avgCycleLength,
+    );
+    await syncUserWithBackend();
+  }
+
+  int get avgCycleLength => onboarding.avgCycleLength;
+
+  // ── Daily Vitals Getters (Convenience) ────────────────────────────────────
+  
+  int get waterIntake => getHydrationToday();
+  String? get todayMood => healthTracker.getDailyLog(DateTime.now())?.moods?.firstOrNull;
+
+  Future<void> updateWaterIntake(int ml) async {
+    final today = DateTime.now();
+    final log = healthTracker.getDailyLog(today) ?? DailyLog(date: today);
+    await healthTracker.saveDailyLog(log.copyWith(waterIntake: ml));
+  }
+
+  Future<void> updateMood(String mood) async {
+    final today = DateTime.now();
+    final log = healthTracker.getDailyLog(today) ?? DailyLog(date: today);
+    await healthTracker.saveDailyLog(log.copyWith(moods: [mood]));
+  }
+
   bool _isSyncing = false;
 
   Future<void> syncUserWithBackend() async {
     if (_isSyncing) return;
-    
+
     final token = ApiService.token;
     if (token == null) return;
 
@@ -226,8 +261,10 @@ class StorageService extends ChangeNotifier {
     try {
       final data = {
         'periodLogs': getLogs().map((l) => l.toJson()).toList(),
-        'dailyLogs': healthTracker.getDailyLogs().map((l) => l.toJson()).toList(),
-        'appointments': appointment.getAllAppointments().map((l) => l.toJson()).toList(),
+        'dailyLogs':
+            healthTracker.getDailyLogs().map((l) => l.toJson()).toList(),
+        'appointments':
+            appointment.getAllAppointments().map((l) => l.toJson()).toList(),
         'exportDate': DateTime.now().toIso8601String(),
         'version': '2.0',
       };
@@ -244,9 +281,10 @@ class StorageService extends ChangeNotifier {
 
       if (decoded is List) {
         // Legacy format: List of period logs
-        final importedLogs = decoded.map((json) {
-          return PeriodLog.fromJson(json as Map<String, dynamic>);
-        }).toList();
+        final importedLogs =
+            decoded.map((json) {
+              return PeriodLog.fromJson(json as Map<String, dynamic>);
+            }).toList();
 
         for (var log in importedLogs) {
           await periodLog.saveLog(log);
@@ -255,9 +293,10 @@ class StorageService extends ChangeNotifier {
         // New bundled format
         // 1. Period Logs
         if (decoded['periodLogs'] is List) {
-          final pLogs = (decoded['periodLogs'] as List)
-              .map((j) => PeriodLog.fromJson(j as Map<String, dynamic>))
-              .toList();
+          final pLogs =
+              (decoded['periodLogs'] as List)
+                  .map((j) => PeriodLog.fromJson(j as Map<String, dynamic>))
+                  .toList();
           for (var log in pLogs) {
             await periodLog.saveLog(log);
           }
@@ -265,9 +304,10 @@ class StorageService extends ChangeNotifier {
 
         // 2. Daily Logs
         if (decoded['dailyLogs'] is List) {
-          final dLogs = (decoded['dailyLogs'] as List)
-              .map((j) => DailyLog.fromJson(j as Map<String, dynamic>))
-              .toList();
+          final dLogs =
+              (decoded['dailyLogs'] as List)
+                  .map((j) => DailyLog.fromJson(j as Map<String, dynamic>))
+                  .toList();
           for (var log in dLogs) {
             await healthTracker.saveDailyLog(log);
           }
@@ -275,9 +315,10 @@ class StorageService extends ChangeNotifier {
 
         // 3. Appointments
         if (decoded['appointments'] is List) {
-          final aLogs = (decoded['appointments'] as List)
-              .map((j) => Appointment.fromJson(j as Map<String, dynamic>))
-              .toList();
+          final aLogs =
+              (decoded['appointments'] as List)
+                  .map((j) => Appointment.fromJson(j as Map<String, dynamic>))
+                  .toList();
           for (var log in aLogs) {
             await appointment.saveAppointment(log);
           }

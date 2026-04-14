@@ -10,8 +10,18 @@ class PredictionService {
   /// Convenience shorthand: the human-readable name of the current phase.
   String get phaseDisplayName => currentPhase.displayName;
 
-  int get averageCycleLength =>
-      CycleEngine.calculateAverageCycleLength(storageService.getLogs());
+  int get averageCycleLength {
+    final computedLength =
+        CycleEngine.calculateAverageCycleLength(storageService.getLogs());
+    // CycleEngine returns 28 as a default when < 2 logs exist.
+    // Instead, prefer the user's self-reported cycle length from onboarding
+    // until we have enough data to compute a reliable average.
+    final hasEnoughLogs = storageService.getLogs().length >= 2;
+    if (!hasEnoughLogs) {
+      return storageService.avgCycleLengthPreference;
+    }
+    return computedLength;
+  }
 
   /// Variance check: if cycle length varies by more than 7 days, it's flagged as irregular.
   bool get isIrregularCycle =>

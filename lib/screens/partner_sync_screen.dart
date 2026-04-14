@@ -191,7 +191,7 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                   ),
                 ).animate().fadeIn(delay: 300.ms),
                 const SizedBox(height: 32),
-                
+
                 // Tab Switcher
                 Container(
                   height: 56,
@@ -207,18 +207,35 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                           onTap: () => setState(() => _activeTab = 0),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: _activeTab == 0 ? Colors.white : Colors.transparent,
+                              color:
+                                  _activeTab == 0
+                                      ? Colors.white
+                                      : Colors.transparent,
                               borderRadius: BorderRadius.circular(16),
-                              boxShadow: _activeTab == 0 ? [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)
-                              ] : null,
+                              boxShadow:
+                                  _activeTab == 0
+                                      ? [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
+                                          blurRadius: 10,
+                                        ),
+                                      ]
+                                      : null,
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               'My Code',
                               style: GoogleFonts.inter(
-                                fontWeight: _activeTab == 0 ? FontWeight.w700 : FontWeight.w500,
-                                color: _activeTab == 0 ? AppTheme.accentPink : AppTheme.textSecondary,
+                                fontWeight:
+                                    _activeTab == 0
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                color:
+                                    _activeTab == 0
+                                        ? AppTheme.accentPink
+                                        : AppTheme.textSecondary,
                               ),
                             ),
                           ),
@@ -229,18 +246,35 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                           onTap: () => setState(() => _activeTab = 1),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: _activeTab == 1 ? Colors.white : Colors.transparent,
+                              color:
+                                  _activeTab == 1
+                                      ? Colors.white
+                                      : Colors.transparent,
                               borderRadius: BorderRadius.circular(16),
-                              boxShadow: _activeTab == 1 ? [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)
-                              ] : null,
+                              boxShadow:
+                                  _activeTab == 1
+                                      ? [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
+                                          blurRadius: 10,
+                                        ),
+                                      ]
+                                      : null,
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               'Link Partner',
                               style: GoogleFonts.inter(
-                                fontWeight: _activeTab == 1 ? FontWeight.w700 : FontWeight.w500,
-                                color: _activeTab == 1 ? AppTheme.accentPink : AppTheme.textSecondary,
+                                fontWeight:
+                                    _activeTab == 1
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                color:
+                                    _activeTab == 1
+                                        ? AppTheme.accentPink
+                                        : AppTheme.textSecondary,
                               ),
                             ),
                           ),
@@ -249,13 +283,16 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
                     ],
                   ),
                 ).animate().fadeIn(delay: 350.ms),
-                
+
                 const SizedBox(height: 24),
                 ThemedContainer(
                   type: ContainerType.glass,
                   padding: const EdgeInsets.all(32),
                   radius: 32,
-                  child: _activeTab == 0 ? _buildMyCodeSection() : _buildLinkPartnerSection(),
+                  child:
+                      _activeTab == 0
+                          ? _buildMyCodeSection()
+                          : _buildLinkPartnerSection(),
                 ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
                 const SizedBox(height: 48),
                 Text(
@@ -351,9 +388,11 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
 
   Widget _buildMyCodeSection() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator(color: AppTheme.accentPink));
+      return const Center(
+        child: CircularProgressIndicator(color: AppTheme.accentPink),
+      );
     }
-    
+
     return Column(
       children: [
         if (_syncCode == null) ...[
@@ -457,7 +496,9 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
           ),
           decoration: InputDecoration(
             hintText: 'XXX-XXX-XXX',
-            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.3)),
+            hintStyle: TextStyle(
+              color: AppTheme.textSecondary.withValues(alpha: 0.3),
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
               borderSide: const BorderSide(color: Colors.white),
@@ -476,17 +517,27 @@ class _PartnerSyncScreenState extends State<PartnerSyncScreen> {
               color: AppTheme.accentPink,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: _isLoading 
-              ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)))
-              : Text(
-                  'Link with Partner',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
+            child:
+                _isLoading
+                    ? const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    )
+                    : Text(
+                      'Link with Partner',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
           ),
         ),
       ],

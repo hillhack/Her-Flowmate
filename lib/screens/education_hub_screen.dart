@@ -139,9 +139,15 @@ class EducationHubScreen extends StatelessWidget {
                                   color: color.withValues(alpha: 0.15),
                                   shape: BoxShape.circle,
                                 ),
-                                child: Text(
-                                  a['icon']!,
-                                  style: const TextStyle(fontSize: 24),
+                                child: Hero(
+                                  tag: 'article_icon_${a['title']}',
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Text(
+                                      a['icon']!,
+                                      style: const TextStyle(fontSize: 24),
+                                    ),
+                                  ),
                                 ),
                               ),
                               const Spacer(),
@@ -258,13 +264,19 @@ class _ArticleDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Center(
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: themeColor.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
+                child: Hero(
+                  tag: 'article_icon_$title',
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: themeColor.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Text(icon, style: const TextStyle(fontSize: 64)),
+                    ),
                   ),
-                  child: Text(icon, style: const TextStyle(fontSize: 64)),
                 ).animate().scale(duration: 500.ms, curve: Curves.easeOutBack),
               ),
               const SizedBox(height: 32),
@@ -288,12 +300,13 @@ class _ArticleDetailScreen extends StatelessWidget {
                       type: ContainerType.glass,
                       padding: const EdgeInsets.all(32),
                       radius: 32,
-                      child: Text(
+                      child: SelectableText(
                         content.replaceAll('\\n', '\n'),
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           color: AppTheme.textDark.withValues(alpha: 0.8),
                           height: 1.8,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     )

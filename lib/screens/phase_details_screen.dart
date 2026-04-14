@@ -97,7 +97,9 @@ class PhaseDetailsScreen extends StatelessWidget {
                   details.description,
                   style: GoogleFonts.inter(
                     fontSize: AppDesignTokens.bodySize + 1,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.8),
                     height: 1.6,
                   ),
                 ).animate().fadeIn(delay: 200.ms),
@@ -107,7 +109,9 @@ class PhaseDetailsScreen extends StatelessWidget {
                 // Tips
                 _buildSectionTitle(context, 'Self-Care Tips'),
                 const SizedBox(height: AppDesignTokens.space16),
-                ...details.tips.map((tip) => _buildTipItem(context, tip, color)),
+                ...details.tips.map(
+                  (tip) => _buildTipItem(context, tip, color),
+                ),
 
                 const SizedBox(height: 40),
               ],
@@ -147,7 +151,9 @@ class PhaseDetailsScreen extends StatelessWidget {
                 tip,
                 style: GoogleFonts.inter(
                   fontSize: AppDesignTokens.bodySize,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w500,
                 ),
               ),

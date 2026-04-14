@@ -104,4 +104,3 @@ class SkeletonLine extends StatelessWidget {
     );
   }
 }
-

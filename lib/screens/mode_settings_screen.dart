@@ -70,14 +70,17 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                   'Switch your focus anytime. Your data history remains safe.',
                   style: GoogleFonts.inter(
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                     height: 1.4,
                   ),
                 ).animate().fadeIn(delay: 100.ms),
                 const SizedBox(height: 32),
                 _ModeCard(
                   title: 'Track my cycle',
-                  subtitle: 'Period tracking & phase predictions\n(Past cycles improve algorithm)',
+                  subtitle:
+                      'Period tracking & phase predictions\n(Past cycles improve algorithm)',
                   icon: Icons.calendar_month_rounded,
                   iconColor: AppTheme.accentPink,
                   isSelected: _selectedGoal == 'track_cycle',
@@ -89,7 +92,8 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                 const SizedBox(height: 16),
                 _ModeCard(
                   title: 'Conceive',
-                  subtitle: 'Fertile window & ovulation tracking\n(Unlocks pregnancy prep tools)',
+                  subtitle:
+                      'Fertile window & ovulation tracking\n(Unlocks pregnancy prep tools)',
                   icon: Icons.favorite_rounded,
                   iconColor: AppTheme.phaseColors['Ovulation']!,
                   isSelected: _selectedGoal == 'conceive',
@@ -101,7 +105,8 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                 const SizedBox(height: 16),
                 _ModeCard(
                   title: 'I am pregnant',
-                  subtitle: 'Pregnancy week & baby development\n(Syncs upcoming due date)',
+                  subtitle:
+                      'Pregnancy week & baby development\n(Syncs upcoming due date)',
                   icon: Icons.pregnant_woman_rounded,
                   iconColor: AppTheme.phaseColors['Ovulation']!,
                   isSelected: _selectedGoal == 'pregnant',
@@ -115,106 +120,131 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                   label: _isProcessing ? 'Updating...' : 'Confirm Change',
                   icon: _isProcessing ? null : Icons.check_circle_rounded,
                   isLoading: _isProcessing,
-                  onTap: _isProcessing ? null : () async {
-                      final storage = context.read<StorageService>();
-                      if (_selectedGoal != storage.userGoal) {
-                        bool clearPregnancy = false;
+                  onTap:
+                      _isProcessing
+                          ? null
+                          : () async {
+                            final storage = context.read<StorageService>();
+                            if (_selectedGoal != storage.userGoal) {
+                              bool clearPregnancy = false;
 
-                        if (storage.userGoal == 'pregnant' && _selectedGoal != 'pregnant') {
-                          final confirmed = await showDialog<bool>(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Clear Pregnancy Data?'),
-                              content: const Text('You are switching away from pregnancy mode. Would you like to clear your active due date?'),
-                              actions: [
-                                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep Data')),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                  style: TextButton.styleFrom(foregroundColor: Colors.red),
-                                  child: const Text('Clear'),
-                                ),
-                              ],
-                            ),
-                          );
+                              if (storage.userGoal == 'pregnant' &&
+                                  _selectedGoal != 'pregnant') {
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder:
+                                      (ctx) => AlertDialog(
+                                        title: const Text(
+                                          'Clear Pregnancy Data?',
+                                        ),
+                                        content: const Text(
+                                          'You are switching away from pregnancy mode. Would you like to clear your active due date?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(ctx, false),
+                                            child: const Text('Keep Data'),
+                                          ),
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(ctx, true),
+                                            style: TextButton.styleFrom(
+                                              foregroundColor: Colors.red,
+                                            ),
+                                            child: const Text('Clear'),
+                                          ),
+                                        ],
+                                      ),
+                                );
 
-                          if (confirmed == null) return;
-                          clearPregnancy = confirmed;
-                        }
+                                if (confirmed == null) return;
+                                clearPregnancy = confirmed;
+                              }
 
-                        setState(() => _isProcessing = true);
+                              setState(() => _isProcessing = true);
 
-                        bool onboardingSuccess = false;
-                        if (_selectedGoal == 'pregnant' &&
-                            storage.dueDate == null &&
-                            storage.pregnancyWeeks == null) {
-                          if (context.mounted) {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const OnboardingScreen(
-                                  forceGoal: 'pregnant',
-                                  initialPage: 2,
-                                ),
-                              ),
-                            );
-                            onboardingSuccess = result == true;
-                          }
-                        } else if ((_selectedGoal == 'track_cycle' ||
-                                _selectedGoal == 'conceive') &&
-                            storage.getLogs().isEmpty) {
-                          if (context.mounted) {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => OnboardingScreen(
-                                  forceGoal: _selectedGoal,
-                                  initialPage: 2,
-                                ),
-                              ),
-                            );
-                            onboardingSuccess = result == true;
-                          }
-                        } else {
-                          onboardingSuccess = true;
-                        }
+                              bool onboardingSuccess = false;
+                              if (_selectedGoal == 'pregnant' &&
+                                  storage.dueDate == null &&
+                                  storage.pregnancyWeeks == null) {
+                                if (context.mounted) {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => const OnboardingScreen(
+                                            forceGoal: 'pregnant',
+                                            initialPage: 2,
+                                          ),
+                                    ),
+                                  );
+                                  onboardingSuccess = result == true;
+                                }
+                              } else if ((_selectedGoal == 'track_cycle' ||
+                                      _selectedGoal == 'conceive') &&
+                                  storage.getLogs().isEmpty) {
+                                if (context.mounted) {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => OnboardingScreen(
+                                            forceGoal: _selectedGoal,
+                                            initialPage: 2,
+                                          ),
+                                    ),
+                                  );
+                                  onboardingSuccess = result == true;
+                                }
+                              } else {
+                                onboardingSuccess = true;
+                              }
 
-                        if (onboardingSuccess) {
-                          try {
-                            if (clearPregnancy) {
-                              final prefs = BaseStorageService.instance.prefs;
-                              await prefs.remove('dueDate');
-                              await prefs.remove('pregnancyWeeks');
-                              await prefs.remove('conceptionDate');
-                            }
-                            await storage.updateUserGoal(_selectedGoal);
-                            if (context.mounted) {
+                              if (onboardingSuccess) {
+                                try {
+                                  if (clearPregnancy) {
+                                    final prefs =
+                                        BaseStorageService.instance.prefs;
+                                    await prefs.remove('dueDate');
+                                    await prefs.remove('pregnancyWeeks');
+                                    await prefs.remove('conceptionDate');
+                                  }
+                                  await storage.updateUserGoal(_selectedGoal);
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Tracking mode updated! ✨',
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: EdgeInsets.all(16),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Network error. Check your connection.',
+                                        ),
+                                        backgroundColor: Colors.redAccent,
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: EdgeInsets.all(16),
+                                      ),
+                                    );
+                                  }
+                                }
+                              }
+                              if (mounted) {
+                                setState(() => _isProcessing = false);
+                              }
+                            } else {
                               Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Tracking mode updated! ✨'),
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.all(16),
-                                ),
-                              );
                             }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Network error. Check your connection.'),
-                                  backgroundColor: Colors.redAccent,
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.all(16),
-                                ),
-                              );
-                            }
-                          }
-                        }
-                        if (mounted) setState(() => _isProcessing = false);
-                      } else {
-                        Navigator.pop(context);
-                      }
-                  },
+                          },
                 ).animate().fadeIn(delay: 650.ms),
                 const Divider(color: Colors.black12, height: 48),
                 TextButton.icon(
@@ -222,18 +252,26 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                     HapticFeedback.lightImpact();
                     final confirmed = await showDialog<bool>(
                       context: context,
-                      builder: (ctx) => AlertDialog(
-                        title: const Text('Logout'),
-                        content: const Text('Are you sure you want to log out? Your data remains on this device.'),
-                        actions: [
-                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx, true),
-                            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
-                            child: const Text('Logout'),
+                      builder:
+                          (ctx) => AlertDialog(
+                            title: const Text('Logout'),
+                            content: const Text(
+                              'Are you sure you want to log out? Your data remains on this device.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.redAccent,
+                                ),
+                                child: const Text('Logout'),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
                     );
 
                     if (confirmed == true) {
@@ -242,14 +280,20 @@ class _ModeSettingsScreenState extends State<ModeSettingsScreen> {
                         if (context.mounted) {
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const LoginScreen(),
+                            ),
                             (route) => false,
                           );
                         }
                       }
                     }
                   },
-                  icon: const Icon(Icons.logout_rounded, color: Colors.redAccent, size: 20),
+                  icon: const Icon(
+                    Icons.logout_rounded,
+                    color: Colors.redAccent,
+                    size: 20,
+                  ),
                   label: Text(
                     'Logout from Account',
                     style: GoogleFonts.inter(
@@ -306,7 +350,9 @@ class _ModeCard extends StatelessWidget {
                   isSelected
                       ? iconColor.withValues(alpha: 0.08)
                       : (isDark
-                          ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04)
+                          ? Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.04)
                           : Colors.white.withValues(alpha: 0.4)),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
@@ -333,7 +379,9 @@ class _ModeCard extends StatelessWidget {
                     color:
                         isSelected
                             ? iconColor
-                            : theme.colorScheme.onSurface.withValues(alpha: 0.35),
+                            : theme.colorScheme.onSurface.withValues(
+                              alpha: 0.35,
+                            ),
                     size: 30,
                   ),
                 ),
@@ -345,9 +393,13 @@ class _ModeCard extends StatelessWidget {
                       Text(
                         title,
                         style: GoogleFonts.poppins(
-                          fontSize: isSmall ? 15 : AppDesignTokens.bodyLargeSize,
+                          fontSize:
+                              isSmall ? 15 : AppDesignTokens.bodyLargeSize,
                           fontWeight: FontWeight.w700,
-                          color: isSelected ? iconColor : theme.colorScheme.onSurface,
+                          color:
+                              isSelected
+                                  ? iconColor
+                                  : theme.colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -355,7 +407,9 @@ class _ModeCard extends StatelessWidget {
                         subtitle,
                         style: GoogleFonts.inter(
                           fontSize: isSmall ? 11 : AppDesignTokens.captionSize,
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.6,
+                          ),
                           height: 1.3,
                         ),
                       ),

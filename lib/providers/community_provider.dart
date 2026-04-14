@@ -66,7 +66,10 @@ class CommunityProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createPost({required String content, required String category}) async {
+  Future<void> createPost({
+    required String content,
+    required String category,
+  }) async {
     _isLoading = true;
     _error = null;
     notifyListeners();

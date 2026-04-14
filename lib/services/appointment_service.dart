@@ -5,10 +5,8 @@ import 'notification_service.dart';
 
 import '../utils/constants.dart';
 
-
 class AppointmentService extends ChangeNotifier {
   static const String appointmentBoxName = 'appointments';
-
 
   Box<Appointment> get _appointmentBox =>
       Hive.box<Appointment>(appointmentBoxName);

@@ -71,19 +71,61 @@ class DailyInsightCard extends StatelessWidget {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
+          
+          // Energy & Mood Quick Status
+          Row(
+            children: [
+              _statusChip(context, '⚡', bio['energy'] ?? '', Colors.orangeAccent),
+              const SizedBox(width: 12),
+              _statusChip(context, '🧘', bio['mood'] ?? '', Theme.of(context).colorScheme.primary),
+            ],
+          ),
+          
+          const Divider(height: 48, thickness: 0.5),
+
           _buildTipRow(
             context,
             Icons.restaurant_rounded,
             'Nutrition: ${healthTips.diet.first}',
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           _buildTipRow(
             context,
             Icons.fitness_center_rounded,
             'Activity: ${healthTips.exercise.first}',
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _statusChip(BuildContext context, String emoji, String text, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.15)),
+        ),
+        child: Row(
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 14)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                text,
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

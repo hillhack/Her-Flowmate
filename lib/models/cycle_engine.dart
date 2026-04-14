@@ -55,7 +55,10 @@ class CycleEngine {
 
     int minLen = 100, maxLen = 0;
     for (int i = 0; i < sortedLogs.length - 1; i++) {
-      final len = sortedLogs[i].startDate.difference(sortedLogs[i + 1].startDate).inDays;
+      final len =
+          sortedLogs[i].startDate
+              .difference(sortedLogs[i + 1].startDate)
+              .inDays;
       if (len > 15 && len < 90) {
         if (len < minLen) minLen = len;
         if (len > maxLen) maxLen = len;
@@ -210,21 +213,29 @@ class CycleEngine {
     );
 
     final daysSinceStart = normSearch.difference(normStart).inDays;
-    
+
     // If we've passed the current cycle length, it's a new cycle starting soon
     if (daysSinceStart >= avgCycleLen) return 1;
 
     final diff = daysSinceStart - ovulationDay + 1;
 
     switch (diff) {
-      case 0: return 33;
-      case -1: return 31;
-      case -2: return 27;
-      case -3: return 14;
-      case -4: return 16;
-      case -5: return 10;
-      case 1: return 5;
-      default: return 1;
+      case 0:
+        return 33;
+      case -1:
+        return 31;
+      case -2:
+        return 27;
+      case -3:
+        return 14;
+      case -4:
+        return 16;
+      case -5:
+        return 10;
+      case 1:
+        return 5;
+      default:
+        return 1;
     }
   }
 

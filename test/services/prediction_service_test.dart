@@ -113,12 +113,12 @@ void main() {
           ), // average 28
         ];
 
-        final day5 = now.add(const Duration(days: 5)); // Safe
-        final day10 = now.add(const Duration(days: 10)); // Fertile (14 - 4)
+        final day5 = now.add(const Duration(days: 4)); // Safe (Day 5)
+        final day10 = now.add(const Duration(days: 9)); // Fertile (Day 10)
         final day14 = now.add(
-          const Duration(days: 14),
-        ); // Peak Ovulation (Fertile)
-        final day20 = now.add(const Duration(days: 20)); // Safe Luteal
+          const Duration(days: 13),
+        ); // Peak Ovulation (Fertile - Day 14)
+        final day20 = now.add(const Duration(days: 19)); // Safe Luteal (Day 20)
 
         expect(predictionService.isFertileDay(day5), false);
         expect(predictionService.isFertileDay(day10), true);

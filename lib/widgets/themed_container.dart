@@ -51,7 +51,9 @@ class ThemedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = BorderRadius.circular(radius ?? 24);
+    final borderRadius = BorderRadius.circular(
+      radius ?? AppDesignTokens.radiusLG,
+    );
     final isHighPerf = context.select<StorageService, bool>(
       (StorageService s) => s.isHighPerformanceMode,
     );
@@ -83,8 +85,8 @@ class ThemedContainer extends StatelessWidget {
                     : Border.all(
                       color: (context.isDarkMode
                               ? Colors.white
-                              : context.primary)
-                          .withValues(alpha: 0.15),
+                              : AppTheme.neuAccent)
+                          .withValues(alpha: 0.1),
                       width: 1,
                     )),
           ),
@@ -119,7 +121,13 @@ class ThemedContainer extends StatelessWidget {
           padding: padding ?? const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            color: gradient != null ? null : (color ?? context.surface),
+            color:
+                gradient != null
+                    ? null
+                    : (color ??
+                        (context.isDarkMode
+                            ? AppTheme.darkSurface
+                            : AppTheme.neuBg)),
             gradient: gradient,
             border:
                 border ??
@@ -127,7 +135,11 @@ class ThemedContainer extends StatelessWidget {
                     ? Border.all(color: borderColor!, width: 1.5)
                     : null),
             boxShadow:
-                boxShadow ?? AppTheme.neuShadows(isDark: context.isDarkMode),
+                boxShadow ??
+                AppTheme.neuShadows(
+                  isDark: context.isDarkMode,
+                  size: ShadowSize.card,
+                ),
           ),
           child: child,
         );

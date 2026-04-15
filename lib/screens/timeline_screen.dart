@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../services/prediction_service.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
-import '../widgets/common/app_back_button.dart';
+import '../widgets/shared_app_bar.dart';
 
 class TimelineScreen extends StatelessWidget {
   const TimelineScreen({super.key});
@@ -25,27 +25,8 @@ class TimelineScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: Semantics(
-              label: 'Back',
-              button: true,
-              child: const Padding(
-                padding: EdgeInsets.all(AppDesignTokens.space4),
-                child: AppBackButton(),
-              ),
-            ),
-            title: Text(
-              'Cycle Timeline',
-              style: GoogleFonts.poppins(
-                color: Theme.of(context).colorScheme.onSurface,
-                fontWeight: FontWeight.w800,
-                fontSize: 20,
-              ),
-            ),
-            centerTitle: true,
-          ),
+          extendBodyBehindAppBar: true,
+          appBar: const SharedAppBar(title: 'Cycle Timeline'),
           body: Container(
             decoration: AppTheme.getBackgroundDecoration(context),
             child: SafeArea(

@@ -63,9 +63,8 @@ class BrandName extends StatelessWidget {
                 ),
             child: Text(
               'FlowMate',
-              style: AppTheme.playfair(
+              style: AppTheme.brandStyle(
                 fontSize: fontSize * 0.95,
-                fontWeight: FontWeight.w800,
                 color: Colors.white,
               ).copyWith(
                 letterSpacing: 0.5,

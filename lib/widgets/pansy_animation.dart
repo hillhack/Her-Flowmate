@@ -22,18 +22,16 @@ class _PansyAnimationOverlayState extends State<PansyAnimationOverlay>
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     )..addListener(() {
-      setState(() {});
+      if (mounted) setState(() {});
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       final size = MediaQuery.of(context).size;
       for (int i = 0; i < numFlowers; i++) {
         particles.add(
           PansyParticle(
-            startOffset: Offset(
-              size.width / 2,
-              size.height * 0.8,
-            ), // Starting roughly around the button
+            startOffset: Offset(size.width / 2, size.height * 0.8),
             screenSize: size,
             random: _random,
           ),
@@ -52,70 +50,81 @@ class _PansyAnimationOverlayState extends State<PansyAnimationOverlay>
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Stack(
-        children:
-            particles.map((p) => p.buildWidget(_controller.value)).toList(),
-      ),
-    );
-  }
-}
-
-class PansyParticle {
-  final Offset startOffset;
-  late Offset endOffset;
-  late double targetDx;
-  late double targetDy;
-  late double size;
-  late double delay;
-  late double rotation;
-  late double totalSpin;
-
-  PansyParticle({
-    required this.startOffset,
-    required Size screenSize,
-    required Random random,
-  }) {
-    // Spread completely over the screen
-    targetDx = random.nextDouble() * screenSize.width;
-    targetDy = random.nextDouble() * screenSize.height;
-    endOffset = Offset(targetDx, targetDy);
-    size = random.nextDouble() * 35 + 15; // 15 to 50 size
-    delay = random.nextDouble() * 0.3; // wait up to 30% of time before bursting
-    rotation = random.nextDouble() * pi * 2;
-    totalSpin =
-        (random.nextDouble() - 0.5) * pi * 4; // spin randomly while moving
-  }
-
-  Widget buildWidget(double progress) {
-    if (progress < delay) return const SizedBox();
-
-    final p = (progress - delay) / (1.0 - delay);
-    final curve = Curves.easeOutCubic.transform(p);
-    final currentOffset = Offset.lerp(startOffset, endOffset, curve)!;
-
-    // Scale starts small, grows to full
-    final currentSize = size * curve;
-    final currentRotation = rotation + (curve * totalSpin);
-
-    // Fade in initially, then stay fully opaque until the screen fades out
-    final opacity = (p * 5).clamp(0.0, 1.0);
-
-    return Positioned(
-      left: currentOffset.dx - currentSize / 2,
-      top: currentOffset.dy - currentSize / 2,
-      child: Transform.rotate(
-        angle: currentRotation,
-        child: Opacity(
-          opacity: opacity,
-          child: Text(
-            '🌸',
-            style: TextStyle(
-              fontSize: currentSize,
-              height: 1.0, // Ensures correct alignment
-            ),
+      child: RepaintBoundary(
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: PansyPainter(
+            particles: particles,
+            progress: _controller.value,
           ),
         ),
       ),
     );
   }
+}
+
+class PansyPainter extends CustomPainter {
+  final List<PansyParticle> particles;
+  final double progress;
+  final TextPainter _textPainter;
+
+  PansyPainter({required this.particles, required this.progress})
+    : _textPainter = TextPainter(
+        text: const TextSpan(text: '🌸', style: TextStyle(fontSize: 40)),
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final p in particles) {
+      if (progress < p.delay) continue;
+
+      final t = (progress - p.delay) / (1.0 - p.delay);
+      final curve = Curves.easeOutCubic.transform(t);
+      final offset = Offset.lerp(p.startOffset, p.endOffset, curve)!;
+
+      final currentSize = p.size * curve;
+      final scale = currentSize / 40.0;
+      final currentRotation = p.rotation + (curve * p.totalSpin);
+
+      canvas.save();
+      canvas.translate(offset.dx, offset.dy);
+      canvas.rotate(currentRotation);
+      canvas.scale(scale);
+
+      _textPainter.paint(
+        canvas,
+        Offset(-_textPainter.width / 2, -_textPainter.height / 2),
+      );
+
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant PansyPainter oldDelegate) {
+    return oldDelegate.progress != progress;
+  }
+}
+
+class PansyParticle {
+  final Offset startOffset;
+  final Offset endOffset;
+  final double size;
+  final double delay;
+  final double rotation;
+  final double totalSpin;
+
+  PansyParticle({
+    required this.startOffset,
+    required Size screenSize,
+    required Random random,
+  }) : size = random.nextDouble() * 35 + 15,
+       delay = random.nextDouble() * 0.3,
+       rotation = random.nextDouble() * pi * 2,
+       totalSpin = (random.nextDouble() - 0.5) * pi * 4,
+       endOffset = Offset(
+         random.nextDouble() * screenSize.width,
+         random.nextDouble() * screenSize.height,
+       );
 }

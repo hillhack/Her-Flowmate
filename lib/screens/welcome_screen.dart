@@ -83,7 +83,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
@@ -150,7 +149,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                       .createShader(bounds),
                               child: Text(
                                 'Your intelligent cycle companion',
-                                style: AppTheme.outfit(
+                                style: AppTheme.poppins(
                                   fontSize: isSmall ? 16 : 18,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
@@ -180,32 +179,35 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                 button: true,
                                 child: ShimmerButton(
                                   onTap: _onBeginJourney,
-                                  radius: 32,
+                                  radius: AppDesignTokens.radiusXL,
                                   child: Container(
                                     width: double.infinity,
-                                    height: isSmall ? 64 : 80,
-                                    decoration: AppTheme.premiumGlassDecoration(
-                                      radius: 32,
-                                      opacity: isDark ? 0.15 : 0.6,
+                                    height: AppDesignTokens.buttonHeight + 8,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        AppDesignTokens.radiusXL,
+                                      ),
+                                      gradient: AppTheme.brandGradient,
+                                      boxShadow: AppTheme.neuShadows(
+                                        isDark: isDark,
+                                        size: ShadowSize.card,
+                                      ),
                                     ),
                                     child:
                                         _isNavigating && !_showPansy
                                             ? const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                              ),
                                             )
                                             : Center(
                                               child: Text(
                                                 'BEGIN JOURNEY',
-                                                style: AppTheme.playfair(
-                                                  fontSize: isSmall ? 18 : 22,
-                                                  fontWeight: FontWeight.w900,
+                                                style: AppTheme.poppins(
+                                                  fontSize: isSmall ? 18 : 20,
+                                                  fontWeight: FontWeight.w800,
                                                   letterSpacing: 2.0,
-                                                  color:
-                                                      isDark
-                                                          ? colorScheme.primary
-                                                          : colorScheme
-                                                              .onSurface,
+                                                  color: Colors.white,
                                                 ),
                                               ),
                                             ),

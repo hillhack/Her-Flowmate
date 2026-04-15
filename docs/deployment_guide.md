@@ -49,5 +49,5 @@ When you push code to `main`, the CI workflow:
 1.  Decodes the `GOOGLE_SERVICES_JSON_BASE64` secret back into the correct file path.
 2.  Decodes the `ANDROID_KEYSTORE_BASE64` back into `upload-keystore.jks`.
 3.  Creates a temporary `android/key.properties` file with your credentials.
-4.  Builds the APK using `--release` and your specified `API_BASE_URL`.
-5.  Uploads the signed APK as a build artifact.
+4.  Builds the **Android App Bundle (AAB)** using `--release` and your specified `API_BASE_URL`.
+5.  Uploads the signed **AAB** as a build artifact (ready for Google Play Store).

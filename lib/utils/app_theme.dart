@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/cycle_engine.dart';
-// Re-export constants for backward compat with files that import app_theme.dart
+
+// Re-export constants for backward compat
 export 'constants.dart';
 export 'app_responsive.dart';
+
+enum ShadowSize { card, button, chip, pressed }
 
 class AppDesignTokens {
   // Typography scale
@@ -29,19 +31,18 @@ class AppDesignTokens {
   static const double space48 = 48;
   static const double space64 = 64;
 
-  // Border radii
+  // Border radii (Standardized)
   static const double radiusXS = 8;
-  static const double radiusSM = 12;
-  static const double radiusMD = 20;
-  static const double radiusLG = 28;
-  static const double radiusXL = 40;
+  static const double radiusSM = 12; // Icon containers, chips
+  static const double radiusMD = 16; // Buttons
+  static const double radiusLG = 20; // Cards
+  static const double radiusXL = 28; // Hero containers
 
   // Button dimensions
   static const double buttonHeight = 56.0;
   static const double buttonHPad = 24.0;
   static const double buttonVPad = 16.0;
 
-  // Neumorphic shadows – tuned for warm ivory background
   static List<BoxShadow> neuShadow(
     BuildContext context, {
     bool isPressed = false,
@@ -52,169 +53,195 @@ class AppDesignTokens {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  🌹  Rose-Coral + Warm Berry Design System
+//  🌸 MODERN PINK NEUMORPHISM DESIGN SYSTEM (2025)
 // ─────────────────────────────────────────────────────────────────────────────
 abstract final class AppTheme {
-  // ── Primary: Rose Coral ───────────────────────────────────────────────────
-  static const Color roseCoralPrimary = Color(0xFFE8446A);
-  static const Color roseCoralLight = Color(0xFFFF8096);
-  static const Color roseCoralDark = Color(0xFFC43059);
-  static const Color roseCoralDeep = Color(0xFF9B1E44);
-  static const Color roseCoralPale = Color(0xFFFFF0F3);
-  static const Color roseCoralSoft = Color(0xFFFFD6DE);
+  // ── Surface & Base ────────────────────────────────────────────────────────
+  static const Color neuBg = Color(0xFFF9EEF3); // Unified blush pink surface
 
-  // ── Secondary: Warm Berry ─────────────────────────────────────────────────
-  static const Color berryPrimary = Color(0xFFAD2D6B);
-  static const Color berryLight = Color(0xFFD4569A);
-  static const Color berryDark = Color(0xFF7B1C4F);
-  static const Color berrySoft = Color(0xFFEFC0D8);
+  // ── Derived Shadows ───────────────────────────────────────────────────────
+  static const Color neuShadowLight = Colors.white;
+  static const Color neuShadowDark = Color(
+    0xFFDBC5D0,
+  ); // Mathematically derived
 
-  // ── Accent: Peach Glow ────────────────────────────────────────────────────
-  static const Color peachAccent = Color(0xFFFF8A70);
-  static const Color peachSoft = Color(0xFFFFD4C2);
+  // ── Accent Colors ─────────────────────────────────────────────────────────
+  static const Color neuAccent = Color(0xFFD63384); // Primary vibrant pink
+  static const Color neuAccentLight = Color(0xFFEC4899); // Gradient end
+  static const Color neuAccentSoft = Color(0xFFF3B8D0); // Tinted icon circles
 
-  // ── Semantic Semantic Palette ────────────────────────────────────────────────
-  static const Color primary = roseCoralPrimary;
-  static const Color secondary = berryPrimary;
-  static const Color accent = peachAccent;
+  // ── Text Palette ──────────────────────────────────────────────────────────
+  static const Color neuTextPrimary = Color(0xFF4A2035); // Deep plum
+  static const Color neuTextSecondary = Color(0xFF9E6882); // Muted rose
+  static const Color neuTextMuted = Color(0xFFC4A0B4); // Placeholder/Hint
 
-  static const Color lightSurface = Colors.white;
-  static const Color lightBackground = Color(0xFFFFF5F0); // warm ivory
-  static const Color lightOnSurface = textDark;
+  // ── Semantic Semantic Palette (Backward Compat) ───────────────────────────
+  static const Color primary = neuAccent;
+  static const Color secondary = neuAccentLight;
+  static const Color accent = neuAccentLight;
 
-  static const Color darkSurface = Color(0xFF2D1822); // deep wine surface
-  static const Color darkBackground = Color(0xFF231118); // rich velvety wine
-  static const Color darkOnSurface = Color(0xFFFCEFF2); // soft warm ivory pink
+  static const Color lightSurface = neuBg;
+  static const Color lightBackground = neuBg;
+  static const Color lightOnSurface = neuTextPrimary;
 
-  // ── Text Colors ───────────────────────────────────────────────────────────
-  static const Color textDark = Color(0xFF2B1020); // deep warm plum
-  static const Color textSecondary = Color(0xFF7A4E62); // muted rose-grey
-  static const Color textLight = Color(0xFFEFB8C8); // soft warm pink
-  static const Color midnightPlum =
-      textDark; // Essential alias for UI consistency
+  static const Color darkSurface = Color(0xFF2D1822);
+  static const Color darkBackground = Color(0xFF231118);
+  static const Color darkOnSurface = Color(0xFFFCEFF2);
 
-  // ── Design Foundations (Consolidated) ─────────────────────────────────────
-  static const Color bgColor = lightBackground;
-  static const Color accentPink = roseCoralPrimary;
-  static const Color primaryPink = roseCoralPrimary;
-  static const Color frameColor = lightBackground;
-  static const Color accentPurple = berryPrimary;
-  static const Color accentColor = roseCoralPrimary;
-
-  // Backward-compat spacing (Migration to AppDesignTokens)
-  static const String _spacingNote =
-      'Use AppDesignTokens for new spacing. Pointing to 8pt grid.';
-
-  @Deprecated(_spacingNote)
-  static const double spacingXsmall = spacingXs;
-  @Deprecated(_spacingNote)
-  static const double spacingSmall = spacingSm;
-  @Deprecated(_spacingNote)
-  static const double spacingMedium = spacingMd;
-  @Deprecated(_spacingNote)
-  static const double spacingLarge = spacingLg;
-  @Deprecated(_spacingNote)
-  static const double spacingXlarge = spacingXl;
-  @Deprecated(_spacingNote)
-  static const double spacingXXlarge = spacingXxl;
-
-  // Backward-compat colors (Migration Phase)
-  static const Color primaryPink300 = roseCoralLight;
-  static const Color primaryPink500 = roseCoralPrimary;
-  static const Color primaryPink700 = berryPrimary;
-  static const Color darkTextPrimary = darkOnSurface;
-  static const Color darkBg = darkBackground;
-  static const Color darkNeuLight = Color(0xFF3D1A2E);
-  static const Color darkNeuDark = Color(0xFF0D0308);
+  // ── Legacy Aliases (Consolidated to new palette) ─────────────────────────
+  static const Color accentPink = neuAccent;
+  static const Color primaryPink = neuAccent;
+  static const Color accentPurple = Color(0xFFAD2D6B);
+  static const Color frameColor = neuBg;
+  static const Color midnightPlum = neuTextPrimary;
   static const Color darkCard = Color(0xFF341828);
-  static const Color darkTextSecondary = Color(0xFFBB8FA0);
-  static const Color lightError = Color(0xFFE53935);
-
-  // Neumorphic shadow tokens
-  static const Color shadowLight = Colors.white;
-  static const Color shadowDark = Color(0xFFEDCED6);
-  static const Color shadowMid = Color(0xFFFFBDC8);
-  static const Color neuLightShadow = shadowLight;
-  static const Color neuDarkShadow = shadowDark;
-  static const Color neuMidShadow = shadowMid;
+  static const Color roseCoralPrimary = neuAccent;
+  static const Color roseCoralLight = neuAccentLight;
+  static const Color roseCoralDark = Color(0xFFC43059);
+  static const Color roseCoralSoft = neuAccentSoft;
+  static const Color textDark = neuTextPrimary;
+  static const Color textSecondary = neuTextSecondary;
+  static const Color berryPrimary = Color(0xFFAD2D6B);
+  static const Color peachAccent = Color(0xFFFF8A70);
+  static const Color bgColor = neuBg;
+  static const Color shadowDark = neuShadowDark;
+  static const Color primaryPink700 = Color(0xFFAD2D6B);
+  static const Color primaryPink500 = neuAccent;
+  static const Color primaryPink300 = neuAccentSoft;
+  static const Color lightError = Color(0xFFE84050);
+  static const Color roseCoralPale = Color(0xFFFFF0F5);
 
   // ── Gradients ─────────────────────────────────────────────────────────────
-
-  /// Light mode: Warm Ivory → Blush Rose → Near-White
-  static const LinearGradient bgGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFFFFF5F0), Color(0xFFFFF0F3), Color(0xFFFFFBF8)],
-  );
-
-  /// Dark mode: Rich pink-wine depths
-  static const LinearGradient vibrantDarkGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF28141C), Color(0xFF331822), Color(0xFF1B0A11)],
-  );
-
-  /// Primary CTA: Rose Coral → Warm Berry
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [roseCoralPrimary, berryPrimary],
+    colors: [neuAccent, neuAccentLight],
   );
 
-  /// Warm peach highlight gradient
-  static const LinearGradient peachGradient = LinearGradient(
+  static const LinearGradient bgGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [roseCoralLight, peachAccent],
-  );
-
-  /// Subtle card gradient
-  static const LinearGradient cardGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFFFFEEF2), Color(0xFFFFF5F0)],
+    colors: [neuBg, Color(0xFFFCF5F8), Color(0xFFF9EEF3)],
   );
 
   static BoxDecoration getBackgroundDecoration(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return BoxDecoration(gradient: isDark ? vibrantDarkGradient : bgGradient);
-  }
-
-  static BoxDecoration getGlassDecoration(
-    BuildContext context, {
-    double radius = 24,
-    double opacity = 0.10,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return glassDecoration(
-      radius: radius,
-      isDark: isDark,
-      opacity: isDark ? opacity * 0.8 : opacity,
-      showBorder: true,
-      borderColor:
-          isDark
-              ? Colors.white.withValues(alpha: 0.10)
-              : roseCoralPrimary.withValues(alpha: 0.18),
+    return BoxDecoration(
+      color: isDark ? darkBackground : neuBg,
+      gradient: isDark ? null : bgGradient,
     );
   }
 
-  // ── Cycle Phase Colors ────────────────────────────────────────────────────
+  // ── Neumorphic Shadow Engine ──────────────────────────────────────────────
+  static List<BoxShadow> neuShadows({
+    bool isDark = false,
+    bool isPressed = false,
+    ShadowSize size = ShadowSize.button,
+  }) {
+    if (isPressed) {
+      return [
+        BoxShadow(
+          color: isDark ? Colors.black38 : neuShadowDark.withValues(alpha: 0.5),
+          offset: const Offset(2, 2),
+          blurRadius: 4,
+          spreadRadius: 1,
+        ),
+        BoxShadow(
+          color:
+              isDark ? Colors.white10 : neuShadowLight.withValues(alpha: 0.5),
+          offset: const Offset(-2, -2),
+          blurRadius: 4,
+          spreadRadius: 1,
+        ),
+      ];
+    }
+
+    if (isDark) {
+      return [
+        BoxShadow(
+          color: const Color(0xFF12060B).withValues(alpha: 0.8),
+          blurRadius: 15,
+          offset: const Offset(6, 6),
+        ),
+        BoxShadow(
+          color: const Color(0xFF3D222E).withValues(alpha: 0.4),
+          blurRadius: 15,
+          offset: const Offset(-6, -6),
+        ),
+      ];
+    }
+
+    double blur, offsetVal;
+    switch (size) {
+      case ShadowSize.card:
+        blur = 18;
+        offsetVal = 8;
+        break;
+      case ShadowSize.button:
+        blur = 12;
+        offsetVal = 5;
+        break;
+      case ShadowSize.chip:
+        blur = 8;
+        offsetVal = 3;
+        break;
+      case ShadowSize.pressed:
+        blur = 4;
+        offsetVal = 2;
+        break;
+    }
+
+    return [
+      BoxShadow(
+        color: neuShadowDark.withValues(alpha: 0.45),
+        blurRadius: blur,
+        offset: Offset(offsetVal, offsetVal),
+      ),
+      BoxShadow(
+        color: neuShadowLight.withValues(alpha: 0.9),
+        blurRadius: blur,
+        offset: Offset(-offsetVal, -offsetVal),
+      ),
+    ];
+  }
+
+  // ── Neumorphic Decorations ───────────────────────────────────────────────
+  static BoxDecoration neuCardDecoration({double? radius}) => BoxDecoration(
+    color: neuBg,
+    borderRadius: BorderRadius.circular(radius ?? AppDesignTokens.radiusLG),
+    boxShadow: neuShadows(size: ShadowSize.card),
+  );
+
+  static BoxDecoration neuButtonDecoration({bool isPressed = false}) =>
+      BoxDecoration(
+        color: neuBg,
+        borderRadius: BorderRadius.circular(AppDesignTokens.radiusMD),
+        boxShadow: neuShadows(isPressed: isPressed, size: ShadowSize.button),
+      );
+
+  static BoxDecoration loginContainerDecoration({bool isDark = false}) =>
+      BoxDecoration(
+        color: isDark ? darkSurface : neuBg,
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: neuShadows(isDark: isDark, size: ShadowSize.card),
+      );
+
+  // ── Cycle Themes ─────────────────────────────────────────────────────────
   static const Map<String, Color> phaseColors = {
-    'Menstrual': Color(0xFFE84050), // Crimson Red
-    'Follicular': Color(0xFF29B6C4), // Teal-Cyan
-    'Ovulation': Color(0xFF9B6FFF), // Violet
-    'Luteal': Color(0xFFFF9547), // Amber Orange
+    'Menstrual': Color(0xFFE84050),
+    'Follicular': Color(0xFF29B6C4),
+    'Ovulation': Color(0xFF9B6FFF),
+    'Luteal': Color(0xFFFF9547),
   };
 
   static const Map<String, Color> hormoneColors = {
-    'Estrogen': Color(0xFFE8446A),
+    'Estrogen': neuAccent,
     'Progesterone': Color(0xFF9B6FFF),
     'LH': Color(0xFF29B6C4),
     'FSH': Color(0xFF4CAF70),
   };
 
-  static Color phaseColor(String phase) =>
-      phaseColors[phase] ?? roseCoralPrimary;
+  static Color phaseColor(String phase) => phaseColors[phase] ?? neuAccent;
 
   static Color getPhaseColor(CyclePhase phase) {
     switch (phase) {
@@ -226,526 +253,197 @@ abstract final class AppTheme {
         return phaseColors['Ovulation']!;
       case CyclePhase.luteal:
         return phaseColors['Luteal']!;
-      case CyclePhase.unknown:
-        return roseCoralPrimary;
+      default:
+        return neuAccent;
     }
   }
 
-  // ── Spacing System (Consigolidated to 8-pt Grid) ───────────────────────────
-  // Note: New code should prefer AppDesignTokens.space* directly.
-  static const double spacingXs = AppDesignTokens.space4;
-  static const double spacingSm = AppDesignTokens.space8;
-  static const double spacingMd = AppDesignTokens.space16;
-  static const double spacingLg = AppDesignTokens.space24;
-  static const double spacingXl = AppDesignTokens.space32;
-  static const double spacingXxl = AppDesignTokens.space48;
-  static const double spacingHuge = AppDesignTokens.space64;
-
-  static BoxDecoration loginContainerDecoration({bool isDark = false}) {
-    return BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors:
-            isDark
-                ? [darkBackground, darkSurface]
-                : [roseCoralPrimary.withValues(alpha: 0.04), Colors.white],
-      ),
-      borderRadius: BorderRadius.circular(32),
-      boxShadow: neuShadows(isDark: isDark),
-    );
-  }
-
-  // ── Responsive Helpers ────────────────────────────────────────────────────
-  static double screenWidth(BuildContext context) =>
-      MediaQuery.of(context).size.width;
-  static double screenHeight(BuildContext context) =>
-      MediaQuery.of(context).size.height;
-  static bool isSmallScreen(BuildContext context) => screenWidth(context) < 360;
-
-  static double clamp(double min, double val, double max) {
-    if (val < min) return min;
-    if (val > max) return max;
-    return val;
-  }
-
-  static double adaptiveFontSize(BuildContext context, double baseSize) {
-    final preferred = baseSize * (screenWidth(context) / 375);
-    return clamp(baseSize * 0.85, preferred, baseSize * 1.2);
-  }
-
-  @Deprecated('Use adaptiveFontSize for modern scaling')
-  static double responsiveFontSize(BuildContext context, double baseSize) =>
-      adaptiveFontSize(context, baseSize);
-
-  static double scale(BuildContext context, double value) =>
-      screenWidth(context) < 360 ? value * 0.8 : value;
-
-  // ── Glass Design System ───────────────────────────────────────────────────
-  static const double glassOpacity = 0.12;
-  static const double glassBlur = 12.0;
-  static const double glassBorderOpacity = 0.15;
-
-  static BoxDecoration glassDecoration({
-    double radius = 24,
-    double opacity = glassOpacity,
-    bool isDark = false,
-    Color? borderColor,
-    bool showBorder = true,
-  }) {
-    return BoxDecoration(
-      color: (isDark ? Colors.black : Colors.white).withValues(alpha: opacity),
-      borderRadius: BorderRadius.circular(radius),
-      border:
-          showBorder
-              ? Border.all(
-                color: (borderColor ?? (isDark ? Colors.white : Colors.black))
-                    .withValues(alpha: glassBorderOpacity),
-                width: 1.0,
-              )
-              : null,
-    );
-  }
-
-  static BoxDecoration premiumGlassDecoration({
-    double radius = 32,
-    double opacity = 0.15,
-  }) {
-    return BoxDecoration(
-      color: Colors.white.withValues(alpha: opacity),
-      borderRadius: BorderRadius.circular(radius),
-      border: Border.all(
-        color: Colors.white.withValues(alpha: glassBorderOpacity),
-        width: 1.5,
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
-          blurRadius: 25,
-          spreadRadius: 0,
-          offset: const Offset(0, 12),
-        ),
-      ],
-    );
-  }
-
   // ── Typography ────────────────────────────────────────────────────────────
-  static TextStyle playfair({
-    BuildContext? context,
-    double fontSize = 32,
-    FontWeight fontWeight = FontWeight.w700,
-    Color? color,
-    double? letterSpacing,
-    double? height,
-  }) {
-    final resolvedSize =
-        context != null ? adaptiveFontSize(context, fontSize) : fontSize;
-    final resolvedColor =
-        context != null
-            ? (color ?? Theme.of(context).colorScheme.onSurface)
-            : (color ?? textDark);
-    return GoogleFonts.playfairDisplay(
-      fontSize: resolvedSize,
-      fontWeight: fontWeight,
-      color: resolvedColor,
-      letterSpacing: letterSpacing,
-      height: height,
-    );
-  }
+  // BRAND ONLY: Playfair Display
+  static TextStyle brandStyle({double fontSize = 32, Color? color}) =>
+      GoogleFonts.playfairDisplay(
+        fontSize: fontSize,
+        fontWeight: FontWeight.w900,
+        color: color ?? neuTextPrimary,
+      );
 
-  static TextStyle outfit({
-    BuildContext? context,
+  // UI EVERYTHING: Poppins
+  static TextStyle poppins({
     double fontSize = 16,
     FontWeight fontWeight = FontWeight.w500,
     Color? color,
     double? letterSpacing,
     double? height,
   }) {
-    final resolvedSize =
-        context != null ? adaptiveFontSize(context, fontSize) : fontSize;
-    final resolvedColor =
-        context != null
-            ? (color ?? Theme.of(context).colorScheme.onSurface)
-            : (color ?? textDark);
-    return GoogleFonts.outfit(
-      fontSize: resolvedSize,
+    return GoogleFonts.poppins(
+      fontSize: fontSize,
       fontWeight: fontWeight,
-      color: resolvedColor,
+      color: color ?? neuTextPrimary,
       letterSpacing: letterSpacing,
       height: height,
     );
   }
 
-  static TextTheme textTheme(BuildContext context) =>
-      Theme.of(context).textTheme;
+  // Backward-compat typography methods rebranded to Poppins
+  static TextStyle playfair({
+    // Used for legacy brand placements
+    BuildContext? context,
+    double fontSize = 32,
+    FontWeight fontWeight = FontWeight.w700,
+    Color? color,
+    double? letterSpacing,
+    double? height,
+  }) => poppins(
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    color: color,
+    letterSpacing: letterSpacing,
+    height: height,
+  );
 
-  // ── Light Theme ───────────────────────────────────────────────────────────
-  static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
-      scaffoldBackgroundColor: lightBackground,
-      colorScheme: const ColorScheme.light(
-        primary: roseCoralPrimary,
-        secondary: berryPrimary,
-        surface: lightSurface,
-        onSurface: lightOnSurface,
-        onPrimary: Colors.white,
-        error: Color(0xFFE53935),
-      ),
-      textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-        headlineLarge: GoogleFonts.poppins(
-          fontSize: 26,
-          fontWeight: FontWeight.w900,
-          color: textDark,
-          letterSpacing: -0.5,
-        ),
-        headlineMedium: GoogleFonts.poppins(
-          fontSize: 22,
-          fontWeight: FontWeight.w800,
-          color: textDark,
-        ),
-        titleLarge: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: textDark,
-        ),
-        bodyLarge: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: textDark,
-          height: 1.5,
-        ),
-        bodyMedium: GoogleFonts.inter(fontSize: 14, color: textSecondary),
-        labelSmall: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: textSecondary,
-          letterSpacing: 0.5,
-        ),
-      ),
-      primaryColor: roseCoralPrimary,
-      primaryColorLight: roseCoralSoft,
-      primaryColorDark: roseCoralDark,
-      canvasColor: lightSurface,
-      shadowColor: shadowDark,
-      tabBarTheme: const TabBarThemeData(indicatorColor: roseCoralPrimary),
-      splashFactory: InkRipple.splashFactory,
-      unselectedWidgetColor: textSecondary,
-      disabledColor: textSecondary.withValues(alpha: 0.5),
-      dialogTheme: const DialogThemeData(backgroundColor: lightSurface),
-      dividerColor: shadowMid.withValues(alpha: 0.2),
-      cardTheme: CardThemeData(
-        color: lightSurface,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        shadowColor: shadowDark.withValues(alpha: 0.2),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.poppins(
-          color: textDark,
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-        ),
-        iconTheme: const IconThemeData(color: textDark),
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-      ),
-    );
-  }
+  static TextStyle outfit({
+    // Rebranded to Poppins for UI consistency
+    BuildContext? context,
+    double fontSize = 16,
+    FontWeight fontWeight = FontWeight.w500,
+    Color? color,
+    double? letterSpacing,
+    double? height,
+  }) => poppins(
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    color: color,
+    letterSpacing: letterSpacing,
+    height: height,
+  );
 
-  // ── Dark Theme ────────────────────────────────────────────────────────────
-  static ThemeData get darkTheme {
-    return ThemeData.dark().copyWith(
-      scaffoldBackgroundColor: darkBackground,
-      colorScheme: const ColorScheme.dark(
-        primary: roseCoralLight,
-        secondary: berryLight,
-        surface: darkSurface,
-        onSurface: darkOnSurface,
-        onPrimary: darkBackground,
-        error: Color(0xFFFF5252),
-      ),
-      textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-        headlineLarge: GoogleFonts.poppins(
-          fontSize: 26,
-          fontWeight: FontWeight.w900,
-          color: darkOnSurface,
-          letterSpacing: -0.5,
-        ),
-        headlineMedium: GoogleFonts.poppins(
-          fontSize: 22,
-          fontWeight: FontWeight.w800,
-          color: darkOnSurface,
-        ),
-        titleLarge: GoogleFonts.poppins(
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
-          color: darkOnSurface,
-        ),
-        bodyLarge: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: darkOnSurface,
-          height: 1.5,
-        ),
-        bodyMedium: GoogleFonts.inter(
-          fontSize: 14,
-          color: const Color(0xFFBB8FA0),
-        ),
-        labelSmall: GoogleFonts.inter(
-          fontSize: 12,
-          fontWeight: FontWeight.w800,
-          color: const Color(0xFFBB8FA0),
-          letterSpacing: 0.5,
-        ),
-      ),
-      primaryColor: roseCoralLight,
-      primaryColorLight: roseCoralDark,
-      primaryColorDark: berryDark,
-      canvasColor: darkSurface,
-      shadowColor: const Color(0xFF0D0308),
-      tabBarTheme: const TabBarThemeData(indicatorColor: roseCoralLight),
-      dividerColor: const Color(0xFF4A2535).withValues(alpha: 0.2),
-      cardTheme: CardThemeData(
-        color: const Color(0xFF2D1822),
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      ),
-      appBarTheme: AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.poppins(
-          color: darkOnSurface,
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-        ),
-        iconTheme: const IconThemeData(color: darkOnSurface),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-    );
-  }
+  // ── Theme Data ───────────────────────────────────────────────────────────
+  static ThemeData get lightTheme => ThemeData(
+    useMaterial3: true,
+    scaffoldBackgroundColor: neuBg,
+    colorScheme: const ColorScheme.light(
+      primary: neuAccent,
+      secondary: neuAccentLight,
+      surface: neuBg,
+      onSurface: neuTextPrimary,
+      onPrimary: Colors.white,
+    ),
+    textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+      headlineLarge: poppins(fontSize: 26, fontWeight: FontWeight.w700),
+      bodyLarge: poppins(fontSize: 16, fontWeight: FontWeight.w500),
+      bodyMedium: poppins(fontSize: 14, color: neuTextSecondary),
+    ),
+  );
 
-  // ── Helper Methods ────────────────────────────────────────────────────────
-  static List<BoxShadow> neuShadows({
+  static ThemeData get darkTheme => ThemeData.dark().copyWith(
+    scaffoldBackgroundColor: darkBackground,
+    colorScheme: const ColorScheme.dark(
+      primary: neuAccentLight,
+      surface: darkSurface,
+      onSurface: darkOnSurface,
+    ),
+  );
+
+  // ── Deprecated Decorations (Use Neumorphic instead) ──────────────────────
+  @Deprecated('Use neuCardDecoration or neuButtonDecoration')
+  static BoxDecoration glassDecoration({
+    double radius = 24,
+    double opacity = 0.1,
     bool isDark = false,
-    bool isPressed = false,
-  }) {
-    if (isPressed) {
-      return [
-        BoxShadow(
-          color:
-              isDark
-                  ? Colors.black.withValues(alpha: 0.3)
-                  : roseCoralPrimary.withValues(alpha: 0.1),
-          blurRadius: 4,
-          offset: const Offset(1, 1),
-        ),
-      ];
-    }
+    Color? borderColor,
+    bool showBorder = true,
+  }) => BoxDecoration(
+    color: Colors.white.withValues(alpha: opacity),
+    borderRadius: BorderRadius.circular(radius),
+  );
 
-    if (isDark) {
-      // Dark Mode Pink Neumorphism: Deep wine shadows + Rose glow lift
-      return [
-        BoxShadow(
-          color: const Color(0xFF12060B).withValues(alpha: 0.6),
-          blurRadius: 10,
-          offset: const Offset(5, 5),
-        ),
-        BoxShadow(
-          color: const Color(0xFF3D222E).withValues(alpha: 0.4),
-          blurRadius: 10,
-          offset: const Offset(-5, -5),
-        ),
-      ];
-    }
+  @Deprecated('Use neuCardDecoration')
+  static BoxDecoration premiumGlassDecoration({
+    double radius = 32,
+    double opacity = 0.15,
+  }) => BoxDecoration(
+    color: Colors.white.withValues(alpha: opacity),
+    borderRadius: BorderRadius.circular(radius),
+  );
 
-    // Light Mode shadows: derivation from surface color for realism
-    // Background surface is #FFF5F0 (Warm Ivory)
-    const surfaceTint = Color(0xFFE8D5DC); // Dynamic sink color
-    return [
-      BoxShadow(
-        color: surfaceTint.withValues(alpha: 0.7),
-        blurRadius: 10,
-        offset: const Offset(4, 4),
-      ),
-      const BoxShadow(
-        color: Colors.white,
-        blurRadius: 10,
-        offset: Offset(-4, -4),
-      ),
-    ];
-  }
+  // ── Backward Compat Constants ─────────────────────────────────────────────
+  static const double spacingXs = 4;
+  static const double spacingSm = 8;
+  static const double spacingMd = 16;
+  static const double spacingLg = 24;
+  static const double spacingXl = 32;
+  static const double spacingXxl = 48;
 
-  static double h1(BuildContext context) => adaptiveFontSize(context, 26);
-  static double h2(BuildContext context) => adaptiveFontSize(context, 22);
-  static double h3(BuildContext context) => adaptiveFontSize(context, 18);
-  static double bodySize(BuildContext context) => adaptiveFontSize(context, 16);
-  static double labelSize(BuildContext context) =>
-      adaptiveFontSize(context, 12);
-  static double body(BuildContext context) => bodySize(context);
-  static double label(BuildContext context) => labelSize(context);
+  static double adaptiveFontSize(BuildContext context, double baseSize) =>
+      baseSize * (MediaQuery.of(context).size.width / 375).clamp(0.85, 1.2);
 
-  static ({String headline}) phaseTip(String phase) {
-    switch (phase) {
-      case 'Menstrual':
-        return (headline: 'Rest and Rejuvenate');
-      case 'Follicular':
-        return (headline: 'Plan and Initiate');
-      case 'Ovulation':
-        return (headline: 'Connect and Express');
-      case 'Luteal':
-        return (headline: 'Analyze and Complete');
-      default:
-        return (headline: 'Balance and Listen');
-    }
-  }
-
+  // Legacy health tips placeholders to avoid breakages
   static ({List<String> exercise, List<String> diet, List<String> nutrients})
-  getPhaseHealthTips(String phase) {
+  getPhaseHealthTips(String phase) => (exercise: [], diet: [], nutrients: []);
+  static List<String> getPhaseSymptoms(String phase) => ['Varies'];
+
+  static String phaseTip(String phase) {
     switch (phase) {
-      case 'Menstrual':
-        return (
-          exercise: [
-            'Gentle Yoga',
-            'Light Walking',
-            'Symptom Relief Stretches',
-          ],
-          diet: ['Warm Herbal Soups', 'Magnesium-Rich Oats', 'Ginger Tea'],
-          nutrients: ['Iron (rebuild)', 'Magnesium (cramps)', 'Vitamin C'],
-        );
+      case 'Menstrual' || 'Period':
+        return 'Prioritize rest and nourish your body.';
       case 'Follicular':
-        return (
-          exercise: ['Light Cardio', 'Creative Movement', 'Power Walking'],
-          diet: ['Fermented Salads', 'Sprouted Grains', 'Lean Proteins'],
-          nutrients: ['Zinc (hormone balance)', 'Vitamin B12', 'Vitamin E'],
-        );
+        return 'Time for new beginnings and energy.';
       case 'Ovulation':
-        return (
-          exercise: [
-            'HIIT Sessions',
-            'High Intensity Cardio',
-            'Social Workouts',
-          ],
-          diet: [
-            'Rainbow Salads',
-            'Cold Berries',
-            'Anti-inflammatory Crucifers',
-          ],
-          nutrients: ['Folate (cell health)', 'Amino Acids', 'Vitamin B'],
-        );
+        return 'You are at your most vibrant today.';
       case 'Luteal':
-        return (
-          exercise: [
-            'Steady-state Pilates',
-            'Mindful Resistance',
-            'Long Stretches',
-          ],
-          diet: ['Complex Root Veggies', 'Dark Chocolate (70%+)', 'Omega Fats'],
-          nutrients: ['Vitamin B6 (mood)', 'Magnesium (sleep)', 'Omega-3'],
-        );
+        return 'Slow down and practice self-care.';
       default:
-        return (
-          exercise: ['Listen to your pulse'],
-          diet: ['Mindful nutrition'],
-          nutrients: ['Essential Multivitamin'],
-        );
+        return 'Tune into your body\'s natural rhythm.';
     }
   }
 
-  static List<String> getPhaseSymptoms(String phase) {
-    switch (phase) {
-      case 'Menstrual':
-        return ['Cramps', 'Fatigue', 'Low Back Pain'];
-      case 'Follicular':
-        return ['Rising Energy', 'Optimism', 'Focus'];
-      case 'Ovulation':
-        return ['High Libido', 'Mild Cramp', 'Energy\u2191'];
-      case 'Luteal':
-        return ['Bloating', 'Mood Swings', 'Sensitivity'];
-      default:
-        return ['Varies'];
-    }
-  }
-
-  // ── Theme Accessors ──
-  static Color onSurface(BuildContext context) =>
-      Theme.of(context).colorScheme.onSurface;
-  static Color primaryColor(BuildContext context) =>
-      Theme.of(context).colorScheme.primary;
-  static Color surface(BuildContext context) =>
-      Theme.of(context).colorScheme.surface;
-  static bool isDark(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark;
+  static bool isSmallScreen(BuildContext context) =>
+      MediaQuery.of(context).size.width < 360;
 }
 
-// ── Text Theme Extensions ─────────────────────────────────────────────────────
+// ── Extensions ──────────────────────────────────────────────────────────────
 extension CustomTextTheme on TextTheme {
-  TextStyle get headline => GoogleFonts.poppins(
-    fontSize: 32,
-    fontWeight: FontWeight.bold,
-    letterSpacing: -0.5,
-  );
-
-  TextStyle get subheadline => GoogleFonts.poppins(
-    fontSize: 24,
-    fontWeight: FontWeight.w700,
-    letterSpacing: -0.2,
-  );
-
+  TextStyle get headline =>
+      GoogleFonts.poppins(fontSize: 32, fontWeight: FontWeight.bold);
+  TextStyle get subheadline =>
+      GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold);
   TextStyle get bodySemiBold =>
-      GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, height: 1.4);
-
-  TextStyle get body => GoogleFonts.inter(fontSize: 14, height: 1.5);
-
-  TextStyle get caption => GoogleFonts.inter(
-    fontSize: 12,
-    color: AppTheme.textSecondary,
-    letterSpacing: 0.2,
-  );
+      GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600);
+  TextStyle get body => GoogleFonts.poppins(fontSize: 14, height: 1.5);
+  TextStyle get caption =>
+      GoogleFonts.poppins(fontSize: 12, color: AppTheme.neuTextSecondary);
 }
 
-// ── Phase Color Extension ─────────────────────────────────────────────────────
+extension ThemeExtensions on BuildContext {
+  ThemeData get theme => Theme.of(this);
+  bool get isDarkMode => theme.brightness == Brightness.dark;
+  Color get primary => theme.colorScheme.primary;
+  Color get surface => theme.colorScheme.surface;
+  Color get onSurface => theme.colorScheme.onSurface;
+  Color get error => theme.colorScheme.error;
+  Color get secondaryText =>
+      isDarkMode ? const Color(0xFFD4A5B5) : AppTheme.neuTextSecondary;
+  Color get secondary => theme.colorScheme.secondary;
+  Color get accent => AppTheme.accent;
+  Color get transparentPink => AppTheme.neuAccent.withValues(alpha: 0.1);
+  TextTheme get textTheme => theme.textTheme;
+  ColorScheme get colorScheme => theme.colorScheme;
+  double get screenWidth => MediaQuery.of(this).size.width;
+}
+
 extension PhaseColors on ColorScheme {
   Color phaseColor(String phase) {
     switch (phase) {
       case 'Menstrual' || 'Period':
-        return primary;
+        return AppTheme.neuAccent;
       case 'Follicular':
-        return secondary;
+        return const Color(0xFF29B6C4);
       case 'Ovulation' || 'Ovulatory':
-        return brightness == Brightness.light
-            ? const Color(0xFF9B6FFF)
-            : const Color(0xFFB98CFF);
+        return const Color(0xFF9B6FFF);
       case 'Luteal':
-        return primary.withValues(alpha: 0.7);
+        return const Color(0xFFFF9547);
       default:
-        return primary;
+        return AppTheme.neuAccent;
     }
   }
-}
-
-// ── Theme Access Extensions ──────────────────────────────────────────────────
-extension ThemeExtensions on BuildContext {
-  ThemeData get theme => Theme.of(this);
-  ColorScheme get colorScheme => theme.colorScheme;
-  TextTheme get textTheme => theme.textTheme;
-  bool get isDarkMode => theme.brightness == Brightness.dark;
-
-  // Quick access to common semantic colors
-  Color get primary => colorScheme.primary;
-  Color get secondary => colorScheme.secondary;
-  Color get surface => colorScheme.surface;
-  Color get onSurface => colorScheme.onSurface;
-  Color get error => colorScheme.error;
-  Color get accent => AppTheme.accent;
-
-  Color get secondaryText =>
-      isDarkMode ? const Color(0xFFD4A5B5) : AppTheme.textSecondary;
-  Color get transparentPink => AppTheme.roseCoralPrimary.withValues(alpha: 0.1);
-
-  double screenWidth([BuildContext? context]) =>
-      MediaQuery.of(context ?? this).size.width;
 }

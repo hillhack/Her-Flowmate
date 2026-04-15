@@ -11,6 +11,7 @@ import '../common/neu_card.dart';
 import '../common/primary_button.dart';
 import '../../models/period_log.dart';
 import 'dashboard_calendar_strip.dart';
+import 'conception_wheel.dart';
 
 class TTCDashboard extends StatelessWidget {
   final StorageService storage;
@@ -51,7 +52,7 @@ class TTCDashboard extends StatelessWidget {
         ).animate().slideY(begin: 0.1, duration: 400.ms),
         const SizedBox(height: AppDesignTokens.space24),
 
-        _buildPrimaryInsight(context),
+        _buildWheelInsight(context),
         const SizedBox(height: AppDesignTokens.space24),
         _buildConceptionTipsCard(context, pred),
         const SizedBox(height: AppDesignTokens.space24),
@@ -62,93 +63,15 @@ class TTCDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildPrimaryInsight(BuildContext context) {
-    final int todayChance = pred.currentConceptionChance;
-
+  Widget _buildWheelInsight(BuildContext context) {
     return NeumorphicCard(
-      padding: const EdgeInsets.all(AppDesignTokens.space20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.favorite_rounded,
-                size: 16,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Fertility Timeline',
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.bold,
-                  fontSize: AppDesignTokens.bodySize,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDesignTokens.space24),
-          _buildFertileBar(context),
-          const SizedBox(height: AppDesignTokens.space16),
-          Text(
-            todayChance >= peakFertilityThreshold
-                ? 'Today is highly fertile! Great day to try.'
-                : 'Keep tracking to uncover your full fertile window.',
-            style: GoogleFonts.inter(
-              fontSize: AppDesignTokens.bodySize - 1,
-              fontWeight: FontWeight.w500,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.8),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(vertical: AppDesignTokens.space32),
+      child: Center(
+        child: ConceptionWheel(
+          pred: pred,
+        ).animate().scaleXY(begin: 0.9, duration: 400.ms),
       ),
     ).animate().slideY(begin: 0.1, delay: 300.ms);
-  }
-
-  Widget _buildFertileBar(BuildContext context) {
-    final today = DateTime.now();
-    List<Widget> barSegments = [];
-
-    for (int i = -4; i <= 6; i++) {
-      DateTime d = today.add(Duration(days: i));
-      int chance = pred.getConceptionChance(d);
-
-      Color segmentColor;
-      if (chance >= peakFertilityThreshold) {
-        segmentColor = Theme.of(context).colorScheme.primary; // Peak
-      } else if (chance >= approachingFertilityThreshold) {
-        segmentColor = Theme.of(
-          context,
-        ).colorScheme.primary.withValues(alpha: 0.4); // High
-      } else {
-        segmentColor = Theme.of(
-          context,
-        ).colorScheme.onSurface.withValues(alpha: 0.1); // Low
-      }
-
-      barSegments.add(
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 2),
-            height: i == 0 ? 32 : 24, // Taller for today
-            decoration: BoxDecoration(
-              color: segmentColor,
-              borderRadius: BorderRadius.circular(4),
-              border: i == 0 ? Border.all(color: Colors.white, width: 2) : null,
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: barSegments,
-    );
   }
 
   Widget _buildCallToAction(BuildContext context) {

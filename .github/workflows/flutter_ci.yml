@@ -1,10 +1,13 @@
 name: Flutter CI/CD
 
+# Trigger on pushes and PRs to the main branch
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -56,7 +59,7 @@ jobs:
           publish_dir: ./build/web
 
   build_android:
-    name: Build & Archive APK
+    name: Build & Archive App Bundle
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -70,27 +73,34 @@ jobs:
         run: flutter pub get
 
       - name: Setup Google Services
-        run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
-        continue-on-error: true # Allow build to proceed to test logic even if secrets aren't set yet
+        if: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 != '' }}
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: echo "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > android/app/google-services.json
 
       - name: Setup Android Signing
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
           echo "storeFile=app/upload-keystore.jks" >> android/key.properties
-        continue-on-error: true
 
-      - name: Build APK (Release)
+      - name: Build App Bundle (Release)
         run: |
-          flutter build apk --release \
+          flutter build appbundle --release \
             --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }} \
-            --build-name=1.0.1 \
-            --build-number=${{ github.run_number }}
+            --build-name=1.0.2 \
+            --build-number=3
       
-      - name: Upload APK Artifact
+      - name: Upload App Bundle Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: her-flowmate-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: her-flowmate-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab

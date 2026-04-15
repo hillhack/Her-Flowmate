@@ -6,6 +6,7 @@ import 'dart:io' show Platform;
 import '../utils/app_theme.dart';
 import '../widgets/themed_container.dart';
 import '../widgets/brand_widgets.dart';
+import '../widgets/shared_app_bar.dart';
 import '../services/api_service.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -99,30 +100,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const ThemedContainer(
-              type: ContainerType.glass,
-              radius: 12,
-              padding: EdgeInsets.zero,
-              child: Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
-            ),
-          ),
-        ),
-        title: Text(
-          'Send Feedback',
-          style: GoogleFonts.poppins(
-            color: AppTheme.textDark,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: const SharedAppBar(title: 'Send Feedback'),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         child: SafeArea(

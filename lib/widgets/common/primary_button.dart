@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../utils/app_theme.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -48,10 +47,10 @@ class PrimaryButton extends StatelessWidget {
         Flexible(
           child: Text(
             isLoading ? 'Please wait...' : label,
-            style: GoogleFonts.outfit(
+            style: AppTheme.poppins(
               fontSize: AppDesignTokens.buttonSize,
               fontWeight: FontWeight.w700,
-              color: isSecondary ? colorScheme.primary : Colors.white,
+              color: isSecondary ? AppTheme.neuAccent : Colors.white,
               letterSpacing: 0.3,
             ),
             overflow: TextOverflow.ellipsis,
@@ -74,7 +73,7 @@ class PrimaryButton extends StatelessWidget {
                     HapticFeedback.lightImpact();
                     onTap!();
                   },
-          borderRadius: BorderRadius.circular(AppDesignTokens.radiusLG),
+          borderRadius: BorderRadius.circular(AppDesignTokens.radiusMD),
           child: Ink(
             height: AppDesignTokens.buttonHeight,
             padding: const EdgeInsets.symmetric(
@@ -82,21 +81,14 @@ class PrimaryButton extends StatelessWidget {
               vertical: AppDesignTokens.buttonVPad,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppDesignTokens.radiusLG),
+              borderRadius: BorderRadius.circular(AppDesignTokens.radiusMD),
               gradient: isSecondary ? null : AppTheme.brandGradient,
-              color:
-                  isSecondary
-                      ? colorScheme.primary.withValues(alpha: 0.1)
-                      : null,
-              border:
-                  isSecondary
-                      ? Border.all(
-                        color: colorScheme.primary.withValues(alpha: 0.5),
-                        width: 1.5,
-                      )
-                      : null,
-              boxShadow:
-                  isSecondary ? null : AppDesignTokens.neuShadow(context),
+              color: isSecondary ? AppTheme.neuBg : null,
+              boxShadow: AppTheme.neuShadows(
+                isDark: context.isDarkMode,
+                isPressed: false,
+                size: ShadowSize.button,
+              ),
             ),
             child: Center(child: content),
           ),

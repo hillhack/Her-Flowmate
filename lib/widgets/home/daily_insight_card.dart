@@ -53,7 +53,7 @@ class DailyInsightCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            AppTheme.phaseTip(phase).headline,
+            AppTheme.phaseTip(phase),
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.w800,

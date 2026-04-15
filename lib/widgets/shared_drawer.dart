@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../services/storage_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/period_health_widgets.dart';
@@ -24,7 +23,7 @@ class SharedDrawer extends StatelessWidget {
     return Drawer(
       backgroundColor: context.surface,
       elevation: 0,
-      width: context.screenWidth(context) * 0.82,
+      width: context.screenWidth * 0.82,
       child: Column(
         children: [
           _buildHeader(context, storage),
@@ -177,11 +176,9 @@ class SharedDrawer extends StatelessWidget {
                   children: [
                     Text(
                       storage.userName.isEmpty ? 'Friend' : storage.userName,
-                      style: AppTheme.playfair(
-                        context: context,
+                      style: AppTheme.brandStyle(
                         fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        color: context.onSurface,
+                        color: AppTheme.neuAccent,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -195,8 +192,7 @@ class SharedDrawer extends StatelessWidget {
                       color: avatarColor.withValues(alpha: 0.1),
                       child: Text(
                         storage.userGoal.toUpperCase(),
-                        style: AppTheme.outfit(
-                          context: context,
+                        style: AppTheme.poppins(
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
                           color: avatarColor,
@@ -223,8 +219,7 @@ class SharedDrawer extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: AppTheme.outfit(
-          context: context,
+        style: AppTheme.poppins(
           fontSize: 11,
           fontWeight: FontWeight.w800,
           color: context.onSurface.withValues(alpha: 0.4),
@@ -245,14 +240,17 @@ class SharedDrawer extends StatelessWidget {
         Navigator.pop(context);
         onTap();
       },
-      leading: Icon(
-        icon,
-        color: context.primary.withValues(alpha: 0.8),
-        size: 24,
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: const BoxDecoration(
+          color: AppTheme.neuAccentSoft,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: AppTheme.neuAccent, size: 20),
       ),
       title: Text(
         title,
-        style: GoogleFonts.outfit(
+        style: AppTheme.poppins(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           color: context.onSurface.withValues(alpha: 0.9),
@@ -302,7 +300,7 @@ class SharedDrawer extends StatelessWidget {
               ),
               title: Text(
                 'Logout',
-                style: GoogleFonts.outfit(
+                style: AppTheme.poppins(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: context.onSurface.withValues(alpha: 0.7),

@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../utils/app_theme.dart';
 import '../widgets/delight_widgets.dart';
-import '../widgets/common/app_back_button.dart';
+import '../widgets/shared_app_bar.dart';
 import '../widgets/common/neu_card.dart';
 
 class PhaseDetailsScreen extends StatelessWidget {
@@ -18,22 +18,7 @@ class PhaseDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: AppBackButton(),
-        ),
-        title: Text(
-          'Phase Details',
-          style: GoogleFonts.poppins(
-            color: Theme.of(context).colorScheme.onSurface,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: const SharedAppBar(title: 'Phase Details'),
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.bgGradient),
         child: SafeArea(

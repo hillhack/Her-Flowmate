@@ -371,30 +371,30 @@ class AnimatedGlowBackground extends StatelessWidget {
           top: -100,
           left: -100,
           child: _GlowBlob(
-            color: isDark ? AppTheme.accentPink : const Color(0xFFFFD1DC),
+            color: AppTheme.neuAccent,
             size: 350,
             durationOffset: 0,
-            opacity: isDark ? 0.12 : 0.25,
+            opacity: isDark ? 0.08 : 0.15,
           ),
         ),
         Positioned(
           bottom: -50,
           right: -50,
           child: _GlowBlob(
-            color: isDark ? AppTheme.accentPurple : const Color(0xFFE6E6FA),
+            color: AppTheme.neuAccentLight,
             size: 300,
             durationOffset: 4,
-            opacity: isDark ? 0.1 : 0.25,
+            opacity: isDark ? 0.06 : 0.12,
           ),
         ),
         Positioned(
           top: 300,
           right: -100,
           child: _GlowBlob(
-            color: isDark ? Colors.blueAccent : const Color(0xFFF0F8FF),
+            color: AppTheme.neuAccentSoft,
             size: 250,
             durationOffset: 8,
-            opacity: isDark ? 0.08 : 0.25,
+            opacity: isDark ? 0.05 : 0.1,
           ),
         ),
 
@@ -469,7 +469,7 @@ class ShimmerButton extends StatelessWidget {
     super.key,
     required this.child,
     this.onTap,
-    this.radius = 24,
+    this.radius = AppDesignTokens.radiusLG,
   });
 
   @override
@@ -502,13 +502,10 @@ class ShimmerButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: AppTheme.neuShadows(
+            isDark: Theme.of(context).brightness == Brightness.dark,
+            size: ShadowSize.button,
+          ),
         ),
         child: body,
       ),

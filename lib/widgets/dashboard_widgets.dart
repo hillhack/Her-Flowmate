@@ -53,7 +53,7 @@ class PhaseCard extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              AppTheme.phaseTip(phaseName).headline,
+              AppTheme.phaseTip(phaseName),
               style: GoogleFonts.inter(
                 fontSize: 16,
                 color: AppTheme.phaseColor(phaseName),

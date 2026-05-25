@@ -28,7 +28,7 @@ class GoogleAuthService {
           serverClientId: const String.fromEnvironment(
             'GOOGLE_SERVER_CLIENT_ID',
             defaultValue:
-                '174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com',
+                '174435969771-b57itdgc43f8imjkil67i7s1o71kemou.apps.googleusercontent.com',
           ),
         );
       }

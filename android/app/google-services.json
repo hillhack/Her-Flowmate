@@ -18,11 +18,19 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.herflowmate.her_flowmate",
-            "certificate_hash": "a1b0dacd5b2bec2d4afd8fcea61de4c484730392"
+            "certificate_hash": "c8067c66ecef75fff6894fdcea9d7c0ea15d0308"
           }
         },
         {
-          "client_id": "174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com",
+          "client_id": "174435969771-3ht3ghqlbo7q2de32s9ah5lnvthk7dbp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.herflowmate.her_flowmate",
+            "certificate_hash": "c43e5d7a63a38e84313eb86c4f17c0b84e9b76ab"
+          }
+        },
+        {
+          "client_id": "174435969771-b57itdgc43f8imjkil67i7s1o71kemou.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,7 +43,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "174435969771-igiff38hijf44gf6lfl6s1irl9vls11n.apps.googleusercontent.com",
+              "client_id": "174435969771-b57itdgc43f8imjkil67i7s1o71kemou.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

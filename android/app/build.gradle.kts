@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,9 +9,12 @@ plugins {
     id("com.google.gms.google-services")
 }
 
-import java.util.Properties
-import java.io.FileInputStream
 
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
 android {
     namespace = "com.herflowmate.her_flowmate"
     compileSdk = flutter.compileSdkVersion
@@ -38,15 +44,10 @@ android {
 
     signingConfigs {
         create("release") {
-            val keystorePropertiesFile = rootProject.projectDir.resolve("key.properties")
-            val keystoreProperties = Properties()
-            if (keystorePropertiesFile.exists()) {
-                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
-            }
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String
         }
     }
 
@@ -55,13 +56,14 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("release")
-            
+
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
         }
     }
 }

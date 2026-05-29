@@ -14,23 +14,31 @@
       },
       "oauth_client": [
         {
-          "client_id": "174435969771-fdiqil6jjd4smbqp50s1bin53dr9e5nc.apps.googleusercontent.com",
+          "client_id": "236563075553-6saeup237jvro9ph144363ipm2snp747.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.herflowmate.her_flowmate",
-            "certificate_hash": "c8067c66ecef75fff6894fdcea9d7c0ea15d0308"
+            "certificate_hash": "e1fa33b62787341f8a5492a924db6f4fcf590e5c"
           }
         },
         {
-          "client_id": "174435969771-3ht3ghqlbo7q2de32s9ah5lnvthk7dbp.apps.googleusercontent.com",
+          "client_id": "236563075553-lq9s83qudk93mdtqg3dv54d4uvpju0ho.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.herflowmate.her_flowmate",
-            "certificate_hash": "c43e5d7a63a38e84313eb86c4f17c0b84e9b76ab"
+            "certificate_hash": "53045395233ff04ecfe61c60749177bad048562b"
           }
         },
         {
-          "client_id": "174435969771-b57itdgc43f8imjkil67i7s1o71kemou.apps.googleusercontent.com",
+          "client_id": "236563075553-t01bf47bio4v5qcna65r161c8jumlqfc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.herflowmate.her_flowmate",
+            "certificate_hash": "075e1860e91af951a7b7a05ae7905fae0b53b732"
+          }
+        },
+        {
+          "client_id": "236563075553-cvtdbgi8fq0ag86hsducsvi8cnf67gpc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -43,8 +51,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "174435969771-b57itdgc43f8imjkil67i7s1o71kemou.apps.googleusercontent.com",
+              "client_id": "236563075553-cvtdbgi8fq0ag86hsducsvi8cnf67gpc.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "236563075553-ior9s4u8se4rs0osjksf4i9kpn8sm34i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.herflowmate.herFlowmate"
+              }
             }
           ]
         }

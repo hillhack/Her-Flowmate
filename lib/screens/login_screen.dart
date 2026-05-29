@@ -352,16 +352,17 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         final userData = await GoogleAuthService.authenticateWithBackend(token);
+        // Dead code
         name =
             userData?['display_name'] ??
             userData?['name'] ??
             userData?['given_name'];
       }
-
       if (!context.mounted) return;
       await storage.completeLogin(isGoogle, name ?? '');
 
       if (!context.mounted) return;
+      _showSuccessSnack(context);
       _navigateToPostLogin(context, storage, name);
     } catch (e) {
       if (context.mounted) {
@@ -541,6 +542,20 @@ class _LoginScreenState extends State<LoginScreen> {
             .slideY(begin: 0.2, end: 0, curve: Curves.easeOutCubic)
             .fadeIn();
       },
+    );
+  }
+
+  void _showSuccessSnack(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: ListTile(
+          leading: Icon(Icons.check_circle, color: Colors.lightGreenAccent),
+          title: Text(
+            "Login Successfull!",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
     );
   }
 

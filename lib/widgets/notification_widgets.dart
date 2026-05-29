@@ -101,7 +101,7 @@ class NotificationPanel extends StatelessWidget {
               ),
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     children: [
                       _notifItem(
@@ -160,11 +160,13 @@ class NotificationPanel extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          title,
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700,
-                            color: AppTheme.textDark,
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textDark,
+                            ),
                           ),
                         ),
                         Text(

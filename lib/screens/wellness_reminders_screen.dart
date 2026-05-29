@@ -226,188 +226,196 @@ class _WellnessRemindersScreenState extends State<WellnessRemindersScreen> {
                       top: Radius.circular(32),
                     ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Set New Wellness Goal',
-                        style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Goal Title',
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          color: context.secondaryText,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        onChanged: (val) => selectedTitle = val,
-                        decoration: InputDecoration(
-                          hintText: 'e.g. Morning Meditation',
-                          hintStyle: TextStyle(
-                            color: context.secondaryText.withValues(alpha: 0.4),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                              color: AppTheme.accentPink.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(
-                              color: AppTheme.accentPink.withValues(alpha: 0.1),
-                            ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Set New Wellness Goal',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
-                        style: GoogleFonts.inter(fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Category',
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          color: context.secondaryText,
+                        const SizedBox(height: 24),
+                        Text(
+                          'Goal Title',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: context.secondaryText,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children:
-                            categories.map((item) {
-                              final cat = item['cat'] as WellnessCategory;
-                              final label = item['label'] as String;
-                              final isSelected = selectedCategory == cat;
-                              return GestureDetector(
-                                onTap:
-                                    () => setSheetState(
-                                      () => selectedCategory = cat,
-                                    ),
-                                child: AnimatedContainer(
-                                  duration: 200.ms,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isSelected
-                                            ? AppTheme.accentPink
-                                            : AppTheme.accentPink.withValues(
-                                              alpha: 0.1,
-                                            ),
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(cat.emoji),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        label,
-                                        style: GoogleFonts.inter(
-                                          color:
-                                              isSelected
-                                                  ? Colors.white
-                                                  : AppTheme.accentPink,
-                                          fontWeight:
-                                              isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'Date',
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          color: context.secondaryText,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      ThemedContainer(
-                        type: ContainerType.glass,
-                        onTap: () async {
-                          final date = await showDatePicker(
-                            context: context,
-                            initialDate: selectedDate,
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime.now().add(
-                              const Duration(days: 365),
-                            ),
-                          );
-                          if (date != null) {
-                            setSheetState(() => selectedDate = date);
-                          }
-                        },
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              DateFormat('EEEE, MMM d').format(selectedDate),
-                              style: GoogleFonts.inter(
-                                fontWeight: FontWeight.bold,
+                        const SizedBox(height: 8),
+                        TextField(
+                          onChanged: (val) => selectedTitle = val,
+                          decoration: InputDecoration(
+                            hintText: 'e.g. Morning Meditation',
+                            hintStyle: TextStyle(
+                              color: context.secondaryText.withValues(
+                                alpha: 0.4,
                               ),
                             ),
-                            const Icon(
-                              Icons.calendar_today_rounded,
-                              size: 20,
-                              color: AppTheme.accentPink,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (selectedTitle.trim().isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please enter a goal title'),
-                                ),
-                              );
-                              return;
-                            }
-                            storage.saveAppointment(
-                              Appointment(
-                                title: selectedTitle,
-                                date: selectedDate,
-                                typeIndex: selectedCategory.index,
-                              ),
-                            );
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Goal added!')),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.accentPink,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: AppTheme.accentPink.withValues(
+                                  alpha: 0.2,
+                                ),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: AppTheme.accentPink.withValues(
+                                  alpha: 0.1,
+                                ),
+                              ),
                             ),
                           ),
-                          child: const Text('Confirm Goal'),
+                          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 24),
+                        Text(
+                          'Category',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: context.secondaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children:
+                              categories.map((item) {
+                                final cat = item['cat'] as WellnessCategory;
+                                final label = item['label'] as String;
+                                final isSelected = selectedCategory == cat;
+                                return GestureDetector(
+                                  onTap:
+                                      () => setSheetState(
+                                        () => selectedCategory = cat,
+                                      ),
+                                  child: AnimatedContainer(
+                                    duration: 200.ms,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          isSelected
+                                              ? AppTheme.accentPink
+                                              : AppTheme.accentPink.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(cat.emoji),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          label,
+                                          style: GoogleFonts.inter(
+                                            color:
+                                                isSelected
+                                                    ? Colors.white
+                                                    : AppTheme.accentPink,
+                                            fontWeight:
+                                                isSelected
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                        ),
+                        const SizedBox(height: 24),
+                        Text(
+                          'Date',
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: context.secondaryText,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ThemedContainer(
+                          type: ContainerType.glass,
+                          onTap: () async {
+                            final date = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365),
+                              ),
+                            );
+                            if (date != null) {
+                              setSheetState(() => selectedDate = date);
+                            }
+                          },
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                DateFormat('EEEE, MMM d').format(selectedDate),
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Icon(
+                                Icons.calendar_today_rounded,
+                                size: 20,
+                                color: AppTheme.accentPink,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (selectedTitle.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter a goal title'),
+                                  ),
+                                );
+                                return;
+                              }
+                              storage.saveAppointment(
+                                Appointment(
+                                  title: selectedTitle,
+                                  date: selectedDate,
+                                  typeIndex: selectedCategory.index,
+                                ),
+                              );
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Goal added!')),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.accentPink,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: const Text('Confirm Goal'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
           ),

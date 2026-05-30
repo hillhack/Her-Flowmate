@@ -362,7 +362,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                     _stepLabel(context, '6', 'Current Mood'),
                     const SizedBox(height: 16),
                     SizedBox(
-                      height: 80,
+                      height: 90,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         physics: const BouncingScrollPhysics(),
@@ -379,7 +379,7 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                   child: ThemedContainer(
                                     type: ContainerType.glass,
                                     radius: 20,
-                                    width: 64,
+                                    width: 78,
                                     border:
                                         isSelected
                                             ? Border.all(
@@ -395,12 +395,16 @@ class _LogPeriodScreenState extends State<LogPeriodScreen> {
                                           style: const TextStyle(fontSize: 26),
                                         ),
                                         const SizedBox(height: 5),
-                                        Text(
-                                          entry.key,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 10,
-                                            color: context.onSurface,
-                                            fontWeight: FontWeight.w700,
+                                        Expanded(
+                                          child: FittedBox(
+                                            child: Text(
+                                              entry.key,
+                                              style: GoogleFonts.inter(
+                                                fontSize: 10,
+                                                color: context.onSurface,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ],

@@ -2,14 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Internet permission -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-sdk tools:overrideLibrary="
-        io.flutter.plugins.googlesignin,
-        io.flutter.plugins.sharedpreferences,
-        com.dexterous.flutterlocalnotifications,
-        io.flutter.plugins.flutter_plugin_android_lifecycle,
-        io.flutter.plugins.imagepicker,
-        io.flutter.plugins.localauth,
-        io.flutter.plugins.urllauncher" />
+
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
